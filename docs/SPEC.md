@@ -1,9 +1,49 @@
-# Institutional Trading Implementation
+# AI-Powered Swarm Trading Assistant
 
 ## Overview
-Implementation of institutional-grade trading capabilities with whale tracking, market opportunity detection, and portfolio management.
+Implementation of an LLM-driven trading assistant with natural language interaction, intelligent swarm tracking, and automated portfolio management.
 
 ## User Stories
+
+### LLM-Driven Architecture
+
+#### As a developer, I want to implement an LLM-driven bot architecture
+- Use Claude-3-haiku for all user interactions
+- Two-part response system:
+  1. Natural language response to user
+  2. Structured Airtable operation instructions
+- System prompt defines:
+  - Bot personality and capabilities
+  - Available Airtable operations
+  - Business rules (e.g., 2 free swarms)
+  - Response format requirements
+- Example operations:
+  ```json
+  {
+    "user_response": "string",  // Message to send to user
+    "airtable_op": {           // Optional operation
+      "operation": "string",    // Operation name
+      "params": {}             // Operation parameters
+    }
+  }
+  ```
+- Available operations:
+  - get_user
+  - create_user
+  - add_to_watchlist
+  - remove_from_watchlist
+  - update_preferences
+
+#### As a user, I want natural language interaction
+- Free-form command input
+- Context-aware responses
+- Helpful suggestions
+- Error correction
+- Examples:
+  - "Add KINKONG with USDC"
+  - "What's in my watchlist?"
+  - "Remove KINKONG from tracking"
+  - "How many free slots do I have?"
 
 ### Subscription System
 
