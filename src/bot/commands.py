@@ -1,14 +1,15 @@
+import json
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, CallbackQueryHandler
 from src.utils.airtable import AirtableClient
 
 # Available swarms for the browse command
 AVAILABLE_SWARMS = [
-    "KINKONG", "DIGITALKIN", "DUOAI", "PROPERTYKIN", "SWARMVENTURES",
-    "SYNTHETICSOULS", "XFORGE", "KINOS", "PLAYWISE", "ROBINHOODAGENT",
-    "AIALLEY", "LOGICATLAS", "WEALTHHIVE", "COMMERCENEST", "PROFITBEEAI",
-    "DESKMATE", "PUBLISHKIN", "STUDIOKIN", "STUMPED", "THERAPYKIN",
-    "CAREHIVE", "TRAVELAIDAI", "TALENTKIN", "CAREERKIN", "GRANTKIN"
+    "kinkong", "digitalkin", "duoai", "propertykin", "swarmventures",
+    "syntheticsouls", "xforge", "kinos", "playwise", "robinhoodagent",
+    "aialley", "logicatlas", "wealthhive", "commercenest", "profitbeeai",
+    "deskmate", "publishkin", "studiokin", "stumped", "therapykin",
+    "carehive", "travelaidai", "talentkin", "careerkin", "grantkin"
 ]
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -68,18 +69,23 @@ async def watchlist_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("Please use /start to initialize your account first.")
         return
 
-    watchlist = user.get('fields', {}).get('watchlist', [])
-    if not watchlist:
-        await update.message.reply_text("Your watchlist is empty. Add tokens using /add <symbol>")
-        return
+    try:
+        watchlist = json.loads(user.get('fields', {}).get('watchlist', '[]'))
+        if not watchlist:
+            await update.message.reply_text(
+                "Your watchlist is empty. Use /browse to see available swarms or "
+                "add manually using /add <swarm_id>"
+            )
+            return
 
-    message = "🔍 Your Swarm Watchlist:\n\n"
-    for swarm in watchlist:
-        message += f"• {swarm}\n"
-        # TODO: Add current share price and performance metrics
-    
-    message += "\nYou'll receive alerts when important changes occur."
-    await update.message.reply_text(message)
+        message = "🔍 Your Swarm Watchlist:\n\n"
+        for swarm in watchlist:
+            message += f"• {swarm}\n"
+        
+        message += "\nYou'll receive alerts when important changes occur."
+        await update.message.reply_text(message)
+    except json.JSONDecodeError:
+        await update.message.reply_text("Error reading watchlist. Please try again.")
 
 async def add_to_watchlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /add command"""
