@@ -28,7 +28,7 @@ async def start_monitor():
     monitor = SwarmMonitor()
     await monitor.monitor_loop()
 
-def main():
+async def main():
     # Initialize bot
     app = ApplicationBuilder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
     
@@ -42,10 +42,14 @@ def main():
     app.add_handler(CallbackQueryHandler(button_callback))
     
     # Start monitor in background
-    asyncio.create_task(start_monitor())
+    monitor_task = asyncio.create_task(start_monitor())
     
     # Start the bot
-    app.run_polling()
+    await app.run_polling()
+    
+    # Wait for monitor task to complete if bot stops
+    await monitor_task
 
 if __name__ == '__main__':
-    main()
+    # Run the async main function
+    asyncio.run(main())
