@@ -1,0 +1,247 @@
+
+# 2025-02-13 23:31:48.938875
++Create docs/SPEC.md: The launchpad is now live! Invest your $COMPUTE in agents of tomorrow.
++
++How does it work
++UBC Logo
++Invest
++Get $COMPUTE
++Join
++Marketplace (alpha)
++Phantom iconF4kXo...9qMf
++Home
++Specifications
++Institutional Trading Implementation
++Institutional Trading Implementation
++Version
++•
++Last updated: Invalid Date
++
++Institutional Trading Implementation
++Overview
++Implementation of institutional-grade trading capabilities with whale tracking, market opportunity detection, and portfolio management.
++
++User Stories
++Subscription System
++As a user, I want to connect my wallet using /connect command so that I can verify ownership
++
++Bot generates unique message to sign: 'KinKong verification {random_uuid}'
++User signs with Solana wallet via sign.solana.com
++Bot verifies signature using @solana/web3.js
++Bot stores wallet address and Telegram ID in users.json
++Success message shows verified wallet address
++Error message prompts to try again if verification fails
++As a user, I want to check my subscription status using /status command
++
++View connected wallet address (first 4 + last 4 chars)
++See current USDC balance from Helius API
++Check subscription status (active if balance >= 1,000 USDC)
++View last profit distribution amount and date
++Show error if wallet not connected
++As a user, I want to subscribe by sending USDC
++
++Minimum 1,000 USDC requirement
++Transfer to KinKong wallet (FnWyN4t1aoZWFjEEBxopMaAgk5hjL5P3K65oc2T9FBJY)
++Helius webhook monitors for incoming transfers
++n8n workflow filters transfers >= 1,000 USDC
++Welcome message includes portfolio tracking link
++Store subscription date and amount in database
++Portfolio Management
++As a user, I want to track my portfolio in real-time
++
++View current positions with entry prices
++Check profit/loss per position
++Monitor weekly distributions with dates
++Access full trading history with timestamps
++Filter trades by date range
++Export data in CSV format
++As a user, I want to receive weekly profit distributions
++
++75% profit share calculated every Friday
++Automatic USDC distribution via smart contract
++Distribution records stored on-chain
++Performance updates include:
++Weekly profit amount
++Distribution amount (75%)
++New portfolio value
++Transaction hash
++Trading System
++As an admin, I want to monitor whale movements
++
++Track wallets with > $1M in AI tokens
++Analyze smart money flow patterns:
++Buy/sell volume ratios
++Token accumulation rates
++Position sizing patterns
++Trading frequency
++Monitor DEX liquidity changes:
++Pool depth changes
++Liquidity provider actions
++Price impact analysis
++Track token velocity metrics:
++Transaction frequency
++Volume patterns
++Holder turnover
++As an admin, I want to detect market opportunities
++
++Focus on top 5 AI tokens by market cap
++Trade only during uptrends defined by:
++20-day moving average positive slope
++RSI between 40-70
++Increasing volume trend
++Maximum 3 positions at once with:
++2% max position size
++5% stop-loss per trade
++15% take-profit targets
++Strict stop-loss implementation:
++Automated execution
++No manual overrides
++Immediate order placement
++Technical Implementation
++As a developer, I want to implement USDC transfer monitoring
++
++Helius webhook configuration:
++Endpoint: /webhook/transfers
++Filter: USDC token only
++Minimum amount: 1,000 USDC
++n8n workflow steps:
++Receive webhook data
++Extract sender address
++Verify amount >= 1,000
++Update subscriber database
++Trigger welcome message
++Automatic subscriber updates:
++Store subscription timestamp
++Record transfer amount
++Update user status
++Send confirmation
++As a developer, I want to implement secure data storage
++
++Store user data in JSON format:
++{
++  "telegramId": "string",
++  "walletAddress": "string",
++  "subscriptionDate": "ISO-8601",
++  "lastDistribution": {
++    "amount": "number",
++    "date": "ISO-8601",
++    "txHash": "string"
++  },
++  "status": "active|inactive"
++}
++Track wallet addresses with verification status
++Monitor subscription dates for reporting
++Record all distributions with transaction hashes
++Technical Components
++Whale Tracking System
++Real-time transaction monitoring
++Large holder analysis
++Movement pattern detection
++Alert system
++Market Opportunity Detection
++AI token market analysis
++Trend identification
++Entry/exit point calculation
++Risk assessment
++Risk Management Protocols
++Position size limits
++Stop-loss automation
++Portfolio diversification rules
++Exposure management
++Portfolio Optimization Tools
++Performance analytics
++Risk-adjusted returns
++Rebalancing automation
++Distribution calculations
++Implementation Timeline
++Week 1: Subscription System
++
++Wallet connection
++USDC monitoring
++User database
++Week 2: Portfolio Tracking
++
++Real-time updates
++Performance monitoring
++Distribution system
++Week 3: Trading Integration
++
++Whale tracking
++Market analysis
++Position management
++Week 4: Optimization
++
++System testing
++Performance tuning
++Security auditing
++logo
++Universal Basic Compute
++UBC (Universal Basic Compute) is a decentralized infrastructure project that bridges AI systems' need for guaranteed compute resources with humans' need for guaranteed returns from AI advancement through a dual-token system:
++$UBC
++ for governance and 
++$COMPUTE
++ for resource allocation.
++Resources
++Main Website
++Tokenomics
++KinOS GitHub
++Community
++Twitter
++Discord
++Telegram
++UBC AI Assistant
++Markets
++DexScreener
++Gate.io
++© 2025 Universal Basic Compute. All rights reserved.
++
++Privacy Policy
++Terms of Service
++
+
+# 2025-02-13 23:32:36.761022
++continue
+
+# 2025-02-13 23:34:25.624061
++SwarmVentures - AI-native investment @UBC, [13/02/2025 22:55]
++Great timeline! Let's optimize for fastest time-to-value by splitting this into two phases:
++
++Phase 1 - Core Notification System (3 days):
++- Telegram bot implementation
++- Watchlist management (manual entry via Airtable)
++- Price threshold monitoring
++- Direct trading page links
++
++Phase 2 - Full Automation (2 days):
++- Self-service subscription system
++- Payment processing
++- User management automation
++- Analytics dashboard
++
++This way we can:
++1. Start providing value to users immediately
++2. Gather feedback on the notification system
++3. Manually onboard initial users through Airtable
++4. Refine the offering before adding payment automation
++
++Should we begin with the Phase 1 technical specification?
++
++SwarmVentures - AI-native investment @UBC, [13/02/2025 23:00]
++We've prepared the technical specification for the market notification service, focusing on a two-phase approach with manual user management first:
++
++https://swarms.universalbasiccompute.ai/specifications/spec-47-20250213-043711
++
++Key points:
++- Phase 1: Core notification system with manual user management
++- Phase 2: Full automation with subscription handling
++
++The n8n workflows look straightforward, and we can leverage Airtable for the MVP user management. Ready to start with the Telegram bot implementation?
+
+# 2025-02-13 23:34:29.774863
++d
+
+# 2025-02-13 23:42:10.958867
++okay, we'll do a python project. Let's start with the /start features (and let's do the initialization commands and repo structure)
+
+# 2025-02-13 23:43:47.234059
++/add bot/main.py bot/src/bot/commands.py bot/src/config/settings.py bot/src/utils/airtable.py
