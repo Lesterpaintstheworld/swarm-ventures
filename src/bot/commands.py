@@ -1,6 +1,15 @@
-from telegram import Update
-from telegram.ext import ContextTypes
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import ContextTypes, CallbackQueryHandler
 from src.utils.airtable import AirtableClient
+
+# Available swarms for the browse command
+AVAILABLE_SWARMS = [
+    "KINKONG", "DIGITALKIN", "DUOAI", "PROPERTYKIN", "SWARMVENTURES",
+    "SYNTHETICSOULS", "XFORGE", "KINOS", "PLAYWISE", "ROBINHOODAGENT",
+    "AIALLEY", "LOGICATLAS", "WEALTHHIVE", "COMMERCENEST", "PROFITBEEAI",
+    "DESKMATE", "PUBLISHKIN", "STUDIOKIN", "STUMPED", "THERAPYKIN",
+    "CAREHIVE", "TRAVELAIDAI", "TALENTKIN", "CAREERKIN", "GRANTKIN"
+]
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /start command"""
@@ -36,12 +45,12 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "📚 Available Commands:\n\n"
         "/start - Show welcome message\n"
         "/help - Show this help message\n"
+        "/browse - Browse available swarms\n"
         "/watchlist - View your swarm watchlist\n"
         "/add <swarm_id> - Add swarm to watchlist\n"
-        "  Example: /add KINESIS-1\n"
+        "  Example: /add KINKONG\n"
         "/remove <swarm_id> - Remove swarm from watchlist\n"
-        "  Example: /remove KINESIS-1\n\n"
-        "Swarm IDs are in the format: NAME-NUMBER\n"
+        "  Example: /remove KINKONG\n\n"
         "You'll receive alerts when:\n"
         "• New swarm shares become available\n"
         "• Price changes exceed thresholds\n"
@@ -91,6 +100,43 @@ async def add_to_watchlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"✅ Added {swarm_id} to your watchlist!")
     else:
         await update.message.reply_text("❌ Failed to add to watchlist. Please try again.")
+
+async def browse_swarms(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Display available swarms as buttons"""
+    keyboard = []
+    # Create rows of 3 buttons each
+    for i in range(0, len(AVAILABLE_SWARMS), 3):
+        row = []
+        for swarm in AVAILABLE_SWARMS[i:i+3]:
+            row.append(InlineKeyboardButton(swarm, callback_data=f"add_{swarm}"))
+        keyboard.append(row)
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text(
+        "🔍 Select a swarm to add to your watchlist:",
+        reply_markup=reply_markup
+    )
+
+async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle button clicks"""
+    query = update.callback_query
+    await query.answer()  # Acknowledge the button click
+    
+    # Extract swarm name from callback_data
+    action, swarm = query.data.split('_')
+    if action == "add":
+        airtable = AirtableClient()
+        result = airtable.add_to_watchlist(str(update.effective_user.id), swarm)
+        
+        if result:
+            await query.message.edit_text(
+                f"✅ Added {swarm} to your watchlist!\n\n"
+                "Use /browse to add more swarms or /watchlist to see your tracked swarms."
+            )
+        else:
+            await query.message.edit_text(
+                "❌ Failed to add to watchlist. Please try again or use /start first."
+            )
 
 async def remove_from_watchlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /remove command"""
