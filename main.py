@@ -25,7 +25,7 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-async def run_bot():
+def main():
     # Initialize bot
     app = ApplicationBuilder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
     
@@ -37,29 +37,15 @@ async def run_bot():
     app.add_handler(CommandHandler('remove', remove_from_watchlist))
     app.add_handler(CommandHandler('browse', browse_swarms))
     app.add_handler(CallbackQueryHandler(button_callback))
-    
-    # Start the bot
-    await app.initialize()
-    await app.start()
-    await app.run_polling(allowed_updates=Update.ALL_TYPES)
 
-async def run_monitor():
+    # Create monitor
     monitor = SwarmMonitor()
-    await monitor.monitor_loop()
-
-async def main():
-    try:
-        # Run bot and monitor concurrently
-        await asyncio.gather(
-            run_bot(),
-            run_monitor()
-        )
-    except KeyboardInterrupt:
-        # Handle graceful shutdown
-        logging.info("Shutting down...")
+    
+    # Start both the bot and monitor
+    app.run_polling(poll_interval=1.0, timeout=20)
 
 if __name__ == '__main__':
     try:
-        asyncio.run(main())
+        main()
     except KeyboardInterrupt:
         logging.info("Bot stopped by user")
