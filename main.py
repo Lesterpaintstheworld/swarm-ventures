@@ -3,7 +3,7 @@ import os
 import asyncio
 from dotenv import load_dotenv
 from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, MessageHandler, filters
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
 from src.services.monitor import SwarmMonitor
 from src.services.claude_client import ClaudeClient
 from src.utils.airtable import AirtableClient
