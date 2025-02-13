@@ -169,20 +169,30 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
     elif action == "add":
         # Second step - token selection and final addition
-        swarm_id = params[1]  # params = ['swarm', 'swarm_id', 'token']
+        swarm_id = params[1]
         token = params[2]
-        
-        # Create combined ID for watchlist
         combined_id = f"{swarm_id}_{token}"
         
         airtable = AirtableClient()
         result = airtable.add_to_watchlist(str(update.effective_user.id), combined_id)
         
-        if result:
-            await query.message.edit_text(
-                f"✅ Added {swarm_id} ({token}) to your watchlist!\n\n"
-                "Use /browse to add more swarms or /watchlist to see your tracked swarms."
-            )
+        if isinstance(result, dict):
+            if 'error' in result:
+                await query.message.edit_text(
+                    f"❌ {result['message']}\n\n"
+                    "To subscribe, please contact @SwarmVenturesSupport"
+                )
+                return
+                
+            message = f"✅ Added {swarm_id} ({token}) to your watchlist!"
+            
+            if result.get('warning') == "FINAL_FREE_SLOT":
+                message += "\n\n⚠️ This was your last free slot! Subscribe to add more swarms."
+            elif result.get('swarms_remaining') is not None:
+                message += f"\n\n📊 Free slots remaining: {result['swarms_remaining']}"
+                
+            message += "\n\nUse /browse to add more swarms or /watchlist to see your tracked swarms."
+            await query.message.edit_text(message)
         else:
             await query.message.edit_text(
                 "❌ Failed to add to watchlist. Please try again or use /start first."

@@ -35,27 +35,48 @@ class AirtableClient:
         # Ensure user exists
         user = self.get_user(telegram_id)
         if not user:
-            # If user doesn't exist, create them
             user = self.create_user(telegram_id, "")
             if not user:
                 return None
                 
         try:
             watchlist = json.loads(user['fields'].get('watchlist', '[]'))
+            swarm_count = user['fields'].get('swarm_count', 0)
+            
+            # Check if user has reached limit and isn't subscribed
+            if swarm_count >= 2 and user['fields'].get('status') != 'subscribed':
+                raise Exception("FREE_TRIAL_LIMIT_REACHED")
+                
             swarm_id = swarm_id.lower()
             if swarm_id not in watchlist:
                 watchlist.append(swarm_id)
-                result = self.table.update(user['id'], {'watchlist': json.dumps(watchlist)})
+                swarm_count += 1
+                
+                # Add warning flag if on last free slot
+                warning_message = None
+                if swarm_count == 1:
+                    warning_message = "FINAL_FREE_SLOT"
+                
+                result = self.table.update(user['id'], {
+                    'watchlist': json.dumps(watchlist),
+                    'swarm_count': swarm_count
+                })
+                
                 logging.info(f"Updated watchlist for user {telegram_id}: {watchlist}")
-                return result
+                return {
+                    'result': result,
+                    'warning': warning_message,
+                    'swarms_remaining': 2 - swarm_count
+                }
             return user
-        except json.JSONDecodeError as e:
-            logging.error(f"JSON decode error: {e}")
-            # If watchlist is invalid JSON, start fresh
-            result = self.table.update(user['id'], {'watchlist': json.dumps([swarm_id.lower()])})
-            logging.info(f"Created new watchlist for user {telegram_id}: [{swarm_id}]")
-            return result
+            
         except Exception as e:
+            if str(e) == "FREE_TRIAL_LIMIT_REACHED":
+                logging.info(f"Free trial limit reached for user {telegram_id}")
+                return {
+                    'error': 'FREE_TRIAL_LIMIT_REACHED',
+                    'message': "You've reached your free trial limit of 2 swarms. Please subscribe to add more swarms."
+                }
             logging.error(f"Error updating watchlist: {e}")
             return None
 
