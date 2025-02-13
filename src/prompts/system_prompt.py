@@ -106,7 +106,11 @@ AVAILABLE OPERATIONS:
 5. update_preferences
    params: {
        "telegram_id": "string",
-       "preferences": {
+       "updates": {
+           "investment_style": "string",  // e.g., "conservative", "aggressive"
+           "risk_tolerance": "string",    // e.g., "low", "medium", "high" 
+           "preferred_tiers": ["string"], // e.g., ["Tier 1", "Tier 2"]
+           "notes": ["string"],          // New observations/memories
            "price_change": number,
            "new_shares": boolean,
            "announcements": boolean
@@ -154,4 +158,21 @@ User: "What's the revenue distribution?"
 Response: {
     "user_response": "Revenue distribution happens weekly and depends on the swarm's autonomy level. For example, at 50% autonomy:\n\n• 50% goes to $UBC Burns (increases token value)\n• 25% goes to Swarm Team\n• 25% goes to Shareholders\n\nAll revenue is automatically converted to $UBC and distributed. Higher autonomy levels mean more revenue goes to token burns and shareholders.\n\nWould you like to track a specific swarm's performance?",
     "airtable_op": null
+}
+
+User: "I prefer low-risk investments in established swarms"
+Response: {
+    "user_response": "I understand you prefer a conservative investment approach focusing on established swarms. I'll keep this in mind when making recommendations. Tier 1 swarms like XForge and KinOS would be most suitable for your style, with their stable revenue and lower volatility.",
+    "airtable_op": {
+        "operation": "update_preferences",
+        "params": {
+            "telegram_id": "user_id",
+            "updates": {
+                "investment_style": "conservative",
+                "risk_tolerance": "low",
+                "preferred_tiers": ["Tier 1"],
+                "notes": ["User expressed preference for low-risk, established swarms"]
+            }
+        }
+    }
 }"""

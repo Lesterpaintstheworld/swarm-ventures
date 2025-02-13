@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import datetime
 from pyairtable import Table
 from src.config.settings import AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME
 
@@ -22,11 +23,19 @@ class AirtableClient:
             "telegram_id": telegram_id,
             "username": username,
             "status": "active",
-            "watchlist": json.dumps([]),  # Empty JSON array
+            "watchlist": json.dumps([]),
             "alert_preferences": json.dumps({
-                "price_change": 5,  # 5% threshold
+                "price_change": 5,
                 "new_shares": True,
                 "announcements": True
+            }),
+            "preferences": json.dumps({
+                "last_interaction": None,
+                "topics_discussed": [],
+                "investment_style": None,
+                "risk_tolerance": None,
+                "preferred_tiers": [],
+                "notes": []
             })
         })
 
@@ -100,3 +109,37 @@ class AirtableClient:
     def get_all_users(self):
         """Get all active users"""
         return self.table.all(formula="{status}='active'")
+
+    def update_preferences(self, telegram_id: str, updates: dict):
+        """Update user preferences/memories"""
+        user = self.get_user(telegram_id)
+        if not user:
+            return None
+            
+        try:
+            preferences = json.loads(user['fields'].get('preferences', '{}'))
+            preferences.update(updates)
+            
+            # Add timestamp to notes
+            if 'notes' in updates:
+                for note in updates['notes']:
+                    if isinstance(note, str):
+                        preferences['notes'].append({
+                            'timestamp': datetime.now().isoformat(),
+                            'note': note
+                        })
+            
+            return self.table.update(user['id'], {
+                'preferences': json.dumps(preferences)
+            })
+            
+        except Exception as e:
+            logging.error(f"Error updating preferences: {e}")
+            return None
+
+    def add_interaction_note(self, telegram_id: str, note: str):
+        """Add a single interaction note with timestamp"""
+        return self.update_preferences(telegram_id, {
+            'last_interaction': datetime.now().isoformat(),
+            'notes': [note]
+        })
