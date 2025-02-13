@@ -58,3 +58,7 @@ class AirtableClient:
         except json.JSONDecodeError:
             # If watchlist is invalid JSON, start fresh
             return self.table.update(user['id'], {'watchlist': json.dumps([])})
+            
+    def get_all_users(self):
+        """Get all active users"""
+        return self.table.all(formula="{status}='active'")

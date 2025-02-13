@@ -1,7 +1,9 @@
 import logging
 import os
+import asyncio
 from dotenv import load_dotenv
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler
+from src.services.monitor import SwarmMonitor
 
 from src.bot.commands import (
     start_command,
@@ -22,6 +24,10 @@ logging.basicConfig(
     level=logging.INFO
 )
 
+async def start_monitor():
+    monitor = SwarmMonitor()
+    await monitor.monitor_loop()
+
 def main():
     # Initialize bot
     app = ApplicationBuilder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
@@ -34,6 +40,9 @@ def main():
     app.add_handler(CommandHandler('remove', remove_from_watchlist))
     app.add_handler(CommandHandler('browse', browse_swarms))
     app.add_handler(CallbackQueryHandler(button_callback))
+    
+    # Start monitor in background
+    asyncio.create_task(start_monitor())
     
     # Start the bot
     app.run_polling()
