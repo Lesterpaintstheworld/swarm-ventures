@@ -85,6 +85,14 @@ Implementation of institutional-grade trading capabilities with whale tracking, 
 
 ### Technical Implementation
 
+#### As a user, I want to try the service with a free trial
+- First 2 swarm additions are free
+- Counter tracks number of swarms added
+- Warning message at final free slot
+- Subscription required after 2 swarms
+- Clear messaging about remaining free slots
+- Easy upgrade path when limit reached
+
 #### As a developer, I want to implement USDC transfer monitoring
 - Helius webhook configuration:
   - Endpoint: /webhook/transfers
