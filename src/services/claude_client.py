@@ -7,7 +7,14 @@ from src.prompts.system_prompt import SYSTEM_PROMPT
 
 class ClaudeClient:
     def __init__(self):
-        self.client = anthropic.Client(api_key=os.getenv('ANTHROPIC_API_KEY'))
+        # Remove any proxy settings that might be in the environment
+        api_key = os.getenv('ANTHROPIC_API_KEY')
+        if not api_key:
+            raise ValueError("ANTHROPIC_API_KEY environment variable is not set")
+            
+        self.client = anthropic.Anthropic(
+            api_key=api_key
+        )
         self.model = "claude-3-haiku-20240307"
 
     async def get_response(self, user_message: str, user_data: Dict[str, Any] = None) -> Dict[str, Any]:
@@ -19,7 +26,7 @@ class ClaudeClient:
         }
         """
         try:
-            response = await self.client.messages.create(
+            message = self.client.messages.create(
                 model=self.model,
                 max_tokens=1024,
                 messages=[
@@ -36,14 +43,14 @@ class ClaudeClient:
             
             # Parse response content as JSON
             try:
-                result = json.loads(response.content)
+                result = json.loads(message.content)
                 if not isinstance(result, dict):
                     raise ValueError("Response not in correct format")
                 return result
             except json.JSONDecodeError:
                 # If response isn't valid JSON, create a basic response
                 return {
-                    "user_response": response.content,
+                    "user_response": message.content,
                     "airtable_op": None
                 }
                 
