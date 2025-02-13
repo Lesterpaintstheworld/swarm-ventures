@@ -3,6 +3,9 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, CallbackQueryHandler
 from src.utils.airtable import AirtableClient
 
+# Available options for commands
+AVAILABLE_TOKENS = ["USDC", "USDT", "SOL", "UBC"]
+
 # Available swarms for the browse command
 AVAILABLE_SWARMS = [
     "kinkong", "digitalkin", "duoai", "propertykin", "swarmventures",
@@ -79,8 +82,9 @@ async def watchlist_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
         message = "🔍 Your Swarm Watchlist:\n\n"
-        for swarm in watchlist:
-            message += f"• {swarm}\n"
+        for item in watchlist:
+            swarm, token = item.split('_')
+            message += f"• {swarm} ({token})\n"
         
         message += "\nYou'll receive alerts when important changes occur."
         await update.message.reply_text(message)
@@ -89,11 +93,24 @@ async def watchlist_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def add_to_watchlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /add command"""
-    if not context.args:
-        await update.message.reply_text("Please provide a swarm ID. Example: /add KINESIS-1")
+    if len(context.args) != 2:
+        await update.message.reply_text(
+            "Please provide both swarm ID and token.\n"
+            "Example: /add KINKONG USDC\n"
+            "Available tokens: USDC, USDT, SOL, UBC"
+        )
         return
 
-    swarm_id = context.args[0].upper()
+    swarm_id = context.args[0].lower()
+    token = context.args[1].upper()
+    
+    if token not in AVAILABLE_TOKENS:
+        await update.message.reply_text(
+            f"Invalid token. Please use one of: {', '.join(AVAILABLE_TOKENS)}"
+        )
+        return
+        
+    combined_id = f"{swarm_id}_{token}"
     airtable = AirtableClient()
     user = airtable.get_user(str(update.effective_user.id))
     
@@ -114,12 +131,27 @@ async def browse_swarms(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for i in range(0, len(AVAILABLE_SWARMS), 3):
         row = []
         for swarm in AVAILABLE_SWARMS[i:i+3]:
-            row.append(InlineKeyboardButton(swarm, callback_data=f"add_{swarm}"))
+            row.append(InlineKeyboardButton(swarm, callback_data=f"select_swarm_{swarm}"))
         keyboard.append(row)
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
-        "🔍 Select a swarm to add to your watchlist:",
+        "🔍 Step 1: Select a swarm to track:",
+        reply_markup=reply_markup
+    )
+
+async def show_token_selection(update: Update, swarm_id: str):
+    """Show token selection buttons"""
+    keyboard = []
+    # Create row of token buttons
+    row = []
+    for token in AVAILABLE_TOKENS:
+        row.append(InlineKeyboardButton(token, callback_data=f"add_swarm_{swarm_id}_{token}"))
+    keyboard.append(row)
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.callback_query.message.edit_text(
+        f"💱 Step 2: Select token to track for {swarm_id}:",
         reply_markup=reply_markup
     )
 
@@ -128,15 +160,27 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()  # Acknowledge the button click
     
-    # Extract swarm name from callback_data
-    action, swarm = query.data.split('_')
-    if action == "add":
+    action, *params = query.data.split('_')
+    
+    if action == "select":
+        # First step - swarm selection
+        swarm_id = params[1]  # params = ['swarm', 'swarm_id']
+        await show_token_selection(update, swarm_id)
+        
+    elif action == "add":
+        # Second step - token selection and final addition
+        swarm_id = params[1]  # params = ['swarm', 'swarm_id', 'token']
+        token = params[2]
+        
+        # Create combined ID for watchlist
+        combined_id = f"{swarm_id}_{token}"
+        
         airtable = AirtableClient()
-        result = airtable.add_to_watchlist(str(update.effective_user.id), swarm)
+        result = airtable.add_to_watchlist(str(update.effective_user.id), combined_id)
         
         if result:
             await query.message.edit_text(
-                f"✅ Added {swarm} to your watchlist!\n\n"
+                f"✅ Added {swarm_id} ({token}) to your watchlist!\n\n"
                 "Use /browse to add more swarms or /watchlist to see your tracked swarms."
             )
         else:
