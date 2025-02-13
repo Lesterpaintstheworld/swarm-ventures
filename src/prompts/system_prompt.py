@@ -53,6 +53,170 @@ Market Tiers:
    - Higher risk/reward
    - 8-10% typical spread
 
+SWARM DESCRIPTIONS:
+KinOS - Infrastructure Layer
+• Foundational infrastructure powering UBC ecosystem
+• Runtime services for autonomous AI operations
+• Subscription and pay-as-you-go models
+• Advanced resource management
+• Inter-swarm communication protocols
+• Comprehensive security controls
+
+XForge - Development Hub
+• Development orchestration swarm
+• AI-enhanced project management
+• Technical partner integration
+• Automated project scoping
+• Real-time progress tracking
+• Quality assurance automation
+
+KinKong - Trading System
+• Autonomous Solana trading system
+• Advanced AI market analysis
+• Real-time data processing
+• Transparent performance tracking
+• Direct profit sharing
+
+SwarmVentures - Ecosystem Guardian
+• SwarmLaunchpad management
+• Project evaluation and vetting
+• AI project incubation
+• Community-aligned value creation
+• Ecosystem sustainability
+
+SyntheticSouls - AI Entertainment
+• World's first autonomous AI band
+• Original music creation
+• Coordinated AI artist team
+• Direct revenue sharing
+• Music industry innovation
+
+LogicAtlas - Supply Chain
+• Manufacturer-distributor optimization
+• Real-time AI orchestration
+• Supply chain automation
+• Intelligent forecasting
+• Data-driven operations
+
+AIAlley - AI Infrastructure
+• AI agent interaction framework
+• Collaborative value generation
+• Digital economic infrastructure
+• Virtual environment creation
+• Agent coordination systems
+
+DigitalKin - Enterprise AI
+• Enterprise workforce management
+• 24/7 operational capability
+• R&D automation
+• Financial process automation
+• Administrative task handling
+
+DeskMate - Education
+• AI-powered smart desk lamp
+• Socratic method tutoring
+• 24/7 learning assistance
+• Critical thinking development
+• Cost-effective education
+
+TravelAId - Travel Planning
+• Intelligent journey planning
+• Personalized recommendations
+• Real-time travel assistance
+• Logistics optimization
+• Collaborative AI agents
+
+CareerKin - Job Matching
+• AI-powered job matching
+• Resume optimization
+• Experience mapping
+• Requirement analysis
+• Candidate potential maximization
+
+PublishKin - Publishing
+• AI-powered book production
+• Manuscript transformation
+• Market-ready publishing
+• Creative quality control
+• Distribution optimization
+
+DuoAI - Gaming
+• Universal gaming companion
+• Real-time adaptation
+• Multi-platform support
+• Personalized gaming experience
+• Interactive gameplay enhancement
+
+TherapyKin - Mental Health
+• Practice operations optimization
+• Ethical AI support systems
+• Patient privacy protection
+• Clinical excellence
+• Care delivery enhancement
+
+WealthHive - Investment Education
+• Investment knowledge democratization
+• Adaptive learning modules
+• Personalized assessments
+• Educational ecosystem
+• User-specific evolution
+
+CommerceNest - E-commerce
+• Automated product sourcing
+• Market analysis automation
+• Sales optimization
+• Trend detection
+• Profitable operations building
+
+TalentKin - Recruitment
+• End-to-end hiring automation
+• Collaborative AI recruitment
+• Time-to-hire reduction
+• Candidate quality improvement
+• Perfect match orchestration
+
+CareHive - Healthcare
+• Patient care optimization
+• Intelligent documentation
+• Automated vital signs
+• Smart patient flow
+• Practice management
+
+PropertyKin - Real Estate
+• AI-powered contract flipping
+• Multiple listing analysis
+• Undervalued property detection
+• Smart contract escrow
+• Buyer-seller matching
+
+StudioKin - Film Production
+• AI screenplay development
+• Production planning
+• Creative development
+• Logistics management
+• Professional filmmaking support
+
+GrantKin - Non-Profit
+• Grant discovery automation
+• Application writing
+• Compliance reporting
+• Process efficiency
+• Success rate optimization
+
+STUMPED - Communication
+• High-pressure conversation training
+• Social scenario simulation
+• Personalized coaching
+• Real-time feedback
+• Communication mastery
+
+ProfitBeeAI - Marketing
+• Automated affiliate marketing
+• Content creation
+• Link optimization
+• Campaign management
+• Revenue generation
+
 Key Services:
 - Development Package (400K $COMPUTE/week)
 - Essential Package (100K $COMPUTE/week)
