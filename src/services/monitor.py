@@ -2,9 +2,38 @@ import asyncio
 import logging
 import json
 from datetime import datetime
+from typing import Dict
 from src.utils.airtable import AirtableClient
 
 logger = logging.getLogger(__name__)
+
+SWARM_PRICES: Dict[str, float] = {
+    'kinkong': 404.3,
+    'digitalkin': 404.3,
+    'duoai': 404.3,
+    'propertykin': 404.3,
+    'swarmventures': 404.3,
+    'syntheticsouls': 404.3,
+    'xforge': 404.3,
+    'kinos': 404.3,
+    'playwise': 404.3,
+    'robinhoodagent': 404.3,
+    'aialley': 404.3,
+    'logicatlas': 404.3,
+    'wealthhive': 256.5,
+    'commercenest': 250.5,
+    'profitbeeai': 190.9,
+    'deskmate': 158.3,
+    'publishkin': 139.4,
+    'studiokin': 123.8,
+    'stumped': 121.9,
+    'therapykin': 87.5,
+    'carehive': 70.1,
+    'travelaidai': 57.6,
+    'talentkin': 55.7,
+    'careerkin': 53.7,
+    'grantkin': 46.2
+}
 
 class SwarmMonitor:
     def __init__(self):
@@ -14,24 +43,24 @@ class SwarmMonitor:
     async def check_swarm_metrics(self, swarm_id: str):
         """Get current metrics for a swarm"""
         try:
-            # TODO: Replace with actual API call
-            # Example API endpoint: https://api.universalbasiccompute.ai/v1/swarms/{swarm_id}/metrics
-            # For now return mock data with more metrics
+            # Get base price from our dictionary
+            base_price = SWARM_PRICES.get(swarm_id.split('_')[0], 0)
+            
             return {
                 'bonding_curve': {
-                    'current_cycle': 3,
-                    'shares_in_cycle': 2500,
-                    'current_price': 2.4,
-                    'next_price': 3.24,
+                    'current_cycle': 3,  # Placeholder cycle
+                    'shares_in_cycle': 2500,  # Placeholder shares
+                    'current_price': base_price,
+                    'next_price': base_price * 1.35,  # 35% increase per cycle
                     'total_supply': 15000,
-                    'market_cap': 36000,
-                    'volume_24h': 5000,
-                    'price_change_24h': 0.15
+                    'market_cap': base_price * 15000,
+                    'volume_24h': base_price * 100,  # Placeholder volume
+                    'price_change_24h': 0.15  # Placeholder change
                 },
                 'revenue': {
-                    'weekly': 420000,
-                    'total': 3150000,
-                    'growth_rate': 0.25
+                    'weekly': base_price * 1000,  # Placeholder weekly revenue
+                    'total': base_price * 8000,   # Placeholder total revenue
+                    'growth_rate': 0.25           # Placeholder growth rate
                 }
             }
         except Exception as e:
