@@ -2,6 +2,7 @@ import logging
 import os
 import asyncio
 from dotenv import load_dotenv
+from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler
 from src.services.monitor import SwarmMonitor
 
@@ -24,11 +25,7 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-async def start_monitor():
-    monitor = SwarmMonitor()
-    await monitor.monitor_loop()
-
-async def main():
+async def run_bot():
     # Initialize bot
     app = ApplicationBuilder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
     
@@ -41,15 +38,28 @@ async def main():
     app.add_handler(CommandHandler('browse', browse_swarms))
     app.add_handler(CallbackQueryHandler(button_callback))
     
-    # Start monitor in background
-    monitor_task = asyncio.create_task(start_monitor())
-    
     # Start the bot
-    await app.run_polling()
-    
-    # Wait for monitor task to complete if bot stops
-    await monitor_task
+    await app.initialize()
+    await app.start()
+    await app.run_polling(allowed_updates=Update.ALL_TYPES)
+
+async def run_monitor():
+    monitor = SwarmMonitor()
+    await monitor.monitor_loop()
+
+async def main():
+    try:
+        # Run bot and monitor concurrently
+        await asyncio.gather(
+            run_bot(),
+            run_monitor()
+        )
+    except KeyboardInterrupt:
+        # Handle graceful shutdown
+        logging.info("Shutting down...")
 
 if __name__ == '__main__':
-    # Run the async main function
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logging.info("Bot stopped by user")
