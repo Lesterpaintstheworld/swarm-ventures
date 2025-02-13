@@ -29,3 +29,142 @@ Implementation of institutional-grade trading capabilities with whale tracking, 
 - n8n workflow filters transfers >= 1,000 USDC
 - Welcome message includes portfolio tracking link
 - Store subscription date and amount in database
+
+### Portfolio Management
+
+#### As a user, I want to track my portfolio in real-time
+- View current positions with entry prices
+- Check profit/loss per position
+- Monitor weekly distributions with dates
+- Access full trading history with timestamps
+- Filter trades by date range
+- Export data in CSV format
+
+#### As a user, I want to receive weekly profit distributions
+- 75% profit share calculated every Friday
+- Automatic USDC distribution via smart contract
+- Distribution records stored on-chain
+- Performance updates include:
+  - Weekly profit amount
+  - Distribution amount (75%)
+  - New portfolio value
+  - Transaction hash
+
+### Trading System
+
+#### As an admin, I want to monitor whale movements
+- Track wallets with > $1M in AI tokens
+- Analyze smart money flow patterns:
+  - Buy/sell volume ratios
+  - Token accumulation rates
+  - Position sizing patterns
+  - Trading frequency
+- Monitor DEX liquidity changes:
+  - Pool depth changes
+  - Liquidity provider actions
+  - Price impact analysis
+- Track token velocity metrics:
+  - Transaction frequency
+  - Volume patterns
+  - Holder turnover
+
+#### As an admin, I want to detect market opportunities
+- Focus on top 5 AI tokens by market cap
+- Trade only during uptrends defined by:
+  - 20-day moving average positive slope
+  - RSI between 40-70
+  - Increasing volume trend
+- Maximum 3 positions at once with:
+  - 2% max position size
+  - 5% stop-loss per trade
+  - 15% take-profit targets
+- Strict stop-loss implementation:
+  - Automated execution
+  - No manual overrides
+  - Immediate order placement
+
+### Technical Implementation
+
+#### As a developer, I want to implement USDC transfer monitoring
+- Helius webhook configuration:
+  - Endpoint: /webhook/transfers
+  - Filter: USDC token only
+  - Minimum amount: 1,000 USDC
+- n8n workflow steps:
+  - Receive webhook data
+  - Extract sender address
+  - Verify amount >= 1,000
+  - Update subscriber database
+  - Trigger welcome message
+- Automatic subscriber updates:
+  - Store subscription timestamp
+  - Record transfer amount
+  - Update user status
+  - Send confirmation
+
+#### As a developer, I want to implement secure data storage
+- Store user data in JSON format:
+  ```json
+  {
+    "telegramId": "string",
+    "walletAddress": "string",
+    "subscriptionDate": "ISO-8601",
+    "lastDistribution": {
+      "amount": "number",
+      "date": "ISO-8601",
+      "txHash": "string"
+    },
+    "status": "active|inactive"
+  }
+  ```
+- Track wallet addresses with verification status
+- Monitor subscription dates for reporting
+- Record all distributions with transaction hashes
+
+### Technical Components
+
+#### Whale Tracking System
+- Real-time transaction monitoring
+- Large holder analysis
+- Movement pattern detection
+- Alert system
+
+#### Market Opportunity Detection
+- AI token market analysis
+- Trend identification
+- Entry/exit point calculation
+- Risk assessment
+
+#### Risk Management Protocols
+- Position size limits
+- Stop-loss automation
+- Portfolio diversification rules
+- Exposure management
+
+#### Portfolio Optimization Tools
+- Performance analytics
+- Risk-adjusted returns
+- Rebalancing automation
+- Distribution calculations
+
+### Implementation Timeline
+
+#### Week 1: Subscription System
+- Wallet connection
+- USDC monitoring
+- User database
+
+#### Week 2: Portfolio Tracking
+- Real-time updates
+- Performance monitoring
+- Distribution system
+
+#### Week 3: Trading Integration
+- Whale tracking
+- Market analysis
+- Position management
+
+#### Week 4: Optimization
+- System testing
+- Performance tuning
+- Security auditing
