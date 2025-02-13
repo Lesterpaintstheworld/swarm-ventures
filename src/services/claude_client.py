@@ -11,15 +11,13 @@ class ClaudeClient:
         if not api_key:
             raise ValueError("ANTHROPIC_API_KEY environment variable is not set")
             
-        # Simple client initialization
-        self.client = anthropic.Anthropic(
-            api_key=api_key
-        )
+        # Initialize with minimal configuration
+        self.client = anthropic.Client(api_key=api_key)
         self.model = "claude-3-haiku-20240307"
 
     async def get_response(self, user_message: str, user_data: Dict[str, Any] = None) -> Dict[str, Any]:
         try:
-            # Create message with latest API format
+            # Create message with minimal parameters
             message = self.client.messages.create(
                 model=self.model,
                 max_tokens=1024,
