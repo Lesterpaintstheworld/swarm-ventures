@@ -16,29 +16,34 @@ class AirtableClient:
             "telegram_id": telegram_id,
             "username": username,
             "status": "active",
-            "watchlist": []
+            "watchlist": [],
+            "alert_preferences": {
+                "price_change": 5,  # 5% threshold
+                "new_shares": True,
+                "announcements": True
+            }
         })
 
-    def add_to_watchlist(self, telegram_id: str, symbol: str):
-        """Add token to user's watchlist"""
+    def add_to_watchlist(self, telegram_id: str, swarm_id: str):
+        """Add swarm to user's watchlist"""
         user = self.get_user(telegram_id)
         if not user:
             return None
             
         watchlist = user['fields'].get('watchlist', [])
-        if symbol not in watchlist:
-            watchlist.append(symbol)
+        if swarm_id not in watchlist:
+            watchlist.append(swarm_id)
             return self.table.update(user['id'], {'watchlist': watchlist})
         return user
 
-    def remove_from_watchlist(self, telegram_id: str, symbol: str):
-        """Remove token from user's watchlist"""
+    def remove_from_watchlist(self, telegram_id: str, swarm_id: str):
+        """Remove swarm from user's watchlist"""
         user = self.get_user(telegram_id)
         if not user:
             return None
             
         watchlist = user['fields'].get('watchlist', [])
-        if symbol in watchlist:
-            watchlist.remove(symbol)
+        if swarm_id in watchlist:
+            watchlist.remove(swarm_id)
             return self.table.update(user['id'], {'watchlist': watchlist})
         return user
