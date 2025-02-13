@@ -11,8 +11,8 @@ class ClaudeClient:
         if not api_key:
             raise ValueError("ANTHROPIC_API_KEY environment variable is not set")
             
-        # Initialize with minimal configuration
-        self.client = anthropic.Client(api_key=api_key)
+        # Initialize with Anthropic class
+        self.client = anthropic.Anthropic(api_key=api_key)
         self.model = "claude-3-haiku-20240307"
 
     async def get_response(self, user_message: str, user_data: Dict[str, Any] = None) -> Dict[str, Any]:
