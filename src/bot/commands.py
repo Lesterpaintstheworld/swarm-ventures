@@ -71,3 +71,43 @@ async def watchlist_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     message += "\nYou'll receive alerts when important changes occur."
     await update.message.reply_text(message)
+
+async def add_to_watchlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle the /add command"""
+    if not context.args:
+        await update.message.reply_text("Please provide a swarm ID. Example: /add KINESIS-1")
+        return
+
+    swarm_id = context.args[0].upper()
+    airtable = AirtableClient()
+    user = airtable.get_user(str(update.effective_user.id))
+    
+    if not user:
+        await update.message.reply_text("Please use /start to initialize your account first.")
+        return
+        
+    result = airtable.add_to_watchlist(str(update.effective_user.id), swarm_id)
+    if result:
+        await update.message.reply_text(f"✅ Added {swarm_id} to your watchlist!")
+    else:
+        await update.message.reply_text("❌ Failed to add to watchlist. Please try again.")
+
+async def remove_from_watchlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle the /remove command"""
+    if not context.args:
+        await update.message.reply_text("Please provide a swarm ID. Example: /remove KINESIS-1")
+        return
+
+    swarm_id = context.args[0].upper()
+    airtable = AirtableClient()
+    user = airtable.get_user(str(update.effective_user.id))
+    
+    if not user:
+        await update.message.reply_text("Please use /start to initialize your account first.")
+        return
+        
+    result = airtable.remove_from_watchlist(str(update.effective_user.id), swarm_id)
+    if result:
+        await update.message.reply_text(f"✅ Removed {swarm_id} from your watchlist!")
+    else:
+        await update.message.reply_text("❌ Failed to remove from watchlist. Please try again.")
