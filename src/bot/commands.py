@@ -112,17 +112,26 @@ async def add_to_watchlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
     combined_id = f"{swarm_id}_{token}"
     airtable = AirtableClient()
-    user = airtable.get_user(str(update.effective_user.id))
+    result = airtable.add_to_watchlist(str(update.effective_user.id), combined_id)
     
-    if not user:
-        await update.message.reply_text("Please use /start to initialize your account first.")
-        return
+    if isinstance(result, dict):
+        if 'error' in result:
+            await update.message.reply_text(
+                f"❌ {result['message']}\n\n"
+                "To subscribe, please contact @SwarmVenturesSupport"
+            )
+            return
+            
+        message = f"✅ Added {swarm_id} ({token}) to your watchlist!"
         
-    result = airtable.add_to_watchlist(str(update.effective_user.id), swarm_id)
-    if result:
-        await update.message.reply_text(f"✅ Added {swarm_id} to your watchlist!")
+        if result.get('warning') == "FINAL_FREE_SLOT":
+            message += "\n\n⚠️ This was your last free slot! Subscribe to add more swarms."
+        elif result.get('swarms_remaining') is not None:
+            message += f"\n\n📊 Free slots remaining: {result['swarms_remaining']}"
+        
+        await update.message.reply_text(message)
     else:
-        await update.message.reply_text("❌ Failed to add to watchlist. Please try again.")
+        await update.message.reply_text("❌ Failed to add to watchlist. Please try again or use /start first.")
 
 async def browse_swarms(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Display available swarms as buttons"""

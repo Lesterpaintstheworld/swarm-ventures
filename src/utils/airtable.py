@@ -47,7 +47,7 @@ class AirtableClient:
             if swarm_count >= 2 and user['fields'].get('status') != 'subscribed':
                 raise Exception("FREE_TRIAL_LIMIT_REACHED")
                 
-            swarm_id = swarm_id.lower()
+            # swarm_id is already in combined format (e.g., "kinkong_USDT")
             if swarm_id not in watchlist:
                 watchlist.append(swarm_id)
                 swarm_count += 1
