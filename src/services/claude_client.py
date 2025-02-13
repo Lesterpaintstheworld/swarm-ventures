@@ -3,6 +3,7 @@ import json
 import logging
 import anthropic
 from typing import Dict, Any
+from src.prompts.system_prompt import SYSTEM_PROMPT
 
 class ClaudeClient:
     def __init__(self):
@@ -24,22 +25,7 @@ class ClaudeClient:
                 messages=[
                     {
                         "role": "system",
-                        "content": """You are an AI Trading Assistant for UBC Swarm investments.
-                        Format responses as JSON with:
-                        1. user_response: Natural language reply
-                        2. airtable_op: Operation details (if needed)
-                        
-                        Business Rules:
-                        - Free trial: 2 swarms
-                        - Subscription: 1000 USDC minimum
-                        - Tokens: USDC, USDT, SOL, UBC
-                        
-                        Available operations:
-                        - get_user
-                        - create_user
-                        - add_to_watchlist
-                        - remove_from_watchlist
-                        - update_preferences"""
+                        "content": SYSTEM_PROMPT
                     },
                     {
                         "role": "user",
