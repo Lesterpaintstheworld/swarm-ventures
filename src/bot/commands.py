@@ -11,15 +11,21 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         airtable.create_user(str(user.id), user.username or "")
 
     welcome_message = (
-        "🚀 Welcome to SwarmVentures Trading Bot!\n\n"
-        "I'll help you track AI swarm opportunities and manage your positions.\n\n"
+        "🚀 Welcome to the UBC Swarm Alert System!\n\n"
+        "I'll help you track your AI swarm investments and notify you of important updates.\n\n"
+        "You'll receive alerts for:\n"
+        "📈 Share price changes\n"
+        "💰 Weekly revenue distributions\n"
+        "📢 Important swarm announcements\n"
+        "🔄 New share availability\n\n"
         "Available commands:\n"
         "/start - Show this welcome message\n"
         "/help - Show available commands\n"
-        "/watchlist - View your swarm watchlist\n"
-        "/add <swarm_id> - Add swarm to watchlist\n"
-        "/remove <swarm_id> - Remove swarm from watchlist\n\n"
-        "Example swarm IDs: KINESIS-1, ATLAS-7, NEXUS-3"
+        "/watchlist - View your tracked swarms\n"
+        "/add <swarm_id> - Track a new swarm\n"
+        "/remove <swarm_id> - Stop tracking a swarm\n\n"
+        "🌐 View your swarms: https://swarms.universalbasiccompute.ai/\n\n"
+        "Need help? Contact @SwarmVenturesSupport"
     )
     
     await update.message.reply_text(welcome_message)
