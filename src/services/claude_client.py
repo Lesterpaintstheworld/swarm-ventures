@@ -22,13 +22,12 @@ class ClaudeClient:
         if not self.api_key:
             raise ValueError(f"ANTHROPIC_API_KEY not found in {env_path}")
             
-        # Ensure API key has proper format and log masked version
+        # Ensure API key has proper format
         if not self.api_key.startswith('sk-'):
             self.api_key = f"sk-{self.api_key}"
         
-        # Mask API key in logs - only show first 5 and last 4 chars
-        masked_key = f"{self.api_key[:5]}...{self.api_key[-4:]}" if self.api_key else "None"
-        logging.info(f"Using API key: {masked_key}")
+        # Log that we found the key without showing any part of it
+        logging.info("Successfully loaded ANTHROPIC_API_KEY")
             
         self.base_url = "https://api.anthropic.com/v1/messages"
         self.model = "claude-3-haiku-20240307"
