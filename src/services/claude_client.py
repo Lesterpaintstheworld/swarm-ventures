@@ -26,12 +26,13 @@ class ClaudeClient:
         if not self.api_key.startswith('sk-'):
             self.api_key = f"sk-{self.api_key}"
         
-        # Log masked version of API key for debugging
-        masked_key = f"{self.api_key[:5]}...{self.api_key[-4:]}"
+        # Mask API key in logs - only show first 5 and last 4 chars
+        masked_key = f"{self.api_key[:5]}...{self.api_key[-4:]}" if self.api_key else "None"
         logging.info(f"Using API key: {masked_key}")
             
         self.base_url = "https://api.anthropic.com/v1/messages"
         self.model = "claude-3-haiku-20240307"
+        # Create headers without logging them
         self.headers = {
             "x-api-key": self.api_key,
             "anthropic-version": "2023-06-01",
@@ -53,7 +54,7 @@ class ClaudeClient:
                 ]
             }
             
-            logging.info(f"Making request to Claude API with headers: {self.headers}")
+            logging.info("Making request to Claude API")
             
             async with httpx.AsyncClient() as client:
                 response = await client.post(
