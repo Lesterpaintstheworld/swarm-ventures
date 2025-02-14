@@ -4,6 +4,31 @@ from telegram.ext import Application
 import json
 import os
 from dotenv import load_dotenv
+
+# Initialize FastAPI app
+app = FastAPI()
+
+# Initialize bot application
+application = Application.builder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
+
+@app.on_event("startup")
+async def startup():
+    """Set webhook on startup"""
+    webhook_url = f"{os.getenv('VERCEL_URL', 'https://swarm-ventures.vercel.app')}/api/telegram"
+    try:
+        await application.bot.set_webhook(webhook_url)
+        print(f"Webhook set to {webhook_url}")
+    except Exception as e:
+        print(f"Failed to set webhook: {e}")
+
+@app.on_event("shutdown")
+async def shutdown():
+    """Remove webhook on shutdown"""
+    try:
+        await application.bot.delete_webhook()
+        print("Webhook removed")
+    except Exception as e:
+        print(f"Failed to remove webhook: {e}")
 from src.services.claude_client import ClaudeClient
 from src.utils.airtable import AirtableClient
 from src.bot.commands import start_command, help_command, watchlist_command

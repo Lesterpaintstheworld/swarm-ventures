@@ -9,7 +9,7 @@
     "routes": [
         {
             "src": "/api/telegram",
-            "dest": "api/telegram.py"
+            "dest": "/api/telegram.py"
         }
     ],
     "functions": {
@@ -17,5 +17,8 @@
             "memory": 1024,
             "maxDuration": 10
         }
+    },
+    "env": {
+        "PYTHONPATH": "."
     }
 }
