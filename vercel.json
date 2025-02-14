@@ -1,12 +1,5 @@
 {
     "version": 2,
-    "functions": {
-        "api/telegram.py": {
-            "memory": 1024,
-            "maxDuration": 10,
-            "runtime": "python3"
-        }
-    },
     "routes": [
         {
             "src": "/(.*)",
