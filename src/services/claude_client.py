@@ -7,13 +7,22 @@ from src.prompts.system_prompt import SYSTEM_PROMPT
 
 class ClaudeClient:
     def __init__(self):
+        # Add debug logging
+        logging.info("Initializing ClaudeClient")
+        
         self.api_key = os.getenv('ANTHROPIC_API_KEY')
+        logging.info(f"API key found: {'Yes' if self.api_key else 'No'}")
+        
         if not self.api_key:
             raise ValueError("ANTHROPIC_API_KEY environment variable is not set")
             
-        # Ensure API key has proper format
+        # Ensure API key has proper format and log masked version
         if not self.api_key.startswith('sk-'):
             self.api_key = f"sk-{self.api_key}"
+        
+        # Log masked version of API key for debugging
+        masked_key = f"{self.api_key[:5]}...{self.api_key[-4:]}"
+        logging.info(f"Using API key: {masked_key}")
             
         self.base_url = "https://api.anthropic.com/v1/messages"
         self.model = "claude-3-haiku-20240307"
