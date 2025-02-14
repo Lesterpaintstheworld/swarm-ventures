@@ -116,6 +116,11 @@ async def telegram_webhook(request: Request):
             # Process the update in the new loop
             update = Update.de_json(data, application.bot)
             
+            # Simple vérification : si chat_id est négatif, c'est un groupe
+            if update.message and update.message.chat.id < 0:
+                print(f"Ignoring group message from chat {update.message.chat.id}")
+                return Response(status_code=200)
+            
             if update.message and update.message.text:
                 if update.message.text.startswith('/'):
                     command = update.message.text.split()[0].lower()
