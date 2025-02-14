@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 from src.services.claude_client import ClaudeClient
 from src.utils.airtable import AirtableClient
+from src.bot.commands import start_command, help_command, watchlist_command
 
 # Load environment variables
 load_dotenv()
