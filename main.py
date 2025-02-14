@@ -1,6 +1,7 @@
 import logging
 import os
 import asyncio
+import json
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
@@ -51,17 +52,28 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     }
     airtable.store_message(str(update.effective_user.id), assistant_message)
     
-    # Execute Airtable operation if present
+    # Send Claude's response first
+    await update.message.reply_text(response['user_response'])
+    
+    # Execute Airtable operation if present and send watchlist as separate message
     if response.get('airtable_op'):
         op = response['airtable_op']
         if op['operation'] == 'add_to_watchlist':
             result = airtable.add_to_watchlist(
                 telegram_id=str(update.effective_user.id),
-                swarm_id=op['swarm_id']
+                swarm_id=op['params']['swarm_id']
             )
-    
-    # Send only the user_response part to the user, not the whole JSON
-    await update.message.reply_text(response['user_response'])
+            
+            # Get updated user data to show current watchlist
+            updated_user = airtable.get_user(str(update.effective_user.id))
+            if updated_user:
+                watchlist = json.loads(updated_user['fields'].get('watchlist', '[]'))
+                if watchlist:
+                    watchlist_msg = "📋 Your Updated Watchlist:\n\n"
+                    for swarm in watchlist:
+                        swarm_name, token = swarm.split('_')
+                        watchlist_msg += f"• {swarm_name.upper()} ({token.upper()})\n"
+                    await update.message.reply_text(watchlist_msg)
 
 def main():
     # Initialize bot
