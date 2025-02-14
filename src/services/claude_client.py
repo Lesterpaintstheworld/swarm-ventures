@@ -7,14 +7,20 @@ from src.prompts.system_prompt import SYSTEM_PROMPT
 
 class ClaudeClient:
     def __init__(self):
-        # Add debug logging
-        logging.info("Initializing ClaudeClient")
+        # Force load from the specific .env file in project root
+        import os
+        from dotenv import load_dotenv
+        
+        # Get the absolute path to the project root's .env file
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        env_path = os.path.join(project_root, '.env')
+        
+        logging.info(f"Loading .env from: {env_path}")
+        load_dotenv(env_path, override=True)  # Force override with our specific .env file
         
         self.api_key = os.getenv('ANTHROPIC_API_KEY')
-        logging.info(f"API key found: {'Yes' if self.api_key else 'No'}")
-        
         if not self.api_key:
-            raise ValueError("ANTHROPIC_API_KEY environment variable is not set")
+            raise ValueError(f"ANTHROPIC_API_KEY not found in {env_path}")
             
         # Ensure API key has proper format and log masked version
         if not self.api_key.startswith('sk-'):
