@@ -85,8 +85,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         status_msg += "📋 Watchlist:\n"
         if watchlist:
             for swarm in watchlist:
-                swarm_name, token = swarm.split('_')
-                status_msg += f"• {swarm_name.upper()} ({token.upper()})\n"
+                try:
+                    swarm_name, token = swarm.split('_')
+                    status_msg += f"• {swarm_name.upper()} ({token.upper()})\n"
+                except ValueError:
+                    # Handle malformed swarm IDs
+                    status_msg += f"• {swarm}\n"
         else:
             status_msg += "• No swarms in watchlist\n"
         
