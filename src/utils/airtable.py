@@ -145,27 +145,12 @@ class AirtableClient:
             'notes': [note]
         })
         
-    def track_user_activity(self, telegram_id: str, action: str):
-        """Track user activities with timestamps"""
-        user = self.get_user(telegram_id)
-        if user:
-            activities = json.loads(user['fields'].get('activities', '[]'))
-            activities.append({
-                'timestamp': datetime.now().isoformat(),
-                'action': action
-            })
-            self.table.update(user['id'], {
-                'activities': json.dumps(activities[-100:])  # Keep last 100
-            })
 
     def store_message(self, telegram_id: str, message: dict):
         """Store a message in user's message history"""
         user = self.get_user(telegram_id)
         if not user:
             return None
-            
-        # Track message activity
-        self.track_user_activity(telegram_id, f"message_{message.get('role', 'user')}")
             
         try:
             # Get current messages
