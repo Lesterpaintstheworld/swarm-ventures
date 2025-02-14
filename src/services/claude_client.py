@@ -77,10 +77,7 @@ class ClaudeClient:
                     json_str = response_text[start:end]
                     try:
                         parsed = json.loads(json_str)
-                        return {
-                            "user_response": parsed["user_response"],
-                            "airtable_op": parsed.get("airtable_op")
-                        }
+                        return parsed  # Just return the parsed JSON directly
                     except json.JSONDecodeError:
                         logging.error(f"Failed to parse response as JSON: {json_str}")
                 
