@@ -11,5 +11,11 @@
             "src": "/api/telegram",
             "dest": "api/telegram.py"
         }
-    ]
+    ],
+    "functions": {
+        "api/telegram.py": {
+            "memory": 1024,
+            "maxDuration": 10
+        }
+    }
 }
