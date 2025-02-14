@@ -16,6 +16,14 @@ app = FastAPI()
 # Initialize bot application
 application = Application.builder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    print(f"Global error: {exc}")
+    return Response(
+        status_code=500,
+        content=json.dumps({"error": str(exc)})
+    )
+
 @app.post("/api/telegram")
 async def telegram_webhook(request: Request):
     """Handle incoming webhook updates from Telegram"""
@@ -24,8 +32,21 @@ async def telegram_webhook(request: Request):
         data = await request.json()
         update = Update.de_json(data, application.bot)
         
-        # Only process text messages
+        # Handle commands first
         if update.message and update.message.text:
+            if update.message.text.startswith('/'):
+                command = update.message.text.split()[0].lower()
+                if command == '/start':
+                    await start_command(update, None)
+                    return Response(status_code=200)
+                elif command == '/help':
+                    await help_command(update, None)
+                    return Response(status_code=200)
+                elif command == '/watchlist':
+                    await watchlist_command(update, None)
+                    return Response(status_code=200)
+                    
+            # Process non-command messages
             # Initialize clients
             claude = ClaudeClient()
             airtable = AirtableClient()

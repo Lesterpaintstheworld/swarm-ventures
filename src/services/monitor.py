@@ -114,10 +114,42 @@ class SwarmMonitor:
 
         return alerts
 
+    async def check_price_alerts(self):
+        """Check and send price alerts to users"""
+        users = self.airtable.get_all_users()
+        for user in users:
+            watchlist = json.loads(user['fields'].get('watchlist', '[]'))
+            alert_prefs = json.loads(user['fields'].get('alert_preferences', '{}'))
+            price_threshold = alert_prefs.get('price_change', 5)
+            
+            for swarm in watchlist:
+                swarm_name = swarm.split('_')[0]
+                current_price = SWARM_PRICES.get(swarm_name, 0)
+                previous_price = self.previous_metrics.get(swarm, {}).get('price', current_price)
+                
+                if previous_price > 0:
+                    price_change = ((current_price - previous_price) / previous_price) * 100
+                    if abs(price_change) >= price_threshold:
+                        await self.send_alert(
+                            user['fields']['telegram_id'],
+                            f"🚨 Price Alert: {swarm_name.upper()}\n"
+                            f"{'📈' if price_change > 0 else '📉'} "
+                            f"Price changed by {abs(price_change):.1f}%\n"
+                            f"New price: ${current_price:,.2f}"
+                        )
+                
+                # Update previous price
+                if swarm not in self.previous_metrics:
+                    self.previous_metrics[swarm] = {}
+                self.previous_metrics[swarm]['price'] = current_price
+
     async def monitor_loop(self):
         """Main monitoring loop"""
         while True:
             try:
+                # Check price alerts
+                await self.check_price_alerts()
+                
                 # Get all users
                 users = self.airtable.get_all_users()
                 
