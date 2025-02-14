@@ -8,10 +8,33 @@ class AirtableClient:
     def __init__(self):
         self.table = Table(AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME)
     
+    def _get_default_value(self, field: str):
+        """Get default value for a field"""
+        defaults = {
+            'watchlist': '[]',
+            'status': 'free',
+            'alert_preferences': '{"price_change": 5, "new_shares": true, "announcements": true}',
+            'messages': '[]',
+            'preferences': '{}'
+        }
+        return defaults.get(field, '')
+
     def get_user(self, telegram_id: str):
         """Get user by Telegram ID"""
-        records = self.table.all(formula=f"{{telegram_id}}='{telegram_id}'")
-        return records[0] if records else None
+        try:
+            records = self.table.all(formula=f"{{telegram_id}}='{telegram_id}'")
+            if not records:
+                return None
+            # Validate data structure
+            user = records[0]
+            required_fields = ['watchlist', 'status', 'alert_preferences', 'messages', 'preferences']
+            for field in required_fields:
+                if field not in user['fields']:
+                    user['fields'][field] = self._get_default_value(field)
+            return user
+        except Exception as e:
+            logging.error(f"Airtable error: {e}")
+            return None
     
     def create_user(self, telegram_id: str, username: str):
         """Create new user if doesn't exist"""

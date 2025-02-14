@@ -7,7 +7,8 @@ project_root = str(Path(__file__).parent.parent)
 if project_root not in sys.path:
     sys.path.append(project_root)
 
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, HTTPException
+from datetime import datetime, timedelta
 from telegram import Update
 from telegram.ext import Application
 import json
@@ -19,8 +20,36 @@ from src.bot.commands import start_command, help_command, watchlist_command
 # Load environment variables
 load_dotenv()
 
+# Initialize rate limiting
+rate_limit_store = {}
+
+def check_rate_limit(user_id: str, limit: int = 30):
+    """Check if user has exceeded rate limit"""
+    now = datetime.now()
+    if user_id in rate_limit_store:
+        # Remove requests older than 1 minute
+        rate_limit_store[user_id] = [
+            t for t in rate_limit_store[user_id] 
+            if now - t < timedelta(minutes=1)
+        ]
+        if len(rate_limit_store[user_id]) >= limit:
+            raise HTTPException(
+                status_code=429, 
+                detail="Too many requests. Please wait a minute."
+            )
+    rate_limit_store.setdefault(user_id, []).append(now)
+
 # Initialize FastAPI app
 app = FastAPI()
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    print(f"Request processed in {process_time:.2f} seconds")
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
 
 # Initialize bot application
 application = Application.builder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
@@ -73,8 +102,9 @@ async def global_exception_handler(request: Request, exc: Exception):
 async def telegram_webhook(request: Request):
     """Handle incoming webhook updates from Telegram"""
     try:
-        # Get the update data
+        # Get and log the update data
         data = await request.json()
+        print(f"Received webhook data: {json.dumps(data, indent=2)}")
         update = Update.de_json(data, application.bot)
         
         # Handle commands first

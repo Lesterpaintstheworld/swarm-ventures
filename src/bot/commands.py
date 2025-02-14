@@ -1,5 +1,20 @@
 import json
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from typing import Dict, Callable, Awaitable
+
+# Command registry
+COMMANDS: Dict[str, Callable[[Update, Any], Awaitable[None]]] = {
+    '/start': start_command,
+    '/help': help_command,
+    '/watchlist': watchlist_command,
+    '/browse': browse_swarms
+}
+
+async def handle_command(update: Update, command: str):
+    """Route commands to their handlers"""
+    if command in COMMANDS:
+        return await COMMANDS[command](update, None)
+    return None
 from telegram.ext import ContextTypes, CallbackQueryHandler
 from src.utils.airtable import AirtableClient
 
