@@ -22,7 +22,7 @@ class AirtableClient:
         return self.table.create({
             "telegram_id": telegram_id,
             "username": username,
-            "status": "active",
+            "status": "free",
             "watchlist": json.dumps([]),
             "messages": json.dumps([]),  # Initialize empty messages array
             "alert_preferences": json.dumps({
@@ -108,8 +108,8 @@ class AirtableClient:
             return self.table.update(user['id'], {'watchlist': json.dumps([])})
             
     def get_all_users(self):
-        """Get all active users"""
-        return self.table.all(formula="{status}='active'")
+        """Get all users (both free and subscribed)"""
+        return self.table.all(formula="OR({status}='free', {status}='subscribed')")
 
     def update_preferences(self, telegram_id: str, updates: dict):
         """Update user preferences/memories"""
