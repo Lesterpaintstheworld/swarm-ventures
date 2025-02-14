@@ -76,6 +76,8 @@ class ClaudeClient:
                 if start >= 0 and end > start:
                     json_str = response_text[start:end]
                     try:
+                        # Normalize newlines and escape them properly
+                        json_str = json_str.replace('\n', '\\n').replace('\r', '')
                         parsed = json.loads(json_str)
                         if isinstance(parsed, dict) and 'user_response' in parsed:
                             return parsed
