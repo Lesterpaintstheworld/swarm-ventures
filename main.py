@@ -60,7 +60,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 swarm_id=op['swarm_id']
             )
     
-    # Send response to user
+    # Send only the user_response part to the user, not the whole JSON
     await update.message.reply_text(response['user_response'])
 
 def main():
