@@ -34,7 +34,7 @@ class ClaudeClient:
         self.model = "claude-3-haiku-20240307"
         self.headers = {
             "x-api-key": self.api_key,
-            "anthropic-version": "2024-02-01",  # Updated API version
+            "anthropic-version": "2023-06-01",
             "content-type": "application/json",
             "accept": "application/json"
         }
