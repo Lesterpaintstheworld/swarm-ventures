@@ -11,12 +11,17 @@ class ClaudeClient:
         if not self.api_key:
             raise ValueError("ANTHROPIC_API_KEY environment variable is not set")
             
+        # Ensure API key has proper format
+        if not self.api_key.startswith('sk-'):
+            self.api_key = f"sk-{self.api_key}"
+            
         self.base_url = "https://api.anthropic.com/v1/messages"
         self.model = "claude-3-haiku-20240307"
         self.headers = {
             "x-api-key": self.api_key,
-            "anthropic-version": "2023-06-01",
-            "content-type": "application/json"
+            "anthropic-version": "2024-02-01",  # Updated API version
+            "content-type": "application/json",
+            "accept": "application/json"
         }
 
     async def get_response(self, user_message: str, user_data: Dict[str, Any] = None) -> Dict[str, Any]:
@@ -37,6 +42,8 @@ class ClaudeClient:
                 ]
             }
             
+            logging.info(f"Making request to Claude API with headers: {self.headers}")
+            
             # Make API request
             async with httpx.AsyncClient() as client:
                 response = await client.post(
@@ -47,6 +54,7 @@ class ClaudeClient:
                 )
                 
                 if response.status_code != 200:
+                    logging.error(f"Claude API error response: {response.text}")
                     raise Exception(f"API error: {response.status_code} - {response.text}")
                 
                 data = response.json()
