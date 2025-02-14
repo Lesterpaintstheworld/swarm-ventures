@@ -4,7 +4,7 @@
         "api/telegram.py": {
             "memory": 1024,
             "maxDuration": 10,
-            "runtime": "python3.9"
+            "runtime": "@vercel/python@3.1.0"
         }
     },
     "routes": [
