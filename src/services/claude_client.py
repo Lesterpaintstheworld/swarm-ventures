@@ -77,10 +77,15 @@ class ClaudeClient:
                     json_str = response_text[start:end]
                     try:
                         parsed = json.loads(json_str)
-                        return parsed  # Just return the parsed JSON directly
-                    except json.JSONDecodeError:
-                        logging.error(f"Failed to parse response as JSON: {json_str}")
+                        if isinstance(parsed, dict) and 'user_response' in parsed:
+                            return parsed
+                        else:
+                            logging.error(f"Invalid response format: {json_str}")
+                    except json.JSONDecodeError as e:
+                        logging.error(f"JSON parse error: {e}\nResponse text: {json_str}")
                 
+                # If we get here, something went wrong with parsing
+                logging.error(f"Could not extract valid JSON from response: {response_text}")
                 return {
                     "user_response": "I'm having trouble processing the response. Please try again.",
                     "airtable_op": None
