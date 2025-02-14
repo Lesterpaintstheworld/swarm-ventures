@@ -59,7 +59,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Send Claude's response first
     await update.message.reply_text(response['user_response'])
     
-    # Execute Airtable operation if present and send watchlist as separate message
+    # Execute Airtable operation if present
     if response.get('airtable_op'):
         op = response['airtable_op']
         if op['operation'] == 'add_to_watchlist':
@@ -67,17 +67,49 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 telegram_id=str(update.effective_user.id),
                 swarm_id=op['params']['swarm_id']
             )
-            
-            # Get updated user data to show current watchlist
-            updated_user = airtable.get_user(str(update.effective_user.id))
-            if updated_user:
-                watchlist = json.loads(updated_user['fields'].get('watchlist', '[]'))
-                if watchlist:
-                    watchlist_msg = "📋 Your Updated Watchlist:\n\n"
-                    for swarm in watchlist:
-                        swarm_name, token = swarm.split('_')
-                        watchlist_msg += f"• {swarm_name.upper()} ({token.upper()})\n"
-                    await update.message.reply_text(watchlist_msg)
+            # Get fresh user data after operation
+            user_data = airtable.get_user(str(update.effective_user.id))
+
+    # Send status message with watchlist and preferences
+    try:
+        watchlist = json.loads(user_data['fields'].get('watchlist', '[]'))
+        alert_prefs = json.loads(user_data['fields'].get('alert_preferences', '{}'))
+        preferences = json.loads(user_data['fields'].get('preferences', '{}'))
+        
+        status_msg = "📊 Current Status:\n\n"
+        
+        # Add status
+        status_msg += f"Status: {user_data['fields'].get('status', 'free')}\n\n"
+        
+        # Add watchlist
+        status_msg += "📋 Watchlist:\n"
+        if watchlist:
+            for swarm in watchlist:
+                swarm_name, token = swarm.split('_')
+                status_msg += f"• {swarm_name.upper()} ({token.upper()})\n"
+        else:
+            status_msg += "• No swarms in watchlist\n"
+        
+        # Add alert preferences
+        status_msg += "\n⚡ Alert Preferences:\n"
+        status_msg += f"• Price changes: {alert_prefs.get('price_change', 5)}%\n"
+        status_msg += f"• New shares: {'Yes' if alert_prefs.get('new_shares', True) else 'No'}\n"
+        status_msg += f"• Announcements: {'Yes' if alert_prefs.get('announcements', True) else 'No'}\n"
+        
+        # Add user preferences if set
+        if preferences.get('investment_style') or preferences.get('risk_tolerance'):
+            status_msg += "\n🎯 Preferences:\n"
+            if preferences.get('investment_style'):
+                status_msg += f"• Style: {preferences['investment_style']}\n"
+            if preferences.get('risk_tolerance'):
+                status_msg += f"• Risk: {preferences['risk_tolerance']}\n"
+            if preferences.get('preferred_tiers'):
+                status_msg += f"• Preferred tiers: {', '.join(preferences['preferred_tiers'])}\n"
+        
+        await update.message.reply_text(status_msg)
+        
+    except Exception as e:
+        logging.error(f"Error sending status message: {e}")
 
 def main():
     # Initialize bot
