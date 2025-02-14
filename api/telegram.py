@@ -103,6 +103,13 @@ async def global_exception_handler(request: Request, exc: Exception):
 async def telegram_webhook(request: Request):
     """Handle incoming webhook updates from Telegram"""
     try:
+        # Ensure event loop is available
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            
         # Get and log the update data
         data = await request.json()
         print(f"Received webhook data: {json.dumps(data, indent=2)}")
@@ -206,7 +213,11 @@ async def telegram_webhook(request: Request):
         
     except Exception as e:
         print(f"Error processing update: {e}")
-        return Response(status_code=500)
+        return Response(
+            content=json.dumps({"error": str(e)}),
+            status_code=500,
+            media_type="application/json"
+        )
 
 @app.get("/api/telegram")
 async def health_check():

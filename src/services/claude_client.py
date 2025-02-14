@@ -69,17 +69,21 @@ class ClaudeClient:
                 
                 data = response.json()
                 response_text = data['content'][0]['text']
-            
+                
+                # Try to find JSON in the response
                 try:
-                    # Parse response text, preserving newlines
-                    parsed = json.loads(response_text, strict=False)
-                    if isinstance(parsed, dict) and 'user_response' in parsed:
-                        return parsed
+                    import re
+                    json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+                    if json_match:
+                        parsed = json.loads(json_match.group())
+                        if isinstance(parsed, dict) and 'user_response' in parsed:
+                            return parsed
                 except json.JSONDecodeError:
                     logging.error(f"Failed to parse response as JSON: {response_text}")
-            
+                
+                # Fallback if parsing fails - use full response as user_response
                 return {
-                    "user_response": "I'm having trouble processing the response. Please try again.",
+                    "user_response": response_text,
                     "airtable_op": None
                 }
                     
