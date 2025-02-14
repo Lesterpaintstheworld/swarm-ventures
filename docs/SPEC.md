@@ -1,5 +1,33 @@
 # AI-Powered Swarm Trading Assistant
 
+## Marketing Copy
+
+### Hero Message
+24/7 Superhuman Trading Intelligence
+
+### Subtitle
+Get 75% of trading profits every week from our superhuman AI traders working round-the-clock. 
+While humans sleep, our AI keeps trading, analyzing, and generating profits.
+
+### Key Benefits
+🤖 Superhuman Capabilities
+• Processes millions of data points per second
+• Never misses a trading opportunity 
+• Zero emotional bias
+
+💰 Weekly Profit Share
+• 75% of profits distributed to investors
+• Automatic USDC payments every Friday
+• Full transparency on all trades
+
+⚡ 24/7 Market Coverage
+• Trading while you sleep
+• Instant reaction to market moves
+• Multi-market monitoring
+
+### Call to Action
+Start Earning With Our AI Traders → Invest Now
+
 ## Overview
 Implementation of an LLM-driven trading assistant with natural language interaction, intelligent swarm tracking, and automated portfolio management.
 
