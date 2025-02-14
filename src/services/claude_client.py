@@ -41,15 +41,12 @@ class ClaudeClient:
 
     async def get_response(self, user_message: str, user_data: Dict[str, Any] = None) -> Dict[str, Any]:
         try:
-            # Create message payload
+            # Create message payload with correct format
             payload = {
                 "model": self.model,
                 "max_tokens": 1024,
+                "system": SYSTEM_PROMPT,  # System prompt as top-level parameter
                 "messages": [
-                    {
-                        "role": "system",
-                        "content": SYSTEM_PROMPT
-                    },
                     {
                         "role": "user",
                         "content": f"User data: {json.dumps(user_data)}\n\nUser message: {user_message}"
