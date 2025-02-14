@@ -1,21 +1,16 @@
 {
     "version": 2,
-    "builds": [
-        {
-            "src": "api/telegram.py",
-            "use": "@vercel/python"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "api/telegram.py"
-        }
-    ],
     "functions": {
         "api/telegram.py": {
             "memory": 1024,
-            "maxDuration": 10
+            "maxDuration": 10,
+            "runtime": "@vercel/python@3.1.0"
         }
-    }
+    },
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/api/telegram.py"
+        }
+    ]
 }
