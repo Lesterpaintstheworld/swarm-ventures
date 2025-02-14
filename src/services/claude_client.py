@@ -70,16 +70,20 @@ class ClaudeClient:
                 data = response.json()
                 response_text = data['content'][0]['text'].strip()
                 
+                # Find the JSON part of the response
                 try:
-                    # Simple direct JSON parse
-                    parsed = json.loads(response_text)
-                    if isinstance(parsed, dict) and 'user_response' in parsed:
-                        return parsed
+                    start_idx = response_text.rfind('{')  # Find last occurrence of {
+                    if start_idx != -1:
+                        json_str = response_text[start_idx:]  # Extract from last { to end
+                        parsed = json.loads(json_str)
+                        if isinstance(parsed, dict) and 'user_response' in parsed:
+                            return parsed
                 except json.JSONDecodeError:
                     logging.error(f"Failed to parse response as JSON: {response_text}")
                 
+                # If we can't parse JSON, use the whole response as user_response
                 return {
-                    "user_response": "I'm having trouble processing the response. Please try again.",
+                    "user_response": response_text,
                     "airtable_op": None
                 }
                     
