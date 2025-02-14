@@ -41,11 +41,10 @@ class ClaudeClient:
 
     async def get_response(self, user_message: str, user_data: Dict[str, Any] = None) -> Dict[str, Any]:
         try:
-            # Create message payload with correct format
             payload = {
                 "model": self.model,
                 "max_tokens": 1024,
-                "system": SYSTEM_PROMPT,  # System prompt as top-level parameter
+                "system": SYSTEM_PROMPT,
                 "messages": [
                     {
                         "role": "user",
@@ -56,7 +55,6 @@ class ClaudeClient:
             
             logging.info(f"Making request to Claude API with headers: {self.headers}")
             
-            # Make API request
             async with httpx.AsyncClient() as client:
                 response = await client.post(
                     self.base_url,
@@ -72,16 +70,24 @@ class ClaudeClient:
                 data = response.json()
                 response_text = data['content'][0]['text']
                 
-                try:
-                    result = json.loads(response_text)
-                    if not isinstance(result, dict):
-                        raise ValueError("Response not in correct format")
-                    return result
-                except json.JSONDecodeError:
-                    return {
-                        "user_response": response_text,
-                        "airtable_op": None
-                    }
+                # Extract JSON between first { and last }
+                start = response_text.find('{')
+                end = response_text.rfind('}') + 1
+                if start >= 0 and end > start:
+                    json_str = response_text[start:end]
+                    try:
+                        parsed = json.loads(json_str)
+                        return {
+                            "user_response": parsed["user_response"],
+                            "airtable_op": parsed.get("airtable_op")
+                        }
+                    except json.JSONDecodeError:
+                        logging.error(f"Failed to parse response as JSON: {json_str}")
+                
+                return {
+                    "user_response": "I'm having trouble processing the response. Please try again.",
+                    "airtable_op": None
+                }
                 
         except Exception as e:
             logging.error(f"Claude API error: {str(e)}")
