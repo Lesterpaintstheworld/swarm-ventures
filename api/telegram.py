@@ -40,7 +40,7 @@ async def telegram_webhook(request: Request):
 @app.on_event("startup")
 async def startup():
     """Set webhook on startup"""
-    WEBHOOK_URL = os.getenv('VERCEL_URL', 'https://your-vercel-app.vercel.app') + '/api/telegram'
+    WEBHOOK_URL = os.getenv('VERCEL_URL', 'https://swarm-ventures.vercel.app') + '/api/telegram'
     await application.bot.set_webhook(WEBHOOK_URL)
 
 @app.on_event("shutdown")
