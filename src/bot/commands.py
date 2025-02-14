@@ -1,6 +1,24 @@
 import json
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from typing import Dict, Callable, Awaitable
+from typing import Dict, Callable, Awaitable, Any
+from telegram.ext import ContextTypes
+
+# Import command handlers
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Placeholder for start command"""
+    pass
+
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Placeholder for help command"""
+    pass
+
+async def watchlist_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Placeholder for watchlist command"""
+    pass
+
+async def browse_swarms(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Placeholder for browse command"""
+    pass
 
 # Command registry
 COMMANDS: Dict[str, Callable[[Update, Any], Awaitable[None]]] = {
