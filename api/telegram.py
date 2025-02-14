@@ -1,15 +1,34 @@
+import sys
+import os
+from pathlib import Path
+
+# Add the project root to Python path
+project_root = str(Path(__file__).parent.parent)
+if project_root not in sys.path:
+    sys.path.append(project_root)
+
 from fastapi import FastAPI, Request, Response
 from telegram import Update
 from telegram.ext import Application
 import json
-import os
 from dotenv import load_dotenv
+from src.services.claude_client import ClaudeClient
+from src.utils.airtable import AirtableClient
+from src.bot.commands import start_command, help_command, watchlist_command
+
+# Load environment variables
+load_dotenv()
 
 # Initialize FastAPI app
 app = FastAPI()
 
 # Initialize bot application
 application = Application.builder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
+
+@app.get("/")
+async def root():
+    """Root endpoint for health checks"""
+    return {"status": "ok"}
 
 @app.on_event("startup")
 async def startup():
