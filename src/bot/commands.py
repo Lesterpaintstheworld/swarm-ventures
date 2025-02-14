@@ -17,6 +17,10 @@ AVAILABLE_SWARMS = [
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /start command"""
+    # Only respond to direct messages
+    if update.effective_chat.id < 0:
+        return
+        
     # Store user in Airtable
     airtable = AirtableClient()
     user = update.effective_user
@@ -45,6 +49,10 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /help command"""
+    # Only respond to direct messages
+    if update.effective_chat.id < 0:
+        return
+        
     help_message = (
         "📚 Available Commands:\n\n"
         "/start - Show welcome message\n"
@@ -65,6 +73,10 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def watchlist_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /watchlist command"""
+    # Only respond to direct messages
+    if update.effective_chat.id < 0:
+        return
+        
     airtable = AirtableClient()
     user = airtable.get_user(str(update.effective_user.id))
     
@@ -93,6 +105,10 @@ async def watchlist_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def add_to_watchlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /add command"""
+    # Only respond to direct messages
+    if update.effective_chat.id < 0:
+        return
+        
     if len(context.args) != 2:
         await update.message.reply_text(
             "Please provide both swarm ID and token.\n"
@@ -135,6 +151,10 @@ async def add_to_watchlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def browse_swarms(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Display available swarms as buttons"""
+    # Only respond to direct messages
+    if update.effective_chat.id < 0:
+        return
+        
     keyboard = []
     # Create rows of 3 buttons each
     for i in range(0, len(AVAILABLE_SWARMS), 3):
@@ -209,6 +229,10 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def remove_from_watchlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /remove command"""
+    # Only respond to direct messages
+    if update.effective_chat.id < 0:
+        return
+        
     if not context.args:
         await update.message.reply_text("Please provide a swarm ID. Example: /remove KINESIS-1")
         return

@@ -25,6 +25,10 @@ logging.basicConfig(
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle all messages with Claude"""
+    # Only respond to direct messages (positive chat IDs)
+    if update.effective_chat.id < 0:
+        return
+        
     # Initialize clients
     claude = ClaudeClient()
     airtable = AirtableClient()
