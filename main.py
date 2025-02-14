@@ -28,6 +28,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     claude = ClaudeClient()
     airtable = AirtableClient()
     
+    # Store user message
+    user_message = {
+        'role': 'user',
+        'content': update.message.text
+    }
+    airtable.store_message(str(update.effective_user.id), user_message)
+    
     # Get user data from Airtable
     user_data = airtable.get_user(str(update.effective_user.id))
     
@@ -36,6 +43,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_message=update.message.text,
         user_data=user_data
     )
+    
+    # Store assistant response
+    assistant_message = {
+        'role': 'assistant',
+        'content': response['user_response']
+    }
+    airtable.store_message(str(update.effective_user.id), assistant_message)
     
     # Execute Airtable operation if present
     if response.get('airtable_op'):

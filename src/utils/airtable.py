@@ -24,6 +24,7 @@ class AirtableClient:
             "username": username,
             "status": "active",
             "watchlist": json.dumps([]),
+            "messages": json.dumps([]),  # Initialize empty messages array
             "alert_preferences": json.dumps({
                 "price_change": 5,
                 "new_shares": True,
@@ -143,3 +144,33 @@ class AirtableClient:
             'last_interaction': datetime.now().isoformat(),
             'notes': [note]
         })
+        
+    def store_message(self, telegram_id: str, message: dict):
+        """Store a message in user's message history"""
+        user = self.get_user(telegram_id)
+        if not user:
+            return None
+            
+        try:
+            # Get current messages
+            messages = json.loads(user['fields'].get('messages', '[]'))
+            
+            # Add new message with timestamp
+            new_message = {
+                'timestamp': datetime.now().isoformat(),
+                'role': message.get('role', 'user'),
+                'content': message.get('content', '')
+            }
+            
+            # Add to messages list and keep last 20
+            messages.append(new_message)
+            messages = messages[-20:]  # Keep only last 20 messages
+            
+            # Update Airtable
+            return self.table.update(user['id'], {
+                'messages': json.dumps(messages)
+            })
+            
+        except Exception as e:
+            logging.error(f"Error storing message: {e}")
+            return None
