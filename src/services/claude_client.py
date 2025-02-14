@@ -68,31 +68,21 @@ class ClaudeClient:
                     raise Exception(f"API error: {response.status_code} - {response.text}")
                 
                 data = response.json()
-                response_text = data['content'][0]['text']
+                response_text = data['content'][0]['text'].strip()
                 
-                # Extract JSON between first { and last }
-                start = response_text.find('{')
-                end = response_text.rfind('}') + 1
-                if start >= 0 and end > start:
-                    json_str = response_text[start:end]
-                    try:
-                        # Normalize newlines and escape them properly
-                        json_str = json_str.replace('\n', '\\n').replace('\r', '')
-                        parsed = json.loads(json_str)
-                        if isinstance(parsed, dict) and 'user_response' in parsed:
-                            return parsed
-                        else:
-                            logging.error(f"Invalid response format: {json_str}")
-                    except json.JSONDecodeError as e:
-                        logging.error(f"JSON parse error: {e}\nResponse text: {json_str}")
+                try:
+                    # Simple direct JSON parse
+                    parsed = json.loads(response_text)
+                    if isinstance(parsed, dict) and 'user_response' in parsed:
+                        return parsed
+                except json.JSONDecodeError:
+                    logging.error(f"Failed to parse response as JSON: {response_text}")
                 
-                # If we get here, something went wrong with parsing
-                logging.error(f"Could not extract valid JSON from response: {response_text}")
                 return {
                     "user_response": "I'm having trouble processing the response. Please try again.",
                     "airtable_op": None
                 }
-                
+                    
         except Exception as e:
             logging.error(f"Claude API error: {str(e)}")
             return {
