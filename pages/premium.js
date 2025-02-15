@@ -66,93 +66,142 @@ const Premium = () => {
         <meta name="description" content="Unlock unlimited swarm tracking and real-time alerts" />
       </Head>
 
-      <main className="container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Left Column - Features */}
+      <main className="min-h-screen bg-gradient-to-br from-black via-dark-gray to-black">
+        <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+          {/* Hero Section */}
+          <div className="text-center mb-16">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text">
+              Premium Intelligence
+            </h1>
+            <p className="text-xl md:text-2xl text-silver/70 max-w-3xl mx-auto">
+              Get professional-grade market intelligence and join the network of informed traders.
+            </p>
+          </div>
+
+          {/* Main Content */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            {/* Features Column */}
             <div className="space-y-8">
-              <h1 className="text-4xl font-bold gradient-text">
-                Premium Access
-              </h1>
-              
-              <div className="space-y-6">
-                <div className="premium-feature">
-                  <div className="premium-icon">⚡</div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-2">Instant Alerts</h3>
-                    <p className="text-silver/70">Real-time notifications for price movements, new cycles, and revenue.</p>
-                  </div>
+              <div className="premium-feature-card">
+                <div className="premium-icon">⚡</div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-3">Instant Alerts</h3>
+                  <ul className="space-y-3 text-silver/70">
+                    <li className="flex items-center">
+                      <span className="text-silver mr-2">•</span>
+                      Real-time price notifications
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-silver mr-2">•</span>
+                      New cycle alerts
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-silver mr-2">•</span>
+                      Revenue distributions
+                    </li>
+                  </ul>
                 </div>
+              </div>
 
-                <div className="premium-feature">
-                  <div className="premium-icon">📊</div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-2">Deep Analytics</h3>
-                    <p className="text-silver/70">Professional-grade market analysis and performance metrics.</p>
-                  </div>
+              <div className="premium-feature-card">
+                <div className="premium-icon">📊</div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-3">Deep Analytics</h3>
+                  <ul className="space-y-3 text-silver/70">
+                    <li className="flex items-center">
+                      <span className="text-silver mr-2">•</span>
+                      Market analysis
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-silver mr-2">•</span>
+                      Performance metrics
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-silver mr-2">•</span>
+                      Trend detection
+                    </li>
+                  </ul>
                 </div>
+              </div>
 
-                <div className="premium-feature">
-                  <div className="premium-icon">🎯</div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-2">Smart Tracking</h3>
-                    <p className="text-silver/70">Unlimited swarm tracking with customizable parameters.</p>
-                  </div>
+              <div className="premium-feature-card">
+                <div className="premium-icon">🎯</div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-3">Smart Tracking</h3>
+                  <ul className="space-y-3 text-silver/70">
+                    <li className="flex items-center">
+                      <span className="text-silver mr-2">•</span>
+                      Unlimited swarms
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-silver mr-2">•</span>
+                      Custom parameters
+                    </li>
+                    <li className="flex items-center">
+                      <span className="text-silver mr-2">•</span>
+                      Priority alerts
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
 
-            {/* Right Column - Payment */}
-            <div className="bg-gradient-to-br from-dark-gray to-black p-8 rounded-2xl border border-silver/10">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4 gradient-text">3 SOL</h2>
-                <p className="text-silver/70">One-time payment for lifetime access</p>
-              </div>
+            {/* Payment Column */}
+            <div className="sticky top-8">
+              <div className="premium-payment-card">
+                <div className="text-center mb-8">
+                  <div className="premium-price">
+                    <span className="text-sm text-silver/50 uppercase tracking-wider">One-time Payment</span>
+                    <div className="text-5xl font-bold gradient-text mt-2">3 SOL</div>
+                  </div>
+                  <p className="text-silver/70 mt-4">Lifetime access to premium features</p>
+                </div>
 
-              <div className="space-y-6">
-                <div className="flex items-center space-x-4 text-silver/70">
-                  <span className="text-2xl">✓</span>
-                  <span>Unlimited Swarm Tracking</span>
+                <div className="space-y-6 mb-8">
+                  <div className="premium-benefit">
+                    <span className="text-2xl text-green-400">✓</span>
+                    <span>Unlimited Swarm Tracking</span>
+                  </div>
+                  <div className="premium-benefit">
+                    <span className="text-2xl text-green-400">✓</span>
+                    <span>Real-time Price Alerts</span>
+                  </div>
+                  <div className="premium-benefit">
+                    <span className="text-2xl text-green-400">✓</span>
+                    <span>Revenue Notifications</span>
+                  </div>
+                  <div className="premium-benefit">
+                    <span className="text-2xl text-green-400">✓</span>
+                    <span>Priority Support</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-4 text-silver/70">
-                  <span className="text-2xl">✓</span>
-                  <span>Real-time Price Alerts</span>
-                </div>
-                <div className="flex items-center space-x-4 text-silver/70">
-                  <span className="text-2xl">✓</span>
-                  <span>Revenue Notifications</span>
-                </div>
-                <div className="flex items-center space-x-4 text-silver/70">
-                  <span className="text-2xl">✓</span>
-                  <span>Priority Support</span>
-                </div>
-              </div>
 
-              <div className="mt-8">
-                {!wallet.connected ? (
-                  <WalletMultiButton className="w-full" />
-                ) : (
-                  <button
-                    onClick={handlePayment}
-                    disabled={status === 'processing'}
-                    className="w-full metallic-button"
-                  >
-                    {status === 'processing' ? 'Processing...' : 'Complete Payment'}
-                  </button>
+                <div className="space-y-4">
+                  {!wallet.connected ? (
+                    <WalletMultiButton className="w-full" />
+                  ) : (
+                    <button
+                      onClick={handlePayment}
+                      disabled={status === 'processing'}
+                      className="w-full premium-button"
+                    >
+                      {status === 'processing' ? 'Processing...' : 'Complete Payment'}
+                    </button>
+                  )}
+                </div>
+
+                {error && (
+                  <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-center">
+                    {error}
+                  </div>
+                )}
+
+                {status === 'success' && (
+                  <div className="mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-center">
+                    Payment successful! Your account has been upgraded.
+                  </div>
                 )}
               </div>
-
-              {error && (
-                <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-center">
-                  {error}
-                </div>
-              )}
-
-              {status === 'success' && (
-                <div className="mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-center">
-                  Payment successful! Your account has been upgraded.
-                </div>
-              )}
             </div>
           </div>
         </div>
