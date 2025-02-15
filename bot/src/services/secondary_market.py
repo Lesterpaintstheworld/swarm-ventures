@@ -16,35 +16,34 @@ class SecondaryMarketClient:
         
     async def get_all_listings(self) -> List[Dict]:
         try:
-            # Create memcmp filter as a list
-            filters = [
-                {
-                    "dataSize": 1000  # Adjust this value based on your account data size
-                },
-                {
-                    "memcmp": {
-                        "offset": 0,
-                        "bytes": base58.b58encode(bytes([0x26, 0xdb])).decode('utf-8')
-                    }
-                }
-            ]
+            # Encode discriminator bytes correctly
+            discriminator = base58.b58encode(bytes([0x26, 0xdb])).decode('utf-8')
             
             # Get all accounts owned by the program
+            config = {
+                "encoding": "base64",
+                "filters": [
+                    {
+                        "memcmp": {
+                            "offset": 0,
+                            "bytes": discriminator
+                        }
+                    }
+                ]
+            }
+            
             response = await self.client.get_program_accounts(
-                str(self.program_id),  # Convert PublicKey to string
-                encoding="base64",
-                filters=filters
+                str(self.program_id),
+                config
             )
             
             listings = []
             
-            # Extract accounts from response
-            if hasattr(response, 'result'):
-                accounts = response.result
-            elif isinstance(response, dict):
+            # Handle response data
+            if isinstance(response, dict):
                 accounts = response.get('result', [])
             else:
-                accounts = response
+                accounts = getattr(response, 'value', [])
                 
             if not accounts:
                 print("No accounts found")
@@ -53,11 +52,15 @@ class SecondaryMarketClient:
             # Process each account
             for account in accounts:
                 try:
-                    # Extract account data
+                    # Extract account data safely
                     if isinstance(account, dict):
-                        data = account.get('account', {}).get('data', [''])[0]
+                        account_data = account.get('account', {}).get('data', [])
+                        if isinstance(account_data, list) and account_data:
+                            data = account_data[0]
+                        else:
+                            data = account_data
                     else:
-                        data = account.account.data[0] if hasattr(account, 'account') else ''
+                        data = getattr(getattr(account, 'account', None), 'data', [None])[0]
                     
                     if not data:
                         continue
