@@ -20,21 +20,15 @@ class SecondaryMarketClient:
             discriminator = base58.b58encode(bytes([0x26, 0xdb])).decode('utf-8')
             
             # Get all accounts owned by the program
-            config = {
-                "encoding": "base64",
-                "filters": [
-                    {
-                        "memcmp": {
-                            "offset": 0,
-                            "bytes": discriminator
-                        }
-                    }
-                ]
-            }
-            
             response = await self.client.get_program_accounts(
                 str(self.program_id),
-                config
+                encoding="base64",
+                filters=[{
+                    "memcmp": {
+                        "offset": 0,
+                        "bytes": discriminator
+                    }
+                }]
             )
             
             listings = []
