@@ -97,8 +97,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Market Tiers Section - Fix grid layout */}
-      <div className="bg-gradient-to-br from-dark-gray to-black py-24">
+      {/* Market Tiers Section */}
+      <section className="bg-gradient-to-br from-dark-gray to-black py-24">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold mb-16 text-center gradient-text">
             Market Tiers
@@ -139,23 +139,25 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* CTA Section */}
-      <div className="container mx-auto px-4 py-24">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-8 gradient-text">
-            Join the Elite Network
-          </h2>
-          <p className="text-xl text-silver/70 mb-12">
-            Get access to professional-grade market intelligence and join the network of informed traders.
-          </p>
-          <Link href="/premium" className="metallic-button inline-block">
-            Activate Premium Access
-          </Link>
-          <p className="mt-6 text-silver/50">One-time payment • Lifetime access • No hidden fees</p>
+      <section className="py-24">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-4xl font-bold mb-8 gradient-text">
+              Join the Elite Network
+            </h2>
+            <p className="text-xl text-silver/70 mb-12">
+              Get access to professional-grade market intelligence and join the network of informed traders.
+            </p>
+            <Link href="/premium" className="metallic-button inline-block">
+              Activate Premium Access
+            </Link>
+            <p className="mt-6 text-silver/50">One-time payment • Lifetime access • No hidden fees</p>
+          </div>
         </div>
-      </div>
+      </section>
     </Layout>
   );
 }
