@@ -1,29 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --color-black: #000000;
-  --color-silver: #C0C0C0;
-  --color-dark-silver: #707070;
-  --color-light-silver: #E8E8E8;
-  --gradient-metallic: linear-gradient(145deg, var(--color-silver), var(--color-dark-silver));
-}
-
-/* Common Components */
-
-body {
-  background: var(--color-black);
-  color: var(--color-silver);
-  font-family: 'Inter', sans-serif;
-}
-
-/* Common Components */
-.gradient-text {
-  @apply bg-gradient-to-r from-silver to-light-silver bg-clip-text text-transparent;
-}
-
-.metallic-button {
   @apply bg-gradient-to-r from-silver to-light-silver 
          text-black font-bold py-4 px-6 rounded-lg 
          transition-all duration-200 hover:opacity-90 
