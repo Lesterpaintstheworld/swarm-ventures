@@ -10,88 +10,103 @@ export default function Home() {
         <meta name="description" content="Professional-grade market intelligence for Swarm traders" />
       </Head>
 
-      {/* Hero Section */}
+      {/* Hero Section - Now with better column layout */}
       <div className="hero-section">
         <div className="hero-content">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text">
-            SwarmVentures Elite
-          </h1>
-          <p className="text-xl md:text-2xl text-silver/70 mb-8 max-w-3xl mx-auto">
-            Professional-grade market intelligence for serious Swarm traders.
-            Get real-time alerts and deep market insights.
-          </p>
-          
-          {/* CTA Button - Moved up */}
-          <Link href="/premium" className="metallic-button inline-block mb-16 hover:scale-105 transition-transform">
-            Access Premium Intelligence
-          </Link>
-          
-          {/* Stats Grid - Moved down */}
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-number">24/7</div>
-              <p className="text-silver/70">Real-time Monitoring</p>
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="text-left">
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text">
+                SwarmVentures Elite
+              </h1>
+              <p className="text-xl md:text-2xl text-silver/70 mb-8">
+                Professional-grade market intelligence for serious Swarm traders.
+                Get real-time alerts and deep market insights.
+              </p>
+              <Link href="/premium" className="metallic-button inline-block hover:scale-105 transition-transform">
+                Access Premium Intelligence
+              </Link>
             </div>
-            <div className="stat-card">
-              <div className="stat-number">100+</div>
-              <p className="text-silver/70">Active Traders</p>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">±0.1%</div>
-              <p className="text-silver/70">Price Accuracy</p>
+            <div className="stats-container">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="stat-card">
+                  <div className="stat-number">24/7</div>
+                  <p className="text-silver/70">Real-time Monitoring</p>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-number">100+</div>
+                  <p className="text-silver/70">Active Traders</p>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-number">±0.1%</div>
+                  <p className="text-silver/70">Price Accuracy</p>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-number">3 SOL</div>
+                  <p className="text-silver/70">Lifetime Access</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Features Section */}
-      <div className="max-w-6xl mx-auto px-4 py-24">
+      {/* Features Section - Now in 3 columns */}
+      <div className="max-w-7xl mx-auto px-4 py-24">
         <h2 className="text-4xl font-bold mb-16 text-center gradient-text">
           Elite Trading Features
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="premium-feature">
-            <div className="premium-icon">⚡</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="premium-feature group">
+            <div className="premium-icon group-hover:scale-110 transition-transform">⚡</div>
             <div>
               <h3 className="text-xl font-bold mb-2">Instant Alerts</h3>
-              <p className="text-silver/70">
-                Real-time notifications for price movements, new cycles, and revenue distributions.
-              </p>
+              <ul className="space-y-2 text-silver/70">
+                <li>• Real-time price notifications</li>
+                <li>• New cycle alerts</li>
+                <li>• Revenue distributions</li>
+                <li>• Custom thresholds</li>
+              </ul>
             </div>
           </div>
 
-          <div className="premium-feature">
-            <div className="premium-icon">📊</div>
+          <div className="premium-feature group">
+            <div className="premium-icon group-hover:scale-110 transition-transform">📊</div>
             <div>
               <h3 className="text-xl font-bold mb-2">Deep Analytics</h3>
-              <p className="text-silver/70">
-                Professional-grade market analysis and performance metrics.
-              </p>
+              <ul className="space-y-2 text-silver/70">
+                <li>• Market analysis</li>
+                <li>• Performance metrics</li>
+                <li>• Revenue tracking</li>
+                <li>• Trend detection</li>
+              </ul>
             </div>
           </div>
 
-          <div className="premium-feature">
-            <div className="premium-icon">🎯</div>
+          <div className="premium-feature group">
+            <div className="premium-icon group-hover:scale-110 transition-transform">🎯</div>
             <div>
               <h3 className="text-xl font-bold mb-2">Smart Tracking</h3>
-              <p className="text-silver/70">
-                Unlimited swarm tracking with customizable parameters.
-              </p>
+              <ul className="space-y-2 text-silver/70">
+                <li>• Unlimited swarms</li>
+                <li>• Custom parameters</li>
+                <li>• Priority alerts</li>
+                <li>• Portfolio overview</li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Tiers Section */}
+      {/* Market Tiers Section */}
       <div className="bg-gradient-to-br from-dark-gray to-black py-24">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-4xl font-bold mb-16 text-center gradient-text">
             Market Tiers
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="card">
+            <div className="card group hover:scale-105 transition-transform">
               <div className="premium-badge">Tier 1</div>
               <h3 className="text-xl font-bold mb-4">Mature Infrastructure</h3>
               <ul className="space-y-2 text-silver/70">
@@ -102,7 +117,7 @@ export default function Home() {
               </ul>
             </div>
 
-            <div className="card">
+            <div className="card group hover:scale-105 transition-transform">
               <div className="premium-badge">Tier 2</div>
               <h3 className="text-xl font-bold mb-4">Growth Phase</h3>
               <ul className="space-y-2 text-silver/70">
@@ -113,7 +128,7 @@ export default function Home() {
               </ul>
             </div>
 
-            <div className="card">
+            <div className="card group hover:scale-105 transition-transform">
               <div className="premium-badge">Tier 3</div>
               <h3 className="text-xl font-bold mb-4">Early Stage</h3>
               <ul className="space-y-2 text-silver/70">

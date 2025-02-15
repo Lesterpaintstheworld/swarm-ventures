@@ -67,39 +67,94 @@ const Premium = () => {
       </Head>
 
       <main className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-8 text-center gradient-text">
-          Premium Access
-        </h1>
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Left Column - Features */}
+            <div className="space-y-8">
+              <h1 className="text-4xl font-bold gradient-text">
+                Premium Access
+              </h1>
+              
+              <div className="space-y-6">
+                <div className="premium-feature">
+                  <div className="premium-icon">⚡</div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Instant Alerts</h3>
+                    <p className="text-silver/70">Real-time notifications for price movements, new cycles, and revenue.</p>
+                  </div>
+                </div>
 
-        <div className="max-w-md mx-auto bg-gradient-to-br from-dark-gray to-black p-8 rounded-2xl border border-silver/10">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4 gradient-text">3 SOL</h2>
-            <p className="text-silver/70">One-time payment for lifetime access</p>
+                <div className="premium-feature">
+                  <div className="premium-icon">📊</div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Deep Analytics</h3>
+                    <p className="text-silver/70">Professional-grade market analysis and performance metrics.</p>
+                  </div>
+                </div>
+
+                <div className="premium-feature">
+                  <div className="premium-icon">🎯</div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Smart Tracking</h3>
+                    <p className="text-silver/70">Unlimited swarm tracking with customizable parameters.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Payment */}
+            <div className="bg-gradient-to-br from-dark-gray to-black p-8 rounded-2xl border border-silver/10">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold mb-4 gradient-text">3 SOL</h2>
+                <p className="text-silver/70">One-time payment for lifetime access</p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="flex items-center space-x-4 text-silver/70">
+                  <span className="text-2xl">✓</span>
+                  <span>Unlimited Swarm Tracking</span>
+                </div>
+                <div className="flex items-center space-x-4 text-silver/70">
+                  <span className="text-2xl">✓</span>
+                  <span>Real-time Price Alerts</span>
+                </div>
+                <div className="flex items-center space-x-4 text-silver/70">
+                  <span className="text-2xl">✓</span>
+                  <span>Revenue Notifications</span>
+                </div>
+                <div className="flex items-center space-x-4 text-silver/70">
+                  <span className="text-2xl">✓</span>
+                  <span>Priority Support</span>
+                </div>
+              </div>
+
+              <div className="mt-8">
+                {!wallet.connected ? (
+                  <WalletMultiButton className="w-full" />
+                ) : (
+                  <button
+                    onClick={handlePayment}
+                    disabled={status === 'processing'}
+                    className="w-full metallic-button"
+                  >
+                    {status === 'processing' ? 'Processing...' : 'Complete Payment'}
+                  </button>
+                )}
+              </div>
+
+              {error && (
+                <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-center">
+                  {error}
+                </div>
+              )}
+
+              {status === 'success' && (
+                <div className="mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-center">
+                  Payment successful! Your account has been upgraded.
+                </div>
+              )}
+            </div>
           </div>
-
-          {!wallet.connected ? (
-            <WalletMultiButton className="w-full" />
-          ) : (
-            <button
-              onClick={handlePayment}
-              disabled={status === 'processing'}
-              className="w-full metallic-button"
-            >
-              {status === 'processing' ? 'Processing...' : 'Complete Payment'}
-            </button>
-          )}
-
-          {error && (
-            <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-center">
-              {error}
-            </div>
-          )}
-
-          {status === 'success' && (
-            <div className="mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-center">
-              Payment successful! Your account has been upgraded.
-            </div>
-          )}
         </div>
       </main>
     </Layout>
