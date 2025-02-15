@@ -16,21 +16,17 @@ class SecondaryMarketClient:
         
     async def get_all_listings(self) -> List[Dict]:
         try:
-            # Get all accounts owned by the program
-            filters = [
-                {
-                    "memcmp": {
-                        "offset": 0,
-                        "bytes": base58.b58encode(bytes.fromhex("26db")).decode('utf-8')
-                    }
-                }
-            ]
+            # Create memcmp filter correctly
+            memcmp = {
+                "offset": 0,
+                "bytes": base58.b58encode(bytes.fromhex("26db")).decode('utf-8')
+            }
             
+            # Get all accounts owned by the program
             response = await self.client.get_program_accounts(
                 self.program_id,
                 encoding="base64",
-                commitment="confirmed",
-                filters=filters
+                filters=[{"memcmp": memcmp}]
             )
             
             listings = []
@@ -39,12 +35,17 @@ class SecondaryMarketClient:
                 return []
                 
             # Handle response based on actual structure
-            accounts = response if isinstance(response, list) else []
-            
-            for account in accounts:
+            for account in response:
                 try:
+                    if not hasattr(account, 'account') or not hasattr(account.account, 'data'):
+                        continue
+                        
                     account_data = account.account.data
                     if not account_data:
+                        continue
+                        
+                    listing_data = self._decode_listing_data(account_data[0])
+                    if not listing_data:
                         continue
                         
                     listing_data = self._decode_listing_data(account_data[0])
