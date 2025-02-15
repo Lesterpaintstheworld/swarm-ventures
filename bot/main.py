@@ -3,7 +3,10 @@ import os
 from dotenv import load_dotenv
 from telegram.ext import ApplicationBuilder, CommandHandler
 
-from src.bot.commands import start_command
+from src.bot.commands import (
+    start_command, help_command, watchlist_command,
+    subscribe_command, unsubscribe_command
+)
 
 # Load environment variables
 load_dotenv()

@@ -1,4 +1,5 @@
 from pyairtable import Table
+from datetime import datetime
 from src.config.settings import AIRTABLE_API_KEY, AIRTABLE_BASE_ID, AIRTABLE_TABLE_NAME
 
 class AirtableClient:
