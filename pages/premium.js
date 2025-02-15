@@ -2,14 +2,13 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-import getLogger from '../utils/logger';
-
-const logger = getLogger('premium-page');
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { Connection, PublicKey, Transaction, LAMPORTS_PER_SOL, SystemProgram } from '@solana/web3.js';
 import Head from 'next/head';
 import Layout from '../components/Layout';
+import getLogger from '../utils/logger';
+
+const logger = getLogger('premium-page');
 
 const Premium = () => {
   const router = useRouter();
