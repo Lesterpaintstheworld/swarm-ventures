@@ -138,16 +138,6 @@ async def telegram_webhook(request: Request):
                     "/watchlist - View your watchlist"
                 )
                 
-                # Handle Airtable operations
-                if response.get('airtable_op'):
-                    op = response['airtable_op']
-                    if op['operation'] == 'add_to_watchlist':
-                        result = airtable.add_to_watchlist(
-                            telegram_id=str(update.message.from_user.id),
-                            swarm_id=op['params']['swarm_id']
-                        )
-                        user_data = airtable.get_user(str(update.message.from_user.id))
-                
                 # Send status message
                 try:
                     watchlist = json.loads(user_data['fields'].get('watchlist', '[]'))
