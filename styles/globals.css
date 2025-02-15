@@ -6,28 +6,28 @@
   .metallic-button {
     @apply bg-gradient-to-r from-silver to-light-silver 
            text-black font-bold py-4 px-6 rounded-lg 
-           transition-all duration-200 hover:opacity-90 
-           hover:shadow-glow focus:outline-none focus:ring-2 
-           focus:ring-silver focus:ring-opacity-50;
+           transition-all duration-200 hover:opacity-90;
   }
 }
 
 .card {
   @apply bg-gradient-to-br from-dark-gray to-black 
-         p-8 rounded-2xl border border-silver/10 
-         backdrop-blur-lg transition-all duration-300;
+         p-8 rounded-2xl border border-silver/10;
 }
 
-.card:hover {
-  @apply transform -translate-y-1 shadow-glow;
-}
-
-/* Premium Page Specific Styles */
-.premium-feature-card {
+.premium-feature {
   @apply bg-gradient-to-br from-dark-gray to-black 
-         p-8 rounded-2xl border border-silver/10 
-         backdrop-blur-lg transition-all duration-300
-         hover:border-silver/20 hover:shadow-glow;
+         p-8 rounded-2xl border border-silver/10;
+}
+
+.premium-icon {
+  @apply w-12 h-12 flex items-center justify-center 
+         text-2xl bg-gradient-to-r from-silver to-light-silver 
+         text-black rounded-full mb-4;
+}
+
+.container {
+  @apply max-w-7xl mx-auto;
 }
 
 .premium-payment-card {
