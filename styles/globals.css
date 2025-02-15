@@ -95,27 +95,50 @@ body {
          rounded-lg blur opacity-75;
 }
 
-/* Homepage Specific */
+/* Homepage specific styles */
 .hero-section {
-  @apply relative min-h-screen flex items-center 
+  @apply relative min-h-[80vh] flex items-center 
          justify-center bg-gradient-to-b from-black 
          via-black to-dark-gray;
 }
 
-.hero-content {
-  @apply text-center space-y-8 max-w-4xl mx-auto px-4;
-}
-
-.stats-grid {
-  @apply grid grid-cols-1 md:grid-cols-3 gap-6 mt-12;
-}
-
 .stat-card {
-  @apply card text-center;
+  @apply bg-gradient-to-br from-dark-gray to-black 
+         p-6 rounded-2xl border border-silver/10 
+         backdrop-blur-lg transition-all duration-300
+         hover:border-silver/20 hover:shadow-glow;
 }
 
 .stat-number {
   @apply text-4xl font-bold gradient-text mb-2;
+}
+
+.premium-feature {
+  @apply bg-gradient-to-br from-dark-gray to-black 
+         p-8 rounded-2xl border border-silver/10 
+         backdrop-blur-lg transition-all duration-300
+         hover:border-silver/20 hover:shadow-glow;
+}
+
+.premium-badge {
+  @apply bg-gradient-to-r from-silver to-light-silver 
+         text-black text-sm font-bold px-3 py-1 
+         rounded-full mb-4 inline-block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero-section {
+    @apply py-16;
+  }
+  
+  .stat-card {
+    @apply p-4;
+  }
+  
+  .stat-number {
+    @apply text-3xl;
+  }
 }
 
 /* Animations */
