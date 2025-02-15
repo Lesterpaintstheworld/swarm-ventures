@@ -16,12 +16,17 @@ export default function Home() {
           <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text">
             SwarmVentures Elite
           </h1>
-          <p className="text-xl md:text-2xl text-silver/70 mb-12 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-silver/70 mb-8 max-w-3xl mx-auto">
             Professional-grade market intelligence for serious Swarm traders.
             Get real-time alerts and deep market insights.
           </p>
           
-          {/* Stats Grid */}
+          {/* CTA Button - Moved up */}
+          <Link href="/premium" className="metallic-button inline-block mb-16 hover:scale-105 transition-transform">
+            Access Premium Intelligence
+          </Link>
+          
+          {/* Stats Grid - Moved down */}
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-number">24/7</div>
@@ -36,8 +41,6 @@ export default function Home() {
               <p className="text-silver/70">Price Accuracy</p>
             </div>
           </div>
-
-          <Link href="/premium" className="metallic-button inline-block mt-12">
             Access Premium Intelligence
           </Link>
         </div>
