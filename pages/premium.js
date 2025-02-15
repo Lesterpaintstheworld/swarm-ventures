@@ -29,6 +29,13 @@ const Premium = () => {
   }, [ref, wallet.connected]);
 
   useEffect(() => {
+    logger.info('Wallet connection state changed', { 
+      connected: wallet.connected,
+      publicKey: wallet.publicKey?.toString() 
+    });
+  }, [wallet.connected, wallet.publicKey]);
+
+  useEffect(() => {
     if (process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS) {
       setTreasuryWallet(new PublicKey(process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS));
     }
@@ -222,20 +229,26 @@ const Premium = () => {
                 </div>
 
                 <div className="space-y-4">
-                  {!wallet.connected ? (
+                  {!ref ? (
+                    <p className="text-center text-silver/70">
+                      Please access this page through the Telegram bot
+                    </p>
+                  ) : !wallet.connected ? (
                     <WalletMultiButton className="w-full premium-button" />
-                  ) : ref ? (
+                  ) : status === 'processing' ? (
                     <button
-                      onClick={handlePayment}
-                      disabled={status === 'processing'}
+                      disabled
                       className="w-full premium-button"
                     >
-                      {status === 'processing' ? 'Processing...' : 'Complete Payment'}
+                      Processing...
                     </button>
                   ) : (
-                    <p className="text-center text-silver/70">
-                      Please access this page through the Telegram bot to complete your purchase
-                    </p>
+                    <button
+                      onClick={handlePayment}
+                      className="w-full premium-button"
+                    >
+                      Complete Payment
+                    </button>
                   )}
                 </div>
 
