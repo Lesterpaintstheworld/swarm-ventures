@@ -13,12 +13,12 @@ export default function Home() {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-24">
-            <div className="text-left">
-              <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
+            <div className="text-left space-y-8">
+              <h1 className="text-5xl md:text-6xl font-bold gradient-text">
                 SwarmVentures Elite
               </h1>
-              <p className="text-xl md:text-2xl text-silver/70 mb-8">
+              <p className="text-xl md:text-2xl text-silver/70">
                 Professional-grade market intelligence for serious Swarm traders.
                 Get real-time alerts and deep market insights.
               </p>
@@ -51,26 +51,26 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-24">
-        <h2 className="text-4xl font-bold mb-16 text-center gradient-text">
-          Elite Trading Features
-        </h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="premium-feature group">
-            <div className="premium-icon group-hover:scale-110 transition-transform">⚡</div>
-            <h3 className="text-xl font-bold mb-2">Instant Alerts</h3>
-            <ul className="space-y-2 text-silver/70">
+      <section className="py-24 bg-gradient-to-br from-black via-dark-gray to-black">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold mb-16 text-center gradient-text">
+            Elite Trading Features
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="premium-feature group">
+              <div className="premium-icon group-hover:scale-110 transition-transform">⚡</div>
+              <h3 className="text-xl font-bold mb-2">Instant Alerts</h3>
+              <ul className="space-y-2 text-silver/70">
                 <li>• Real-time price notifications</li>
                 <li>• New cycle alerts</li>
                 <li>• Revenue distributions</li>
                 <li>• Custom thresholds</li>
-            </ul>
-          </div>
+              </ul>
+            </div>
 
-          <div className="premium-feature group">
-            <div className="premium-icon group-hover:scale-110 transition-transform">📊</div>
-            <div>
+            <div className="premium-feature group">
+              <div className="premium-icon group-hover:scale-110 transition-transform">📊</div>
               <h3 className="text-xl font-bold mb-2">Deep Analytics</h3>
               <ul className="space-y-2 text-silver/70">
                 <li>• Market analysis</li>
@@ -79,11 +79,9 @@ export default function Home() {
                 <li>• Trend detection</li>
               </ul>
             </div>
-          </div>
 
-          <div className="premium-feature group">
-            <div className="premium-icon group-hover:scale-110 transition-transform">🎯</div>
-            <div>
+            <div className="premium-feature group">
+              <div className="premium-icon group-hover:scale-110 transition-transform">🎯</div>
               <h3 className="text-xl font-bold mb-2">Smart Tracking</h3>
               <ul className="space-y-2 text-silver/70">
                 <li>• Unlimited swarms</li>
@@ -97,7 +95,7 @@ export default function Home() {
       </section>
 
       {/* Market Tiers Section */}
-      <section className="bg-gradient-to-br from-dark-gray to-black py-24">
+      <section className="py-24">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold mb-16 text-center gradient-text">
             Market Tiers
@@ -141,7 +139,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24">
+      <section className="py-24 bg-gradient-to-br from-black via-dark-gray to-black">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-8 gradient-text">
