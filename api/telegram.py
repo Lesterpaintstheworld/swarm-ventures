@@ -110,7 +110,7 @@ async def subscribe_command(update: Update, context):
         "1. Click the payment link below\n"
         "2. Connect your Solana wallet\n"
         "3. Complete the payment\n\n"
-        f"🔗 Get Premium: https://swarm-ventures.vercel.app/premium?ref={user_id}\n\n"
+        f"🔗 Get Premium: https://swarmventures.universalbasiccompute.ai/premium?ref={user_id}\n\n"
         "Your account will be upgraded automatically after payment confirmation."
     )
     await update.message.reply_text(subscription_message)
