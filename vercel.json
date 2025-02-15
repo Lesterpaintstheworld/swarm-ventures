@@ -2,22 +2,14 @@
     "version": 2,
     "builds": [
         {
-            "src": "api/telegram.py",
+            "src": "api/*.py",
             "use": "@vercel/python"
-        },
-        {
-            "src": "templates/index.html",
-            "use": "@vercel/static"
         }
     ],
     "routes": [
         {
             "src": "/api/(.*)",
-            "dest": "/api/telegram.py"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/templates/index.html"
+            "dest": "/api/$1.py"
         }
     ]
 }

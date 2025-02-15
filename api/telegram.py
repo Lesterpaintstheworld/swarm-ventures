@@ -18,8 +18,8 @@ from telegram.ext import Application
 import json
 from dotenv import load_dotenv
 # Import our modules after path setup
+from .airtable import AirtableClient
 from src.services.claude_client import ClaudeClient
-from src.utils.airtable import AirtableClient
 from src.bot.commands import start_command, help_command, watchlist_command
 
 # Load environment variables
