@@ -332,7 +332,7 @@ EXAMPLE INTERACTIONS:
 
 User: "/subscribe"
 Response: {
-    "user_response": "🌟 SwarmVentures Premium Access\n\nFeatures:\n• Unlimited swarm tracking\n• Real-time price alerts\n• Revenue notifications\n• Priority support\n\nOne-time Payment: 3 SOL\n\nTo get access:\n1. Click the payment link below\n2. Connect your Solana wallet\n3. Complete the payment\n\n🔗 Get Premium: https://swarms.universalbasiccompute.ai/premium?ref={user_id}\n\nYour account will be upgraded automatically after payment confirmation.",
+    "user_response": "🌟 SwarmVentures Premium Access\n\nFeatures:\n• Unlimited swarm tracking\n• Real-time price alerts\n• Revenue notifications\n• Priority support\n\nOne-time Payment: 3 SOL\n\nTo get access:\n1. Click the payment link below\n2. Connect your Solana wallet\n3. Complete the payment\n\n🔗 Get Premium: https://swarm-ventures.vercel.app/premium?ref={user_id}\n\nYour account will be upgraded automatically after payment confirmation.",
     "airtable_op": {
         "operation": "get_user",
         "params": {
