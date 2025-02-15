@@ -23,49 +23,43 @@ class SecondaryMarketClient:
             print(f"Program ID: {str(self.program_id)}")
             print(f"Discriminator: {discriminator}")
             
-            # Get all accounts owned by the program using dict format
-            rpc_request = {
-                "jsonrpc": "2.0",
-                "id": 1,
-                "method": "getProgramAccounts",
-                "params": [
-                    str(self.program_id),
-                    {
-                        "encoding": "base64",
-                        "filters": [
-                            {
-                                "memcmp": {
-                                    "offset": 0,
-                                    "bytes": discriminator
-                                }
-                            }
-                        ]
-                    }
-                ]
+            # Create the memcmp filter
+            memcmp = {
+                "offset": 0,
+                "bytes": discriminator
             }
-            
-            # Make raw RPC call
-            response = await self.client._provider.make_request(rpc_request)
+        
+            # Make RPC call using the client's get_program_accounts method
+            response = await self.client.get_program_accounts(
+                self.program_id,
+                encoding="base64",
+                filters=[{"memcmp": memcmp}],
+                commitment="confirmed"
+            )
+        
             print("Raw RPC Response:", response)
-            
+        
             listings = []
+        
+            # Handle response based on its structure
+            if hasattr(response, 'value'):
+                accounts = response.value
+            elif isinstance(response, dict):
+                accounts = response.get('result', [])
+            else:
+                accounts = response or []
             
-            if not response or 'result' not in response:
-                print("No valid response from RPC")
-                return []
-                
-            accounts = response.get('result', [])
             print(f"Found {len(accounts)} accounts")
-                
-            if not accounts:
-                print("No accounts found")
-                return []
                 
             # Process each account
             for account in accounts:
                 try:
                     # Extract account data
-                    account_data = account.get('account', {}).get('data', [])
+                    if isinstance(account, dict):
+                        account_data = account.get('account', {}).get('data', [])
+                    else:
+                        account_data = getattr(account, 'account', {}).data if hasattr(account, 'account') else []
+                    
                     if isinstance(account_data, list):
                         data = account_data[0] if account_data else None
                     else:
