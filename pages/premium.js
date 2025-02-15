@@ -131,7 +131,7 @@ const Premium = () => {
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 lg-grid-cols-2 gap-12 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
             {/* Features Column */}
             <div className="space-y-8">
               <div className="premium-feature-card">
