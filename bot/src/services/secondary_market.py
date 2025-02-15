@@ -20,24 +20,29 @@ class SecondaryMarketClient:
             response = await self.client.get_program_accounts(
                 self.program_id,
                 encoding="base64",
+                data_slice=None,  # Get full data
+                commitment="confirmed",
                 filters=[
                     {
                         "memcmp": {
-                            "offset": 0,
-                            "bytes": "26db" # First 2 bytes of the discriminator in hex
+                            "offset": 0,  # Start at beginning of account data
+                            "bytes": base58.b58encode(bytes.fromhex("26db")).decode("utf-8")  # Convert hex to base58
                         }
                     }
                 ]
             )
         
             listings = []
-            if not response or "result" not in response:
-                print("No listings found or invalid response")
+            if response is None:
+                print("No response from RPC")
                 return []
+                
+            # Handle response based on actual structure
+            accounts = response.value if hasattr(response, 'value') else []
             
-            for account in response["result"]:
+            for account in accounts:
                 try:
-                    if not account.get("account") or not account["account"].get("data"):
+                    if not hasattr(account, 'account') or not hasattr(account.account, 'data'):
                         continue
                     
                     listing_data = self._decode_listing_data(account.account.data[0])
