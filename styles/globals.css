@@ -54,6 +54,13 @@ body {
          hover:border-silver/20;
 }
 
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .premium-payment-card {
+    @apply mt-8;
+  }
+}
+
 .premium-icon {
   @apply w-12 h-12 flex items-center justify-center 
          text-2xl bg-gradient-to-r from-silver to-light-silver 
@@ -188,8 +195,29 @@ input, select {
 }
 
 /* Premium Page Specific */
+.container {
+  @apply max-w-7xl mx-auto;
+}
+
 .premium-container {
   @apply max-w-6xl mx-auto px-4 py-12;
+}
+
+/* Grid system enhancements */
+.grid {
+  @apply w-full;
+}
+
+.grid-cols-1 {
+  @apply grid-cols-1;
+}
+
+.lg\:grid-cols-2 {
+  @apply lg:grid-cols-2;
+}
+
+.gap-12 {
+  @apply gap-12;
 }
 
 .premium-header {

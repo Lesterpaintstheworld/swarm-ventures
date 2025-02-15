@@ -101,8 +101,8 @@ const Premium = () => {
         <meta name="description" content="Unlock unlimited swarm tracking and real-time alerts" />
       </Head>
 
-      <main className="min-h-screen bg-gradient-to-br from-black via-dark-gray to-black px-4">
-        <div className="max-w-7xl mx-auto py-16 md:py-24">
+      <main className="min-h-screen bg-gradient-to-br from-black via-dark-gray to-black">
+        <div className="container mx-auto px-4 py-16 md:py-24">
           {/* Hero Section */}
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text">
@@ -114,7 +114,7 @@ const Premium = () => {
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
             {/* Features Column */}
             <div className="space-y-8">
               <div className="premium-feature-card">
@@ -182,7 +182,7 @@ const Premium = () => {
             </div>
 
             {/* Payment Column */}
-            <div className="sticky top-8">
+            <div className="lg:sticky lg:top-8">
               <div className="premium-payment-card">
                 <div className="text-center mb-8">
                   <div className="premium-price">
