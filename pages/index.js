@@ -10,8 +10,8 @@ export default function Home() {
         <meta name="description" content="Professional-grade market intelligence for Swarm traders" />
       </Head>
 
-      {/* Hero Section - Fix grid layout */}
-      <div className="hero-section">
+      {/* Hero Section */}
+      <section className="hero-section">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-24">
             <div className="text-left">
@@ -48,7 +48,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Features Section - Fix grid layout */}
       <div className="container mx-auto px-4 py-24">
