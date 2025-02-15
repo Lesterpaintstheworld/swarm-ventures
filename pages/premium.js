@@ -198,10 +198,10 @@ const Premium = () => {
             </div>
           </div>
         </div>
-      </Layout>
-    </>
+      </div>
+    </Layout>
   );
-};
+}
 
 const Feature = ({ icon, title, description }) => (
   <div className="flex items-start space-x-4">
