@@ -16,44 +16,56 @@ class SecondaryMarketClient:
         
     async def get_all_listings(self) -> List[Dict]:
         try:
-            # Create memcmp filter as a list of dictionaries
+            # Create memcmp filter as a list
             filters = [
+                {
+                    "dataSize": 1000  # Adjust this value based on your account data size
+                },
                 {
                     "memcmp": {
                         "offset": 0,
-                        "bytes": base58.b58encode(bytes.fromhex("26db")).decode('utf-8')
+                        "bytes": base58.b58encode(bytes([0x26, 0xdb])).decode('utf-8')
                     }
                 }
             ]
             
             # Get all accounts owned by the program
             response = await self.client.get_program_accounts(
-                self.program_id,
+                str(self.program_id),  # Convert PublicKey to string
                 encoding="base64",
-                filters=filters  # Pass the filters list directly
+                filters=filters
             )
             
             listings = []
-            if not response or not hasattr(response, 'value'):
-                print("No valid response from RPC")
+            
+            # Check if response is a dictionary
+            if isinstance(response, dict):
+                accounts = response.get('result', [])
+            else:
+                accounts = getattr(response, 'value', [])
+                
+            if not accounts:
+                print("No accounts found")
                 return []
                 
-            # Handle response based on actual structure
-            for account_info in response.value:
+            # Process each account
+            for account in accounts:
                 try:
-                    # Extract account data safely
-                    if isinstance(account_info, dict):
-                        account_data = account_info.get('account', {}).get('data', [])
+                    # Handle both dictionary and object responses
+                    if isinstance(account, dict):
+                        account_data = account.get('account', {}).get('data', [])
+                        if isinstance(account_data, list):
+                            account_data = account_data[0]
                     else:
-                        account_data = getattr(getattr(account_info, 'account', None), 'data', [])
+                        account_data = getattr(getattr(account, 'account', None), 'data', None)
+                        if isinstance(account_data, list):
+                            account_data = account_data[0]
                     
                     if not account_data:
                         continue
                         
-                    # Get first element if it's a list
-                    data_to_decode = account_data[0] if isinstance(account_data, list) else account_data
-                    
-                    listing_data = self._decode_listing_data(data_to_decode)
+                    # Decode the listing data
+                    listing_data = self._decode_listing_data(account_data)
                     if not listing_data:
                         continue
                         
@@ -72,7 +84,7 @@ class SecondaryMarketClient:
                     }
                     listings.append(listing)
                 except Exception as e:
-                    print(f"Error decoding listing: {e}")
+                    print(f"Error processing account: {e}")
                     continue
                     
             return listings
