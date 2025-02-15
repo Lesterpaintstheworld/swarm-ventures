@@ -41,8 +41,6 @@ export default function Home() {
               <p className="text-silver/70">Price Accuracy</p>
             </div>
           </div>
-            Access Premium Intelligence
-          </Link>
         </div>
       </div>
 
