@@ -116,7 +116,7 @@ export default function Home() {
               <div className="premium-badge">Tier 3</div>
               <h3 className="text-xl font-bold mb-4">Early Stage</h3>
               <ul className="space-y-2 text-silver/70">
-                <li>• <100x multiplier</li>
+                <li>• &lt;100x multiplier</li>
                 <li>• Higher volatility</li>
                 <li>• 8-10% typical spread</li>
                 <li>• Higher risk/reward</li>
