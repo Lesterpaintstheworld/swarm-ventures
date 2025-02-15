@@ -47,8 +47,19 @@ async def add_process_time_header(request: Request, call_next):
     response.headers["X-Process-Time"] = str(process_time)
     return response
 
-# Initialize bot application
-application = Application.builder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
+# Initialize bot application with proper event loop handling
+application = None
+
+def get_application():
+    global application
+    if application is None:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        application = Application.builder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
+    return application
+
+# Use this function to get the application instance
+application = get_application()
 
 @app.get("/")
 async def root():
@@ -179,56 +190,59 @@ async def telegram_webhook(request: Request):
         # Create Update object
         update = Update.de_json(data, application.bot)
         
-        # Simple verification: if chat_id is negative, it's a group
-        if update.message and update.message.chat.id < 0:
-            print(f"Ignoring group message from chat {update.message.chat.id}")
-            return Response(status_code=200)
+        # Create new event loop for async operations
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         
-        if update.message and update.message.text:
-            if update.message.text.startswith('/'):
-                command = update.message.text.split()[0].lower()
-                if command == '/start':
-                    await start_command(update, None)
-                    return Response(status_code=200)
-                elif command == '/help':
-                    await help_command(update, None)
-                    return Response(status_code=200)
-                elif command == '/watchlist':
-                    await watchlist_command(update, None)
-                    return Response(status_code=200)
-                elif command == '/subscribe':
-                    await subscribe_command(update, None)
-                    return Response(status_code=200)
+        try:
+            # Simple verification: if chat_id is negative, it's a group
+            if update.message and update.message.chat.id < 0:
+                print(f"Ignoring group message from chat {update.message.chat.id}")
+                return Response(status_code=200)
             
-            # If not a command, process with Claude
-            from src.services.claude_client import ClaudeClient
-            from .airtable import AirtableClient
+            if update.message and update.message.text:
+                if update.message.text.startswith('/'):
+                    command = update.message.text.split()[0].lower()
+                    if command == '/start':
+                        await start_command(update, None)
+                    elif command == '/help':
+                        await help_command(update, None)
+                    elif command == '/watchlist':
+                        await watchlist_command(update, None)
+                    elif command == '/subscribe':
+                        await subscribe_command(update, None)
+                
+                # If not a command, process with Claude
+                else:
+                    from src.services.claude_client import ClaudeClient
+                    from .airtable import AirtableClient
+                    
+                    # Initialize clients
+                    claude = ClaudeClient()
+                    airtable = AirtableClient()
+                    
+                    # Get user data
+                    user_data = airtable.get_user(str(update.message.from_user.id))
+                    
+                    # Get Claude's response
+                    response = await claude.get_response(
+                        update.message.text,
+                        user_data
+                    )
+                    
+                    # Send Claude's response to user
+                    await update.message.reply_text(response["user_response"])
+                    
+                    # Process any Airtable operations if present
+                    if response.get("airtable_op"):
+                        op = response["airtable_op"]
+                        if op["operation"] == "add_to_watchlist":
+                            op["params"]["telegram_id"] = str(update.message.from_user.id)
+                
+        finally:
+            # Clean up the event loop
+            loop.close()
             
-            # Initialize clients
-            claude = ClaudeClient()
-            airtable = AirtableClient()
-            
-            # Get user data
-            user_data = airtable.get_user(str(update.message.from_user.id))
-            
-            # Get Claude's response
-            response = await claude.get_response(
-                update.message.text,
-                user_data
-            )
-            
-            # Send Claude's response to user
-            await update.message.reply_text(response["user_response"])
-            
-            # Process any Airtable operations if present
-            if response.get("airtable_op"):
-                op = response["airtable_op"]
-                if op["operation"] == "add_to_watchlist":
-                    # Add telegram_id if not in params
-                    op["params"]["telegram_id"] = str(update.message.from_user.id)
-                    # Execute operation
-                    # ... (implement operation handling)
-        
         return Response(status_code=200)
             
     except Exception as e:
