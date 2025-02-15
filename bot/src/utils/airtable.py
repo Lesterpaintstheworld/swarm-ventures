@@ -49,3 +49,11 @@ class AirtableClient:
             })
             return True
         return False
+        
+    def get_all_users(self):
+        """Get all users from Airtable"""
+        try:
+            return self.table.all()
+        except Exception as e:
+            print(f"Error fetching users from Airtable: {e}")
+            return []
