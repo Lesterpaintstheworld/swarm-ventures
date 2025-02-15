@@ -29,9 +29,5 @@
             "memory": 1024,
             "maxDuration": 10
         }
-    },
-    "logs": {
-        "access": true,
-        "debug": true
     }
 }
