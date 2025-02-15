@@ -1,0 +1,32 @@
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+
+export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirect to premium page for now
+    // You can remove this if you want to show the homepage content instead
+    router.push('/premium');
+  }, []);
+
+  return (
+    <>
+      <Head>
+        <title>SwarmVentures - Market Intelligence</title>
+        <meta name="description" content="Professional-grade market intelligence for Swarm traders" />
+      </Head>
+
+      <div className="min-h-screen bg-black text-silver">
+        <div className="max-w-6xl mx-auto px-4 py-12">
+          <div className="text-center">
+            <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-silver to-light-silver bg-clip-text text-transparent">
+              Loading...
+            </h1>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
