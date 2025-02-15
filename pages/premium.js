@@ -1,3 +1,4 @@
+'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -11,12 +12,19 @@ const Premium = () => {
   const wallet = useWallet();
   const [status, setStatus] = useState('initial');
   const [error, setError] = useState(null);
+  const [treasuryWallet, setTreasuryWallet] = useState(null);
 
-  const TREASURY_WALLET = new PublicKey(process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS);
+  useEffect(() => {
+    // Initialize treasury wallet after component mounts
+    if (process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS) {
+      setTreasuryWallet(new PublicKey(process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS));
+    }
+  }, []);
+
   const REQUIRED_SOL = 3;
 
   const handlePayment = async () => {
-    if (!wallet.connected || !ref) return;
+    if (!wallet.connected || !ref || !treasuryWallet) return;
     
     try {
       setStatus('processing');
@@ -29,7 +37,7 @@ const Premium = () => {
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: wallet.publicKey,
-          toPubkey: TREASURY_WALLET,
+          toPubkey: treasuryWallet,
           lamports: REQUIRED_SOL * LAMPORTS_PER_SOL,
         })
       );
