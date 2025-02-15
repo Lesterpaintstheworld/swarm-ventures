@@ -11,14 +11,20 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /start command"""
     welcome_message = (
         "🚀 Welcome to SwarmVentures Trading Bot!\n\n"
-        "I'll help you track market opportunities and manage your trading positions.\n\n"
+        "Track market opportunities and manage your trading positions.\n\n"
+        "Premium Features:\n"
+        "• Unlimited swarm tracking\n"
+        "• Real-time price alerts\n"
+        "• Revenue notifications\n"
+        "• Priority support\n\n"
+        "One-time payment: 3 SOL\n\n"
         "Available commands:\n"
         "/start - Show this welcome message\n"
         "/help - Show available commands\n"
+        "/subscribe - Get access\n"
         "/watchlist - View your watchlist\n"
         "/add <swarm> <token> - Track a new swarm\n"
         "/remove <swarm> <token> - Stop tracking a swarm\n"
-        "/subscribe - Get lifetime premium access\n"
     )
     
     await update.message.reply_text(welcome_message)
@@ -29,16 +35,16 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "📚 Available Commands:\n\n"
         "/start - Initialize the bot\n"
         "/help - Show this help message\n"
+        "/subscribe - Get access (3 SOL)\n"
         "/watchlist - View your tracked swarms\n"
         "/add <swarm> <token> - Track a new swarm\n"
-        "/remove <swarm> <token> - Stop tracking a swarm\n"
-        "/subscribe - Get lifetime premium access\n\n"
-        "Premium Benefits:\n"
-        "• Free: Track 1 swarm\n"
-        "• Premium (One-time 3 SOL):\n"
-        "  - Unlimited swarm tracking\n"
-        "  - Real-time price alerts\n"
-        "  - Revenue notifications"
+        "/remove <swarm> <token> - Stop tracking a swarm\n\n"
+        "Premium Features:\n"
+        "• Unlimited swarm tracking\n"
+        "• Real-time price alerts\n"
+        "• Revenue notifications\n"
+        "• Priority support\n\n"
+        "One-time payment: 3 SOL"
     )
     await update.message.reply_text(help_message)
 
@@ -52,7 +58,7 @@ async def subscribe_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = airtable.get_user(user_id)
     if user and user['fields'].get('status') == 'premium':
         await update.message.reply_text(
-            "✨ You already have lifetime premium access!\n\n"
+            "✨ You already have premium access!\n\n"
             "Use /watchlist to manage your tracked swarms."
         )
         return
@@ -62,13 +68,13 @@ async def subscribe_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     subscription_message = (
         "🌟 SwarmVentures Premium Access\n\n"
-        "Lifetime Benefits:\n"
+        "Features:\n"
         "• Unlimited swarm tracking\n"
         "• Real-time price alerts\n"
         "• Revenue notifications\n"
         "• Priority support\n\n"
         "One-time Payment: 3 SOL\n\n"
-        "To upgrade:\n"
+        "To get access:\n"
         "1. Click the payment link below\n"
         "2. Connect your Solana wallet\n"
         "3. Complete the payment\n\n"
@@ -85,12 +91,25 @@ async def watchlist_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     user = airtable.get_user(user_id)
     if not user:
-        await update.message.reply_text("Please use /start to initialize your account first.")
+        await update.message.reply_text(
+            "Please use /start to initialize your account first."
+        )
+        return
+        
+    if user['fields'].get('status') != 'premium':
+        await update.message.reply_text(
+            "⭐️ Premium Access Required\n\n"
+            "Track unlimited swarms with premium access:\n"
+            "• Real-time price alerts\n"
+            "• Revenue notifications\n"
+            "• Priority support\n\n"
+            "One-time payment: 3 SOL\n"
+            "Use /subscribe to get started!"
+        )
         return
     
     try:
         watchlist = json.loads(user['fields'].get('watchlist', '[]'))
-        status = user['fields'].get('status', 'free')
         
         message = "📋 Your Watchlist:\n\n"
         
@@ -103,10 +122,6 @@ async def watchlist_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     message += f"• {swarm_name.upper()} ({token.upper()})\n"
                 except ValueError:
                     message += f"• {swarm}\n"
-        
-        message += f"\nStatus: {'🌟 Premium' if status == 'premium' else '🆓 Free'}\n"
-        if status == 'free':
-            message += "\nUpgrade to premium to track unlimited swarms!\nUse /subscribe to learn more."
         
         await update.message.reply_text(message)
         
