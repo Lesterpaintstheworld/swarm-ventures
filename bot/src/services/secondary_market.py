@@ -30,25 +30,23 @@ class SecondaryMarketClient:
             )
             
             listings = []
-            if not response:
-                print("No response from RPC")
+            if not response or not isinstance(response.value, list):
+                print("No valid response from RPC")
                 return []
                 
-            # Handle response based on actual structure
-            for account in response:
+            # Handle response based on dictionary structure
+            for account_info in response.value:
                 try:
-                    if not hasattr(account, 'account') or not hasattr(account.account, 'data'):
+                    if not isinstance(account_info, dict):
                         continue
                         
-                    account_data = account.account.data
-                    if not account_data:
+                    account_data = account_info.get('account', {}).get('data', [])
+                    if not account_data or not isinstance(account_data, list):
                         continue
                         
                     listing_data = self._decode_listing_data(account_data[0])
                     if not listing_data:
                         continue
-                        
-                    listing_data = self._decode_listing_data(account_data[0])
                     listing = {
                         "id": listing_data["listing_id"],
                         "swarm_id": str(listing_data["pool"]),
