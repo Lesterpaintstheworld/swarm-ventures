@@ -1,7 +1,10 @@
 .metallic-button {
-  @apply bg-gradient-to-r from-silver to-light-silver 
-         text-black font-bold py-4 px-6 rounded-lg 
-         transition-all duration-200 hover:opacity-90;
+  background: linear-gradient(to right, #C0C0C0, #E8E8E8);
+  color: black;
+  font-weight: bold;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
 }
 
 .metallic-button:hover {
@@ -9,17 +12,25 @@
 }
 
 .card {
-  @apply bg-gradient-to-br from-dark-gray to-black 
-         p-8 rounded-2xl border border-silver/10;
+  background: linear-gradient(to bottom right, #1a1a1a, #000000);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(192,192,192,0.1);
 }
 
 .premium-feature {
-  @apply bg-gradient-to-br from-dark-gray to-black 
-         p-8 rounded-2xl border border-silver/10;
+  background: linear-gradient(to bottom right, #1a1a1a, #000000);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(192,192,192,0.1);
 }
 
 .container {
-  @apply max-w-7xl mx-auto px-4;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 /* Responsive adjustments */
