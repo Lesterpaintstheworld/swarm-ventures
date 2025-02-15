@@ -1,26 +1,15 @@
-import sys
 import os
 import asyncio
-from pathlib import Path
-
-# Add the project root to Python path
-project_root = str(Path(__file__).parent.parent)
-if project_root not in sys.path:
-    sys.path.append(project_root)
-
-# Now we can import our modules
-
-import time
 from fastapi import FastAPI, Request, Response, HTTPException
 from datetime import datetime, timedelta
 from telegram import Update
 from telegram.ext import Application
 import json
 from dotenv import load_dotenv
-# Import our modules after path setup
+
+# Local imports
 from .airtable import AirtableClient
-from src.services.claude_client import ClaudeClient
-from src.bot.commands import start_command, help_command, watchlist_command
+from .commands import start_command, help_command, watchlist_command
 
 # Load environment variables
 load_dotenv()
@@ -82,10 +71,6 @@ async def shutdown():
         print("Webhook removed")
     except Exception as e:
         print(f"Failed to remove webhook: {e}")
-from src.services.claude_client import ClaudeClient
-from src.utils.airtable import AirtableClient
-from src.bot.commands import start_command, help_command, watchlist_command
-
 # Load environment variables
 load_dotenv()
 
