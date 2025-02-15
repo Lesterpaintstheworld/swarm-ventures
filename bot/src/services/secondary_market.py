@@ -1,5 +1,6 @@
 from solana.rpc.async_api import AsyncClient
 from solders.pubkey import Pubkey as PublicKey
+from solana.rpc.types import MemcmpOpts
 import asyncio
 import json
 import base64
@@ -23,17 +24,17 @@ class SecondaryMarketClient:
             print(f"Program ID: {str(self.program_id)}")
             print(f"Discriminator: {discriminator}")
             
-            # Create the memcmp filter
-            memcmp = {
-                "offset": 0,
-                "bytes": discriminator
-            }
-        
-            # Make RPC call using the client's get_program_accounts method
+            # Create MemcmpOpts instance for the filter
+            memcmp_filter = MemcmpOpts(
+                offset=0,
+                bytes=discriminator_b58
+            )
+            
+            # Make RPC call with proper filter object
             response = await self.client.get_program_accounts(
                 self.program_id,
                 encoding="base64",
-                filters=[{"memcmp": memcmp}],
+                filters=[memcmp_filter],
                 commitment="confirmed"
             )
         
