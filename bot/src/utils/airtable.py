@@ -36,3 +36,16 @@ class AirtableClient:
         if user:
             return user['fields'].get('status', 'free')
         return 'free'
+        
+    def update_payment_details(self, telegram_id: str, details: dict):
+        """Update payment details for user"""
+        user = self.get_user(telegram_id)
+        if user:
+            self.table.update(user['id'], {
+                'payment_date': details['payment_date'],
+                'payment_amount': details['amount_paid'],
+                'transaction_id': details['transaction_signature'],
+                'payment_status': details['payment_status']
+            })
+            return True
+        return False
