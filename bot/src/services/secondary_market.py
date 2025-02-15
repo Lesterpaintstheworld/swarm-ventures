@@ -16,37 +16,47 @@ class SecondaryMarketClient:
         
     async def get_all_listings(self) -> List[Dict]:
         try:
-            # Create memcmp filter correctly
-            memcmp = {
-                "offset": 0,
-                "bytes": base58.b58encode(bytes.fromhex("26db")).decode('utf-8')
-            }
+            # Create memcmp filter as a list of dictionaries
+            filters = [
+                {
+                    "memcmp": {
+                        "offset": 0,
+                        "bytes": base58.b58encode(bytes.fromhex("26db")).decode('utf-8')
+                    }
+                }
+            ]
             
             # Get all accounts owned by the program
             response = await self.client.get_program_accounts(
                 self.program_id,
                 encoding="base64",
-                filters=[{"memcmp": memcmp}]
+                filters=filters  # Pass the filters list directly
             )
             
             listings = []
-            if not response or not isinstance(response.value, list):
+            if not response or not hasattr(response, 'value'):
                 print("No valid response from RPC")
                 return []
                 
-            # Handle response based on dictionary structure
+            # Handle response based on actual structure
             for account_info in response.value:
                 try:
-                    if not isinstance(account_info, dict):
+                    # Extract account data safely
+                    if isinstance(account_info, dict):
+                        account_data = account_info.get('account', {}).get('data', [])
+                    else:
+                        account_data = getattr(getattr(account_info, 'account', None), 'data', [])
+                    
+                    if not account_data:
                         continue
                         
-                    account_data = account_info.get('account', {}).get('data', [])
-                    if not account_data or not isinstance(account_data, list):
-                        continue
-                        
-                    listing_data = self._decode_listing_data(account_data[0])
+                    # Get first element if it's a list
+                    data_to_decode = account_data[0] if isinstance(account_data, list) else account_data
+                    
+                    listing_data = self._decode_listing_data(data_to_decode)
                     if not listing_data:
                         continue
+                        
                     listing = {
                         "id": listing_data["listing_id"],
                         "swarm_id": str(listing_data["pool"]),
@@ -64,7 +74,7 @@ class SecondaryMarketClient:
                 except Exception as e:
                     print(f"Error decoding listing: {e}")
                     continue
-                
+                    
             return listings
             
         except Exception as e:
