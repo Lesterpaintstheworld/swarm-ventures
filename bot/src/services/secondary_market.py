@@ -3,14 +3,16 @@ from solders.pubkey import Pubkey as PublicKey
 import asyncio
 import json
 import base64
+import base58
 import struct
 from typing import List, Dict
 
 class SecondaryMarketClient:
     def __init__(self, rpc_url: str = "https://api.mainnet-beta.solana.com"):
         self.client = AsyncClient(rpc_url)
-        # Program ID from the IDL
-        self.program_id = PublicKey("4dWhc3nkP4WeQkv7ws4dAxp6sNTBLCuzhTGTf1FynDcf")
+        # Convert base58 string to bytes then to PublicKey
+        program_id_bytes = base58.b58decode("4dWhc3nkP4WeQkv7ws4dAxp6sNTBLCuzhTGTf1FynDcf")
+        self.program_id = PublicKey(program_id_bytes)
         
     async def get_all_listings(self) -> List[Dict]:
         try:
@@ -75,15 +77,15 @@ class SecondaryMarketClient:
         offset = 8
         
         # Read pool PublicKey (32 bytes)
-        pool = PublicKey(data[offset:offset+32])
+        pool = PublicKey(bytes(data[offset:offset+32]))
         offset += 32
         
         # Read seller PublicKey (32 bytes)
-        seller = PublicKey(data[offset:offset+32])
+        seller = PublicKey(bytes(data[offset:offset+32]))
         offset += 32
         
         # Read shareholder PublicKey (32 bytes)
-        shareholder = PublicKey(data[offset:offset+32])
+        shareholder = PublicKey(bytes(data[offset:offset+32]))
         offset += 32
         
         # Read numberOfShares (u64 - 8 bytes)
