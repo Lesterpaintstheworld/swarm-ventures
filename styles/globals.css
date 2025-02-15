@@ -231,7 +231,7 @@ input, select {
   @apply grid-cols-1;
 }
 
-.lg\:grid-cols-2 {
+.grid-cols-lg-2 {
   @apply lg:grid-cols-2;
 }
 
@@ -240,11 +240,11 @@ input, select {
 }
 
 /* Ensure payment card sticks properly */
-.lg\:sticky {
+.sticky-lg {
   @apply lg:sticky;
 }
 
-.lg\:top-8 {
+.top-8-lg {
   @apply lg:top-8;
 }
 
