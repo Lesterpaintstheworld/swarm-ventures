@@ -55,7 +55,7 @@ async def notify_new_listing():
             f"Total Price: {mock_listing['total_price']:,.2f} {mock_listing['token']['label']}\n"
             f"Seller: {mock_listing['seller']}\n\n"
             f"Listing ID: {mock_listing['listing_id']}\n\n"
-            "🔗 View Listing: https://swarmventures.universalbasiccompute.ai/market"
+            f"🔗 View Listing: https://swarms.universalbasiccompute.ai/invest/{mock_listing['swarm_id']}"
         )
 
         # Get all users from Airtable
