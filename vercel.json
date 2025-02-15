@@ -2,32 +2,14 @@
     "version": 2,
     "builds": [
         {
-            "src": "api/*.py",
-            "use": "@vercel/python",
-            "config": {
-                "maxLambdaSize": "15mb",
-                "runtime": "python3.9"
-            }
-        },
-        {
             "src": "package.json",
             "use": "@vercel/next"
         }
     ],
     "routes": [
         {
-            "src": "/premium",
-            "dest": "/premium"
-        },
-        {
             "src": "/api/(.*)",
             "dest": "/api/$1"
         }
-    ],
-    "functions": {
-        "api/*.py": {
-            "memory": 1024,
-            "maxDuration": 10
-        }
-    }
+    ]
 }
