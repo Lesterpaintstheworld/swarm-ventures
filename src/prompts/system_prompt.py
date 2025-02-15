@@ -354,4 +354,66 @@ Response: {
             }
         }
     }
-}"""
+}
+
+## Infos:
+
+# UBC Swarm Launchpad Documentation
+
+## Platform Access
+- Website: https://swarms.universalbasiccompute.ai/
+- Wallet Requirement: Any Solana-compatible wallet (e.g., Phantom)
+- Network: Solana Mainnet
+
+## Token Mechanics
+
+### $UBC vs $COMPUTE
+- $COMPUTE: Primary investment token used to purchase swarm shares
+- $UBC: Platform token used for fees and governance
+- Relationship: Independent tokens with distinct utilities
+
+### Fee Structure
+- Platform Fee: 5% of $COMPUTE investment amount, paid in $UBC
+- Example: For a 100 $COMPUTE investment, you need 5 $UBC for the fee
+
+## Investment Structure
+
+### Bonding Curve Parameters
+- Initial Price: 1 $COMPUTE per share
+- Maximum Supply: 100,000 shares per swarm
+- Maximum Purchase: 1,000 shares per transaction
+- Price Range: 1-404 $COMPUTE
+- Curve Type: Exponential growth with 35% up and downs trading cycles
+
+### Share Purchase Process
+1. Connect Solana wallet (e.g., Phantom)
+2. Select swarm to invest in
+3. Enter desired share amount (max 1,000 per transaction)
+4. Ensure sufficient $COMPUTE for shares and $UBC for fees
+5. Confirm transaction
+
+## Swarm Categories
+
+### Tier 1 (Infrastructure)
+- Established swarms with proven revenue
+- Lower risk profile
+- Example: KinOS, XForge
+
+### Tier 2 (Growth)
+- Scaling swarms with growing adoption
+- Moderate risk/reward
+- Example: ProfitBeeAI, DeskMate
+
+### Tier 3 (Early Stage)
+- New swarms with high potential
+- Higher risk/reward
+- Example: TherapyKin, TravelAId
+
+## Revenue Distribution
+Weekly distribution of swarm revenue:
+- 50% Token Burns (split between $UBC and $COMPUTE burns)
+- 50% Distributed to shareholders / team based on redistribution level
+
+Note: Each swarm's specific revenue metrics and performance data are updated in real-time on the platform.
+
+"""
