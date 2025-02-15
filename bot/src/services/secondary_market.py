@@ -23,37 +23,38 @@ class SecondaryMarketClient:
             print(f"Program ID: {str(self.program_id)}")
             print(f"Discriminator: {discriminator}")
             
-            # Get all accounts owned by the program
-            try:
-                response = await self.client.get_program_accounts(
+            # Get all accounts owned by the program using dict format
+            rpc_request = {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "getProgramAccounts",
+                "params": [
                     str(self.program_id),
-                    encoding="base64",
-                    filters=[{
-                        "memcmp": {
-                            "offset": 0,
-                            "bytes": discriminator
-                        }
-                    }]
-                )
-                
-                print("Raw RPC Response:")
-                print(response)
-                
-            except Exception as e:
-                print(f"RPC call failed: {str(e)}")
-                print(f"Error type: {type(e)}")
-                return []
-                
+                    {
+                        "encoding": "base64",
+                        "filters": [
+                            {
+                                "memcmp": {
+                                    "offset": 0,
+                                    "bytes": discriminator
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+            
+            # Make raw RPC call
+            response = await self.client._provider.make_request(rpc_request)
+            print("Raw RPC Response:", response)
+            
             listings = []
             
-            # Handle response data
-            if isinstance(response, dict):
-                print("Response is a dictionary")
-                accounts = response.get('result', [])
-            else:
-                print(f"Response is type: {type(response)}")
-                accounts = getattr(response, 'value', [])
+            if not response or 'result' not in response:
+                print("No valid response from RPC")
+                return []
                 
+            accounts = response.get('result', [])
             print(f"Found {len(accounts)} accounts")
                 
             if not accounts:
@@ -63,15 +64,12 @@ class SecondaryMarketClient:
             # Process each account
             for account in accounts:
                 try:
-                    # Extract account data safely
-                    if isinstance(account, dict):
-                        account_data = account.get('account', {}).get('data', [])
-                        if isinstance(account_data, list) and account_data:
-                            data = account_data[0]
-                        else:
-                            data = account_data
+                    # Extract account data
+                    account_data = account.get('account', {}).get('data', [])
+                    if isinstance(account_data, list):
+                        data = account_data[0] if account_data else None
                     else:
-                        data = getattr(getattr(account, 'account', None), 'data', [None])[0]
+                        data = account_data
                     
                     if not data:
                         continue
