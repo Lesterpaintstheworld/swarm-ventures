@@ -119,18 +119,19 @@ const Premium = () => {
       </Head>
 
       <main className="min-h-screen bg-gradient-to-br from-black via-dark-gray to-black">
+        {/* Center everything in a container */}
         <div className="container mx-auto px-4 py-16 md:py-24">
-          {/* Hero Section */}
-          <div className="text-center mb-16">
+          {/* Hero Section - Centered */}
+          <div className="text-center mb-16 max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text">
               Premium Intelligence
             </h1>
-            <p className="text-xl md:text-2xl text-silver/70 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-silver/70">
               Get professional-grade market intelligence and join the network of informed traders.
             </p>
           </div>
 
-          {/* Main Content */}
+          {/* Two Column Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
             {/* Features Column */}
             <div className="space-y-8">
