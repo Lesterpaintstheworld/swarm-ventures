@@ -21,7 +21,7 @@ class SecondaryMarketClient:
                 {
                     "memcmp": {
                         "offset": 0,
-                        "bytes": "26db"  # First 2 bytes of the discriminator in hex
+                        "bytes": base58.b58encode(bytes.fromhex("26db")).decode('utf-8')
                     }
                 }
             ]
@@ -29,7 +29,6 @@ class SecondaryMarketClient:
             response = await self.client.get_program_accounts(
                 self.program_id,
                 encoding="base64",
-                data_size=None,  # Remove data_slice and use data_size instead
                 commitment="confirmed",
                 filters=filters
             )
