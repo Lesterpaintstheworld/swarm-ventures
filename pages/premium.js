@@ -19,6 +19,16 @@ const Premium = () => {
   const [treasuryWallet, setTreasuryWallet] = useState(null);
 
   useEffect(() => {
+    if (!ref) {
+      setError('Please access this page through the Telegram bot');
+    } else if (!wallet.connected) {
+      setError('Please connect your wallet to continue');
+    } else {
+      setError(null);
+    }
+  }, [ref, wallet.connected]);
+
+  useEffect(() => {
     if (process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS) {
       setTreasuryWallet(new PublicKey(process.env.NEXT_PUBLIC_TREASURY_WALLET_ADDRESS));
     }

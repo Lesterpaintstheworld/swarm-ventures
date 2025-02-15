@@ -250,11 +250,18 @@ input, select {
 /* Wallet Button Override */
 .wallet-adapter-button {
   @apply premium-button !important;
-}
-
-.wallet-adapter-button-trigger {
   background: linear-gradient(to right, var(--color-silver), var(--color-light-silver)) !important;
   color: black !important;
+}
+
+.wallet-adapter-button:not([disabled]):hover {
+  @apply opacity-90 !important;
+  background: linear-gradient(to right, var(--color-silver), var(--color-light-silver)) !important;
+}
+
+.wallet-adapter-button[disabled] {
+  @apply opacity-50 cursor-not-allowed !important;
+  background: linear-gradient(to right, var(--color-silver), var(--color-light-silver)) !important;
 }
 
 .wallet-adapter-modal {
