@@ -15,5 +15,23 @@ class AirtableClient:
         return self.table.create({
             "telegram_id": telegram_id,
             "username": username,
-            "status": "active"
+            "status": "free"
         })
+        
+    def update_user_status(self, telegram_id: str, status: str):
+        """Update user subscription status"""
+        user = self.get_user(telegram_id)
+        if user:
+            self.table.update(user['id'], {
+                'status': status,
+                'subscription_updated': datetime.now().isoformat()
+            })
+            return True
+        return False
+
+    def get_subscription_status(self, telegram_id: str) -> str:
+        """Get user's subscription status"""
+        user = self.get_user(telegram_id)
+        if user:
+            return user['fields'].get('status', 'free')
+        return 'free'
