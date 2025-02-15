@@ -1,15 +1,2 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-venv/
-.env
-
-# IDE
-.vscode/
-.idea/
-
-# Logs
-*.log
-
 .aider*
+.env

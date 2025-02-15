@@ -1,274 +1,158 @@
-# AI-Powered Swarm Trading Assistant
+# Market Notification Service Technical Specification
 
-## Marketing Copy
+## Phase 1: Core Notification System
 
-### Hero Message
-24/7 Superhuman Trading Intelligence
+### Telegram Bot Commands
 
-### Subtitle
-Get 75% of trading profits every week from our superhuman AI traders working round-the-clock. 
-While humans sleep, our AI keeps trading, analyzing, and generating profits.
+1. `/start` 
+- Welcomes user
+- Explains service
+- Checks if user is in Airtable allowlist
 
-### Key Benefits
-🤖 Superhuman Capabilities
-• Processes millions of data points per second
-• Never misses a trading opportunity 
-• Zero emotional bias
+2. `/watchlist`
+- Shows current watched swarms
+- Displays current price thresholds
 
-💰 Weekly Profit Share
-• 75% of profits distributed to investors
-• Automatic USDC payments every Friday
-• Full transparency on all trades
+3. `/help`
+- Lists available commands
+- Provides command usage examples
 
-⚡ 24/7 Market Coverage
-• Trading while you sleep
-• Instant reaction to market moves
-• Multi-market monitoring
+### n8n Workflows
 
-### Call to Action
-Start Earning With Our AI Traders → Invest Now
+1. User Authentication Flow:
+```
+Telegram Trigger → Airtable Query (allowlist) → Response Handler
+```
 
-## Overview
-Implementation of an LLM-driven trading assistant with natural language interaction, intelligent swarm tracking, and automated portfolio management.
+2. Price Monitor Flow (runs every 5 minutes):
+```
+Schedule → Airtable Query (watchlists) → HTTP Request (price data) → Filter (threshold check) → Telegram Alert
+```
 
-## User Stories
+3. Status Update Flow (daily):
+```
+Schedule → Airtable Query (active users) → Generate Report → Telegram Alert
+```
 
-### LLM-Driven Architecture
+### Airtable Structure
 
-#### As a developer, I want to implement an LLM-driven bot architecture
-- Use Claude-3-haiku for all user interactions
-- Two-part response system:
-  1. Natural language response to user
-  2. Structured Airtable operation instructions
-- System prompt defines:
-  - Bot personality and capabilities
-  - Available Airtable operations
-  - Business rules (e.g., 2 free swarms)
-  - Response format requirements
-- Example operations:
-  ```json
-  {
-    "user_response": "string",  // Message to send to user
-    "airtable_op": {           // Optional operation
-      "operation": "string",    // Operation name
-      "params": {}             // Operation parameters
-    }
-  }
-  ```
-- Available operations:
-  - get_user
-  - create_user
-  - add_to_watchlist
-  - remove_from_watchlist
-  - update_preferences
+1. Users Table:
+- TelegramID
+- Username
+- Status (active/inactive)
+- JoinDate
 
-#### As a user, I want natural language interaction
-- Free-form command input
-- Context-aware responses
-- Helpful suggestions
-- Error correction
-- Examples:
-  - "Add KINKONG with USDC"
-  - "What's in my watchlist?"
-  - "Remove KINKONG from tracking"
-  - "How many free slots do I have?"
+2. Watchlists Table:
+- TelegramID
+- SwarmID
+- MaxPrice
+- NotificationEnabled
 
-### Subscription System
+## Phase 2: Full Automation
 
-#### As a user, I want to connect my wallet using /connect command so that I can verify ownership
-- Bot generates unique message to sign: 'KinKong verification {random_uuid}'
-- User signs with Solana wallet via sign.solana.com
-- Bot verifies signature using @solana/web3.js
-- Bot stores wallet address and Telegram ID in users.json
-- Success message shows verified wallet address
-- Error message prompts to try again if verification fails
+### Additional Telegram Commands
 
-#### As a user, I want to check my subscription status using /status command
-- View connected wallet address (first 4 + last 4 chars)
-- See current USDC balance from Helius API
-- Check subscription status (active if balance >= 1,000 USDC)
-- View last profit distribution amount and date
-- Show error if wallet not connected
+1. `/subscribe`
+- Initiates subscription process
+- Displays pricing information
+- Generates payment link
 
-#### As a user, I want to subscribe by sending USDC
-- Minimum 1,000 USDC requirement
-- Transfer to KinKong wallet (FnWyN4t1aoZWFjEEBxopMaAgk5hjL5P3K65oc2T9FBJY)
-- Helius webhook monitors for incoming transfers
-- n8n workflow filters transfers >= 1,000 USDC
-- Welcome message includes portfolio tracking link
-- Store subscription date and amount in database
+2. `/add <swarm> <price>`
+- Adds swarm to watchlist
+- Sets price threshold
 
-### Portfolio Management
+3. `/remove <swarm>`
+- Removes swarm from watchlist
 
-#### As a user, I want to track my portfolio in real-time
-- View current positions with entry prices
-- Check profit/loss per position
-- Monitor weekly distributions with dates
-- Access full trading history with timestamps
-- Filter trades by date range
-- Export data in CSV format
+4. `/settings`
+- Manages notification preferences
+- Updates price thresholds
 
-#### As a user, I want to receive weekly profit distributions
-- 75% profit share calculated every Friday
-- Automatic USDC distribution via smart contract
-- Distribution records stored on-chain
-- Performance updates include:
-  - Weekly profit amount
-  - Distribution amount (75%)
-  - New portfolio value
-  - Transaction hash
+5. `/status`
+- Shows subscription status
+- Displays usage statistics
 
-### Trading System
+### Additional n8n Workflows
 
-#### As an admin, I want to monitor whale movements
-- Track wallets with > $1M in AI tokens
-- Analyze smart money flow patterns:
-  - Buy/sell volume ratios
-  - Token accumulation rates
-  - Position sizing patterns
-  - Trading frequency
-- Monitor DEX liquidity changes:
-  - Pool depth changes
-  - Liquidity provider actions
-  - Price impact analysis
-- Track token velocity metrics:
-  - Transaction frequency
-  - Volume patterns
-  - Holder turnover
+1. Subscription Management Flow:
+```
+Payment Webhook → Update Airtable → Send Welcome → Enable Monitoring
+```
 
-#### As an admin, I want to detect market opportunities
-- Focus on top 5 AI tokens by market cap
-- Trade only during uptrends defined by:
-  - 20-day moving average positive slope
-  - RSI between 40-70
-  - Increasing volume trend
-- Maximum 3 positions at once with:
-  - 2% max position size
-  - 5% stop-loss per trade
-  - 15% take-profit targets
-- Strict stop-loss implementation:
-  - Automated execution
-  - No manual overrides
-  - Immediate order placement
+2. Analytics Flow (weekly):
+```
+Schedule → Collect Metrics → Generate Report → Store Results → Alert Admin
+```
 
-### Technical Implementation
+3. Auto-renewal Flow:
+```
+Schedule → Check Expiring → Payment Request → Update Status
+```
 
-#### As a user, I want to try the service with a free trial
-- First 2 swarm additions are free
-- Counter tracks number of swarms added
-- Warning message at final free slot
-- Subscription required after 2 swarms
-- Clear messaging about remaining free slots
-- Easy upgrade path when limit reached
+### Extended Airtable Structure
 
-#### As a developer, I want to implement USDC transfer monitoring
-- Helius webhook configuration:
-  - Endpoint: /webhook/transfers
-  - Filter: USDC token only
-  - Minimum amount: 1,000 USDC
-- n8n workflow steps:
-  - Receive webhook data
-  - Extract sender address
-  - Verify amount >= 1,000
-  - Update subscriber database
-  - Trigger welcome message
-- Automatic subscriber updates:
-  - Store subscription timestamp
-  - Record transfer amount
-  - Update user status
-  - Send confirmation
+1. Subscriptions Table:
+- TelegramID
+- PlanType
+- StartDate
+- EndDate
+- PaymentStatus
 
-#### As a developer, I want to implement secure data storage
-- Store user data in JSON format:
-  ```json
-  {
-    "telegramId": "string",
-    "walletAddress": "string",
-    "subscriptionDate": "ISO-8601",
-    "lastDistribution": {
-      "amount": "number",
-      "date": "ISO-8601",
-      "txHash": "string"
-    },
-    "status": "active|inactive"
-  }
-  ```
-- Track wallet addresses with verification status
-- Monitor subscription dates for reporting
-- Record all distributions with transaction hashes
+2. Analytics Table:
+- Date
+- ActiveUsers
+- AlertsSent
+- ResponseRate
 
-### Technical Components
+## Implementation Priority
 
-#### Whale Tracking System
-- Real-time transaction monitoring
-- Large holder analysis
-- Movement pattern detection
-- Alert system
+Phase 1 (Days 1-3):
+1. Basic bot setup with /start, /watchlist, /help
+2. Price monitoring workflow
+3. Manual user management via Airtable
 
-#### Market Opportunity Detection
-- AI token market analysis
-- Trend identification
-- Entry/exit point calculation
-- Risk assessment
+Phase 2 (Days 4-5):
+1. Subscription commands
+2. Payment integration
+3. Analytics system
 
-#### Risk Management Protocols
-- Position size limits
-- Stop-loss automation
-- Portfolio diversification rules
-- Exposure management
+## Technical Requirements
 
-#### Portfolio Optimization Tools
-- Performance analytics
-- Risk-adjusted returns
-- Rebalancing automation
-- Distribution calculations
+1. Infrastructure:
+- n8n instance on KinOS
+- Telegram Bot API access
+- Airtable API integration
 
-## Phasing Strategy
+2. Data Storage:
+- Airtable for user management
+- n8n for workflow state
+- Temporary cache for price data
 
-### Phase 1 - Core Notification System (3 days)
-- Telegram bot implementation
-- Watchlist management (manual entry via Airtable)
-- Price threshold monitoring
-- Direct trading page links
+3. Monitoring:
+- Workflow execution logs
+- Alert delivery confirmation
+- Error tracking
 
-Benefits:
-- Immediate value delivery to users
-- Early feedback collection
-- Manual user onboarding via Airtable
-- Opportunity to refine offering
+## Security Considerations
 
-### Phase 2 - Full Automation (2 days)
-- Self-service subscription system
+1. User Authentication:
+- Telegram user verification
+- Airtable access control
+- API key management
+
+2. Data Protection:
+- Encrypted communication
+- Rate limiting
+- Access logging
+
+## Testing Strategy
+
+1. Phase 1:
+- Command response accuracy
+- Price threshold triggers
+- Alert delivery timing
+
+2. Phase 2:
+- Subscription flow
 - Payment processing
-- User management automation
-- Analytics dashboard
-
-## Implementation Timeline
-
-### Phase 1 (Days 1-3)
-#### Day 1: Bot Setup
-- Telegram bot implementation
-- Basic command structure
-- Integration with Airtable
-
-#### Day 2: Monitoring System
-- Price monitoring implementation
-- Threshold configuration
-- Alert system setup
-
-#### Day 3: User Interface
-- Trading page link generation
-- Alert formatting
-- Initial user testing
-
-### Phase 2 (Days 4-5)
-#### Day 4: Automation
-- Subscription system implementation
-- Payment processing setup
-- User database migration
-
-#### Day 5: Dashboard & Testing
-- Analytics dashboard development
-- System integration testing
-- Performance optimization
-- Security review
+- Analytics accuracy
