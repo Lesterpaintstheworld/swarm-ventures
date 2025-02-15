@@ -40,7 +40,7 @@ class SecondaryMarketClient:
                     if not account.get("account") or not account["account"].get("data"):
                         continue
                     
-                    listing_data = self._decode_listing_data(account["account"]["data"][0])
+                    listing_data = self._decode_listing_data(account.account.data[0])
                     listing = {
                         "id": listing_data["listing_id"],
                         "swarm_id": str(listing_data["pool"]),
