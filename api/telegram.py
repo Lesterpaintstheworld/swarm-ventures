@@ -1,6 +1,7 @@
 import os
 import time
 import asyncio
+import json
 from fastapi import FastAPI, Request, Response, HTTPException
 from datetime import datetime, timedelta
 from telegram import Update
@@ -36,6 +37,13 @@ async def add_process_time_header(request: Request, call_next):
     response = await call_next(request)
     process_time = time.time() - start_time
     print(f"Request processed in {process_time:.2f} seconds")
+    print(json.dumps({
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "method": request.method,
+        "path": request.url.path,
+        "process_time": f"{process_time:.2f}s",
+        "client_ip": request.client.host
+    }))
     response.headers["X-Process-Time"] = str(process_time)
     return response
 
