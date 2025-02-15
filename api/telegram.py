@@ -8,6 +8,8 @@ project_root = str(Path(__file__).parent.parent)
 if project_root not in sys.path:
     sys.path.append(project_root)
 
+# Now we can import our modules
+
 import time
 from fastapi import FastAPI, Request, Response, HTTPException
 from datetime import datetime, timedelta
@@ -15,6 +17,7 @@ from telegram import Update
 from telegram.ext import Application
 import json
 from dotenv import load_dotenv
+# Import our modules after path setup
 from src.services.claude_client import ClaudeClient
 from src.utils.airtable import AirtableClient
 from src.bot.commands import start_command, help_command, watchlist_command
