@@ -19,25 +19,42 @@ class SecondaryMarketClient:
             # Encode discriminator bytes correctly
             discriminator = base58.b58encode(bytes([0x26, 0xdb])).decode('utf-8')
             
-            # Get all accounts owned by the program
-            response = await self.client.get_program_accounts(
-                str(self.program_id),
-                encoding="base64",
-                filters=[{
-                    "memcmp": {
-                        "offset": 0,
-                        "bytes": discriminator
-                    }
-                }]
-            )
+            print("Making RPC call with params:")
+            print(f"Program ID: {str(self.program_id)}")
+            print(f"Discriminator: {discriminator}")
             
+            # Get all accounts owned by the program
+            try:
+                response = await self.client.get_program_accounts(
+                    str(self.program_id),
+                    encoding="base64",
+                    filters=[{
+                        "memcmp": {
+                            "offset": 0,
+                            "bytes": discriminator
+                        }
+                    }]
+                )
+                
+                print("Raw RPC Response:")
+                print(response)
+                
+            except Exception as e:
+                print(f"RPC call failed: {str(e)}")
+                print(f"Error type: {type(e)}")
+                return []
+                
             listings = []
             
             # Handle response data
             if isinstance(response, dict):
+                print("Response is a dictionary")
                 accounts = response.get('result', [])
             else:
+                print(f"Response is type: {type(response)}")
                 accounts = getattr(response, 'value', [])
+                
+            print(f"Found {len(accounts)} accounts")
                 
             if not accounts:
                 print("No accounts found")
