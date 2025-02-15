@@ -193,6 +193,9 @@ async def telegram_webhook(request: Request):
                     elif command == '/watchlist':
                         await watchlist_command(update, None)
                         return Response(status_code=200)
+                    elif command == '/subscribe':
+                        await subscribe_command(update, None)
+                        return Response(status_code=200)
                 
                 # If not a command, process with Claude
                 from src.services.claude_client import ClaudeClient
