@@ -1,5 +1,5 @@
 import { Connection, PublicKey } from '@solana/web3.js';
-import { AirtableClient } from '../../utils/airtable';
+import { AirtableClient } from '../../utils/airtable.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
