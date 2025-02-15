@@ -209,102 +209,192 @@
                 padding: 2rem 1rem;
             }
         }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+        }
+
+        .metallic-border {
+            border: 1px solid rgba(192,192,192,0.3);
+            box-shadow: 
+                0 0 10px rgba(192,192,192,0.1),
+                inset 0 0 20px rgba(192,192,192,0.1);
+        }
+
+        .glow-hover:hover {
+            box-shadow: 
+                0 0 15px rgba(192,192,192,0.2),
+                inset 0 0 25px rgba(192,192,192,0.2);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.95)),
+                        url('https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1920');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, var(--color-black));
+        }
+
+        .feature-card {
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .premium-badge {
+            background: var(--gradient-metallic);
+            color: var(--color-black);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .stat {
+            padding: 1.5rem;
+            background: rgba(192,192,192,0.05);
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, var(--color-silver), var(--color-light-silver));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body>
     <section class="hero">
-        <h1>SwarmVentures Market Notification Service</h1>
+        <h1>SwarmVentures Elite Market Intelligence</h1>
         <p class="subtitle">
-            Get real-time alerts for swarm market opportunities and price movements.<br/>
-            Never miss a trading opportunity with our automated notification system.
+            Gain the competitive edge in Swarm markets with professional-grade alerts and analytics.<br/>
+            Join the elite network of informed traders and investors.
         </p>
-        <button class="cta-primary">Start Tracking Markets</button>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">24/7</div>
+                <p>Real-time Monitoring</p>
+            </div>
+            <div class="stat">
+                <div class="stat-number">100+</div>
+                <p>Active Traders</p>
+            </div>
+            <div class="stat">
+                <div class="stat-number">±0.1%</div>
+                <p>Price Accuracy</p>
+            </div>
+        </div>
+        <button class="cta-primary glow-hover">Access Premium Intelligence</button>
     </section>
 
-    <section class="features">
-        <div class="feature-card">
-            <div class="icon">🔔</div>
-            <h3>Real-Time Alerts</h3>
+    <section class="features gradient-bg">
+        <div class="feature-card metallic-border glow-hover">
+            <span class="premium-badge">PREMIUM</span>
+            <div class="icon">⚡</div>
+            <h3>Instant Alerts</h3>
             <ul>
-                <li>Price movement notifications</li>
-                <li>New swarm listings</li>
-                <li>Market opportunity alerts</li>
+                <li>Price breakout notifications</li>
+                <li>New cycle alerts</li>
+                <li>Revenue distribution updates</li>
+                <li>Custom price threshold alerts</li>
             </ul>
         </div>
 
-        <div class="feature-card">
+        <div class="feature-card metallic-border glow-hover">
+            <span class="premium-badge">PREMIUM</span>
             <div class="icon">📊</div>
-            <h3>Market Tracking</h3>
+            <h3>Advanced Analytics</h3>
             <ul>
-                <li>Custom price thresholds</li>
-                <li>Watchlist management</li>
-                <li>Performance monitoring</li>
+                <li>Real-time market analysis</li>
+                <li>Revenue trend tracking</li>
+                <li>Volume analysis</li>
+                <li>Performance metrics</li>
             </ul>
         </div>
 
-        <div class="feature-card">
-            <div class="icon">🤖</div>
-            <h3>Telegram Integration</h3>
+        <div class="feature-card metallic-border glow-hover">
+            <span class="premium-badge">PREMIUM</span>
+            <div class="icon">🎯</div>
+            <h3>Smart Tracking</h3>
             <ul>
-                <li>Easy command interface</li>
-                <li>Instant notifications</li>
-                <li>Secure authentication</li>
+                <li>Unlimited swarm tracking</li>
+                <li>Customizable alerts</li>
+                <li>Priority notifications</li>
+                <li>Portfolio overview</li>
             </ul>
         </div>
     </section>
 
-    <section class="commands">
-        <h2>Available Commands</h2>
+    <section class="commands gradient-bg metallic-border">
+        <h2>Professional Trading Commands</h2>
         <div class="command-list">
-            <div class="command">
-                <code>/start</code>
-                <p>Initialize bot and check allowlist status</p>
+            <div class="command metallic-border glow-hover">
+                <code>/track</code>
+                <p>Set up advanced market tracking with custom parameters</p>
             </div>
-            <div class="command">
-                <code>/watchlist</code>
-                <p>View your tracked swarms and price thresholds</p>
+            <div class="command metallic-border glow-hover">
+                <code>/analytics</code>
+                <p>Access detailed market analytics and insights</p>
             </div>
-            <div class="command">
-                <code>/help</code>
-                <p>List all available commands and usage examples</p>
+            <div class="command metallic-border glow-hover">
+                <code>/alerts</code>
+                <p>Configure your personalized alert system</p>
             </div>
-            <div class="command">
-                <code>/add &lt;swarm&gt; &lt;price&gt;</code>
-                <p>Add swarm to watchlist with price threshold</p>
-            </div>
-            <div class="command">
-                <code>/remove &lt;swarm&gt;</code>
-                <p>Remove swarm from watchlist</p>
+            <div class="command metallic-border glow-hover">
+                <code>/portfolio</code>
+                <p>View your complete portfolio performance</p>
             </div>
         </div>
     </section>
 
-    <section class="how-it-works">
-        <h2>How It Works</h2>
+    <section class="how-it-works gradient-bg">
+        <h2>Elite Trading Experience</h2>
         <div class="steps">
-            <div class="step">
+            <div class="step metallic-border glow-hover">
                 <div class="number">1</div>
                 <h3>Connect</h3>
-                <p>Start bot with /start command</p>
+                <p>Link your account to our premium alert system</p>
             </div>
-            <div class="step">
+            <div class="step metallic-border glow-hover">
                 <div class="number">2</div>
-                <h3>Configure</h3>
-                <p>Set up your watchlist and alerts</p>
+                <h3>Customize</h3>
+                <p>Set your personal trading parameters</p>
             </div>
-            <div class="step">
+            <div class="step metallic-border glow-hover">
                 <div class="number">3</div>
-                <h3>Monitor</h3>
-                <p>Receive real-time market alerts</p>
+                <h3>Trade</h3>
+                <p>Execute informed trades with real-time intelligence</p>
             </div>
         </div>
     </section>
 
-    <section class="final-cta">
-        <h2>Start Monitoring Markets Now</h2>
-        <p>Get instant access to market notifications</p>
-        <button class="cta-primary">Launch Telegram Bot</button>
-        <p class="disclaimer">Requires Telegram account</p>
+    <section class="final-cta gradient-bg metallic-border">
+        <h2>Join the Elite</h2>
+        <p>Get access to professional-grade market intelligence</p>
+        <button class="cta-primary glow-hover">Activate Premium Access</button>
+        <p class="disclaimer">Limited spots available • Secure your access now</p>
     </section>
 </body>
 </html>
