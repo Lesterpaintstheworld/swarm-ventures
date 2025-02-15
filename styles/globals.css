@@ -191,19 +191,23 @@ input, select {
 
 /* Wallet Button Overrides */
 .wallet-adapter-button {
-  @apply !bg-gradient-to-r from-silver to-light-silver 
-         !text-black !font-bold !py-4 !px-6 !rounded-lg 
-         !transition-all !duration-200 hover:!opacity-90;
+  @apply bg-gradient-to-r from-silver to-light-silver 
+         text-black font-bold py-4 px-6 rounded-lg 
+         transition-all duration-200;
+}
+
+.wallet-adapter-button:hover {
+  @apply opacity-90;
 }
 
 .wallet-adapter-modal {
-  @apply !bg-dark-gray !border !border-silver/10;
+  @apply bg-dark-gray border border-silver/10;
 }
 
 .wallet-adapter-modal-wrapper {
-  @apply !bg-dark-gray;
+  @apply bg-dark-gray;
 }
 
 .wallet-adapter-modal-button-close {
-  @apply !bg-silver/10;
+  @apply bg-silver/10;
 }
