@@ -1,14 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 .metallic-button {
-  background: linear-gradient(to right, #C0C0C0, #E8E8E8);
-  color: black;
-  font-weight: bold;
-  padding: 1rem 1.5rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
+  @apply bg-gradient-to-r from-silver to-light-silver 
+         text-black font-bold py-4 px-6 rounded-lg 
+         transition-all duration-200 hover:opacity-90;
 }
 
 .metallic-button:hover {
@@ -16,23 +9,17 @@
 }
 
 .card {
-  background: linear-gradient(to bottom right, #1a1a1a, #000000);
-  padding: 2rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(192,192,192,0.1);
+  @apply bg-gradient-to-br from-dark-gray to-black 
+         p-8 rounded-2xl border border-silver/10;
 }
 
 .premium-feature {
-  background: linear-gradient(to bottom right, #1a1a1a, #000000);
-  padding: 2rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(192,192,192,0.1);
+  @apply bg-gradient-to-br from-dark-gray to-black 
+         p-8 rounded-2xl border border-silver/10;
 }
 
 .container {
-  max-width: 80rem;
-  margin-left: auto;
-  margin-right: auto;
+  @apply max-w-7xl mx-auto px-4;
 }
 
 /* Responsive adjustments */
