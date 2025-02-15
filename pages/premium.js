@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import getLogger from '../utils/logger';
 
 const logger = getLogger('premium-page');
@@ -25,12 +26,21 @@ const Premium = () => {
   }, []);
 
   const handlePayment = async () => {
-    if (!wallet.connected || !ref || !treasuryWallet) return;
+    if (!wallet.connected || !ref || !treasuryWallet) {
+      setError('Please connect your wallet first');
+      return;
+    }
     
     try {
       logger.info('Initiating payment', { ref, wallet: wallet.publicKey.toString() });
       setStatus('processing');
-      const connection = new Connection(process.env.NEXT_PUBLIC_SOLANA_RPC_URL, 'confirmed');
+      setError(null);
+      
+      const connection = new Connection(
+        process.env.NEXT_PUBLIC_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
+        'confirmed'
+      );
+      
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: wallet.publicKey,
@@ -39,10 +49,26 @@ const Premium = () => {
         })
       );
 
-      const signature = await wallet.sendTransaction(transaction, connection);
-      const confirmation = await connection.confirmTransaction(signature);
+      const {
+        context: { slot: minContextSlot },
+        value: { blockhash, lastValidBlockHeight }
+      } = await connection.getLatestBlockhashAndContext();
 
-      if (confirmation.value.err) throw new Error('Transaction failed');
+      const signature = await wallet.sendTransaction(transaction, connection);
+      
+      logger.info('Transaction sent', { signature });
+      
+      const confirmation = await connection.confirmTransaction({
+        blockhash,
+        lastValidBlockHeight,
+        signature,
+      });
+
+      if (confirmation.value.err) {
+        throw new Error('Transaction failed');
+      }
+
+      logger.info('Transaction confirmed, verifying payment');
 
       const response = await fetch('/api/verify-payment', {
         method: 'POST',
@@ -55,11 +81,16 @@ const Premium = () => {
         })
       });
 
-      if (!response.ok) throw new Error('Verification failed');
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Verification failed');
+      }
+
       setStatus('success');
+      logger.info('Payment completed successfully');
     } catch (err) {
       logger.error('Payment failed', err, { ref });
-      setError(err.message);
+      setError(err.message || 'Payment failed. Please try again.');
       setStatus('error');
     }
   };
@@ -71,8 +102,8 @@ const Premium = () => {
         <meta name="description" content="Unlock unlimited swarm tracking and real-time alerts" />
       </Head>
 
-      <main className="min-h-screen bg-gradient-to-br from-black via-dark-gray to-black">
-        <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+      <main className="min-h-screen bg-gradient-to-br from-black via-dark-gray to-black px-4">
+        <div className="max-w-7xl mx-auto py-16 md:py-24">
           {/* Hero Section */}
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text">
@@ -84,7 +115,7 @@ const Premium = () => {
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start max-w-6xl mx-auto">
             {/* Features Column */}
             <div className="space-y-8">
               <div className="premium-feature-card">
@@ -183,12 +214,15 @@ const Premium = () => {
 
                 <div className="space-y-4">
                   {!wallet.connected ? (
-                    <WalletMultiButton className="w-full" />
+                    <WalletMultiButton className="w-full premium-button" />
                   ) : (
                     <button
                       onClick={handlePayment}
                       disabled={status === 'processing'}
-                      className="w-full premium-button"
+                      className="w-full premium-button bg-gradient-to-r from-silver to-light-silver 
+                                text-black font-bold py-4 px-6 rounded-lg 
+                                transition-all duration-200 hover:opacity-90 
+                                disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {status === 'processing' ? 'Processing...' : 'Complete Payment'}
                     </button>

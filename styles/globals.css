@@ -219,15 +219,14 @@ input, select {
          disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
-/* Wallet Button Overrides */
+/* Wallet Button Override */
 .wallet-adapter-button {
-  @apply bg-gradient-to-r from-silver to-light-silver 
-         text-black font-bold py-4 px-6 rounded-lg 
-         transition-all duration-200;
+  @apply premium-button !important;
 }
 
-.wallet-adapter-button:hover {
-  @apply opacity-90;
+.wallet-adapter-button-trigger {
+  background: linear-gradient(to right, var(--color-silver), var(--color-light-silver)) !important;
+  color: black !important;
 }
 
 .wallet-adapter-modal {
