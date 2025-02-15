@@ -50,8 +50,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section - Fix grid layout */}
-      <div className="container mx-auto px-4 py-24">
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-24">
         <h2 className="text-4xl font-bold mb-16 text-center gradient-text">
           Elite Trading Features
         </h2>
@@ -95,7 +95,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Market Tiers Section */}
       <section className="bg-gradient-to-br from-dark-gray to-black py-24">
