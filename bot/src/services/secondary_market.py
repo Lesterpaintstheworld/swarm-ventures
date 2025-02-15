@@ -17,35 +17,38 @@ class SecondaryMarketClient:
     async def get_all_listings(self) -> List[Dict]:
         try:
             # Get all accounts owned by the program
+            filters = [
+                {
+                    "memcmp": {
+                        "offset": 0,
+                        "bytes": "26db"  # First 2 bytes of the discriminator in hex
+                    }
+                }
+            ]
+            
             response = await self.client.get_program_accounts(
                 self.program_id,
                 encoding="base64",
-                data_slice=None,  # Get full data
+                data_size=None,  # Remove data_slice and use data_size instead
                 commitment="confirmed",
-                filters=[
-                    {
-                        "memcmp": {
-                            "offset": 0,  # Start at beginning of account data
-                            "bytes": base58.b58encode(bytes.fromhex("26db")).decode("utf-8")  # Convert hex to base58
-                        }
-                    }
-                ]
+                filters=filters
             )
-        
+            
             listings = []
-            if response is None:
+            if not response:
                 print("No response from RPC")
                 return []
                 
             # Handle response based on actual structure
-            accounts = response.value if hasattr(response, 'value') else []
+            accounts = response if isinstance(response, list) else []
             
             for account in accounts:
                 try:
-                    if not hasattr(account, 'account') or not hasattr(account.account, 'data'):
+                    account_data = account.account.data
+                    if not account_data:
                         continue
-                    
-                    listing_data = self._decode_listing_data(account.account.data[0])
+                        
+                    listing_data = self._decode_listing_data(account_data[0])
                     listing = {
                         "id": listing_data["listing_id"],
                         "swarm_id": str(listing_data["pool"]),
