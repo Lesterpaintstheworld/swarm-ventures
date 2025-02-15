@@ -65,8 +65,7 @@ export default function Home() {
                 <li>• New cycle alerts</li>
                 <li>• Revenue distributions</li>
                 <li>• Custom thresholds</li>
-              </ul>
-            </div>
+            </ul>
           </div>
 
           <div className="premium-feature group">
