@@ -24,16 +24,22 @@ class SecondaryMarketClient:
                     {
                         "memcmp": {
                             "offset": 0,
-                            # ShareListing discriminator from IDL
-                            "bytes": base64.b64encode(bytes([38, 219, 182, 80, 137, 29, 254, 143])).decode("ascii")
+                            "bytes": "26db" # First 2 bytes of the discriminator in hex
                         }
                     }
                 ]
             )
-            
+        
             listings = []
+            if not response or "result" not in response:
+                print("No listings found or invalid response")
+                return []
+            
             for account in response["result"]:
                 try:
+                    if not account.get("account") or not account["account"].get("data"):
+                        continue
+                    
                     listing_data = self._decode_listing_data(account["account"]["data"][0])
                     listing = {
                         "id": listing_data["listing_id"],
@@ -52,7 +58,7 @@ class SecondaryMarketClient:
                 except Exception as e:
                     print(f"Error decoding listing: {e}")
                     continue
-                    
+                
             return listings
             
         except Exception as e:
