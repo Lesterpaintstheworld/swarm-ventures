@@ -10,10 +10,10 @@ export default function Home() {
         <meta name="description" content="Professional-grade market intelligence for Swarm traders" />
       </Head>
 
-      {/* Hero Section - Now with better column layout */}
+      {/* Hero Section - Fix grid layout */}
       <div className="hero-section">
-        <div className="hero-content">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-24">
             <div className="text-left">
               <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text">
                 SwarmVentures Elite
@@ -50,8 +50,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Features Section - Now in 3 columns */}
-      <div className="max-w-7xl mx-auto px-4 py-24">
+      {/* Features Section - Fix grid layout */}
+      <div className="container mx-auto px-4 py-24">
         <h2 className="text-4xl font-bold mb-16 text-center gradient-text">
           Elite Trading Features
         </h2>
@@ -59,9 +59,8 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="premium-feature group">
             <div className="premium-icon group-hover:scale-110 transition-transform">⚡</div>
-            <div>
-              <h3 className="text-xl font-bold mb-2">Instant Alerts</h3>
-              <ul className="space-y-2 text-silver/70">
+            <h3 className="text-xl font-bold mb-2">Instant Alerts</h3>
+            <ul className="space-y-2 text-silver/70">
                 <li>• Real-time price notifications</li>
                 <li>• New cycle alerts</li>
                 <li>• Revenue distributions</li>
@@ -98,9 +97,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Market Tiers Section */}
+      {/* Market Tiers Section - Fix grid layout */}
       <div className="bg-gradient-to-br from-dark-gray to-black py-24">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold mb-16 text-center gradient-text">
             Market Tiers
           </h2>
@@ -143,8 +142,8 @@ export default function Home() {
       </div>
 
       {/* CTA Section */}
-      <div className="py-24">
-        <div className="max-w-3xl mx-auto px-4 text-center">
+      <div className="container mx-auto px-4 py-24">
+        <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-8 gradient-text">
             Join the Elite Network
           </h2>
