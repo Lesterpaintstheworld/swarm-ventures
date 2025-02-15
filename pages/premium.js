@@ -2,6 +2,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useWallet } from '@solana/wallet-adapter-react';
+import getLogger from '../utils/logger';
+
+const logger = getLogger('premium-page');
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { Connection, PublicKey, Transaction, LAMPORTS_PER_SOL, SystemProgram } from '@solana/web3.js';
 import Head from 'next/head';
@@ -25,6 +28,7 @@ const Premium = () => {
     if (!wallet.connected || !ref || !treasuryWallet) return;
     
     try {
+      logger.info('Initiating payment', { ref, wallet: wallet.publicKey.toString() });
       setStatus('processing');
       const connection = new Connection(process.env.NEXT_PUBLIC_SOLANA_RPC_URL, 'confirmed');
       const transaction = new Transaction().add(
@@ -54,6 +58,7 @@ const Premium = () => {
       if (!response.ok) throw new Error('Verification failed');
       setStatus('success');
     } catch (err) {
+      logger.error('Payment failed', err, { ref });
       setError(err.message);
       setStatus('error');
     }
