@@ -5,6 +5,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { Connection, PublicKey, Transaction, LAMPORTS_PER_SOL, SystemProgram } from '@solana/web3.js';
 import Head from 'next/head';
+import Layout from '../components/Layout';
 
 const Premium = () => {
   const router = useRouter();
@@ -197,7 +198,7 @@ const Premium = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Layout>
     </>
   );
 };

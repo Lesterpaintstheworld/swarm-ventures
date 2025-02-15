@@ -18,8 +18,8 @@ export default function Home() {
         <meta name="description" content="Professional-grade market intelligence for Swarm traders" />
       </Head>
 
-      <div className="min-h-screen bg-black text-silver">
-        <div className="max-w-6xl mx-auto px-4 py-12">
+      <Layout>
+        <div className="premium-container">
           <div className="text-center">
             <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-silver to-light-silver bg-clip-text text-transparent">
               Loading...
