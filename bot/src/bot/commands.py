@@ -16,8 +16,9 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/start - Show this welcome message\n"
         "/help - Show available commands\n"
         "/watchlist - View your watchlist\n"
-        "/subscribe - Get premium access\n"
-        "/unsubscribe - Cancel premium access\n"
+        "/add <swarm> <token> - Track a new swarm\n"
+        "/remove <swarm> <token> - Stop tracking a swarm\n"
+        "/subscribe - Get lifetime premium access\n"
     )
     
     await update.message.reply_text(welcome_message)
@@ -29,11 +30,12 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/start - Initialize the bot\n"
         "/help - Show this help message\n"
         "/watchlist - View your tracked swarms\n"
-        "/subscribe - Get premium access\n"
-        "/unsubscribe - Cancel premium\n\n"
-        "Subscription Benefits:\n"
+        "/add <swarm> <token> - Track a new swarm\n"
+        "/remove <swarm> <token> - Stop tracking a swarm\n"
+        "/subscribe - Get lifetime premium access\n\n"
+        "Premium Benefits:\n"
         "• Free: Track 1 swarm\n"
-        "• Premium (10,000 $UBC/week):\n"
+        "• Premium (One-time 3 SOL):\n"
         "  - Unlimited swarm tracking\n"
         "  - Real-time price alerts\n"
         "  - Revenue notifications"
@@ -46,48 +48,35 @@ async def subscribe_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = update.message.from_user.username
     airtable = AirtableClient()
     
-    # Create user if doesn't exist
+    # Check if already premium
     user = airtable.get_user(user_id)
-    if not user:
-        user = airtable.create_user(user_id, username)
+    if user and user['fields'].get('status') == 'premium':
+        await update.message.reply_text(
+            "✨ You already have lifetime premium access!\n\n"
+            "Use /watchlist to manage your tracked swarms."
+        )
+        return
+    
+    # Generate payment URL with user's ID
+    payment_url = f"https://swarms.universalbasiccompute.ai/premium?ref={user_id}"
     
     subscription_message = (
-        "📊 SwarmVentures Premium Access\n\n"
-        "Benefits:\n"
+        "🌟 SwarmVentures Premium Access\n\n"
+        "Lifetime Benefits:\n"
         "• Unlimited swarm tracking\n"
         "• Real-time price alerts\n"
         "• Revenue notifications\n"
         "• Priority support\n\n"
-        "Price: 10,000 $UBC/week\n\n"
-        "To subscribe:\n"
-        "1. Send 10,000 $UBC to:\n"
-        "[Wallet address]\n\n"
-        f"2. Include your Telegram ID ({user_id}) in the memo\n\n"
-        "Your subscription will be activated within 5 minutes of payment confirmation."
+        "One-time Payment: 3 SOL\n\n"
+        "To upgrade:\n"
+        "1. Click the payment link below\n"
+        "2. Connect your Solana wallet\n"
+        "3. Complete the payment\n\n"
+        f"🔗 Get Premium: {payment_url}\n\n"
+        "Your account will be upgraded automatically after payment confirmation."
     )
     await update.message.reply_text(subscription_message)
 
-async def unsubscribe_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handle unsubscribe requests"""
-    user_id = str(update.message.from_user.id)
-    airtable = AirtableClient()
-    
-    user = airtable.get_user(user_id)
-    if not user:
-        await update.message.reply_text("You don't have an active subscription.")
-        return
-    
-    # Update user status to free
-    airtable.update_user_status(user_id, "free")
-    
-    message = (
-        "✅ Subscription Cancelled\n\n"
-        "• Your premium access will end at the end of current period\n"
-        "• You can still track 1 swarm with the free plan\n"
-        "• Use /subscribe to restore premium access anytime\n\n"
-        "Thank you for using SwarmVentures!"
-    )
-    await update.message.reply_text(message)
 
 async def watchlist_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /watchlist command"""

@@ -26,7 +26,6 @@ def main():
     app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('watchlist', watchlist_command))
     app.add_handler(CommandHandler('subscribe', subscribe_command))
-    app.add_handler(CommandHandler('unsubscribe', unsubscribe_command))
     
     # Start the bot
     app.run_polling()
