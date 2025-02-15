@@ -8,13 +8,6 @@ from telegram.ext import Application
 import json
 from dotenv import load_dotenv
 
-# Local imports
-from .airtable import AirtableClient
-from .commands import start_command, help_command, watchlist_command
-
-# Load environment variables
-load_dotenv()
-
 # Initialize rate limiting
 rate_limit_store = {}
 
@@ -54,40 +47,80 @@ async def root():
     """Root endpoint for health checks"""
     return {"status": "ok"}
 
-@app.on_event("startup")
-async def startup():
-    """Set webhook on startup"""
-    webhook_url = f"{os.getenv('VERCEL_URL', 'https://swarm-ventures.vercel.app')}/api/telegram"
-    try:
-        await application.bot.set_webhook(webhook_url)
-        print(f"Webhook set to {webhook_url}")
-    except Exception as e:
-        print(f"Failed to set webhook: {e}")
-
-@app.on_event("shutdown")
-async def shutdown():
-    """Remove webhook on shutdown"""
-    try:
-        await application.bot.delete_webhook()
-        print("Webhook removed")
-    except Exception as e:
-        print(f"Failed to remove webhook: {e}")
-# Load environment variables
-load_dotenv()
-
-# Initialize FastAPI app
-app = FastAPI()
-
-# Initialize bot application
-application = Application.builder().token(os.getenv('TELEGRAM_BOT_TOKEN')).build()
-
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    print(f"Global error: {exc}")
-    return Response(
-        status_code=500,
-        content=json.dumps({"error": str(exc)})
+async def start_command(update: Update, context):
+    """Handle the /start command"""
+    welcome_message = (
+        "🚀 Welcome to SwarmVentures Trading Bot!\n\n"
+        "Track market opportunities and manage your trading positions.\n\n"
+        "Premium Features:\n"
+        "• Unlimited swarm tracking\n"
+        "• Real-time price alerts\n"
+        "• Revenue notifications\n"
+        "• Priority support\n\n"
+        "One-time payment: 3 SOL\n\n"
+        "Available commands:\n"
+        "/start - Show this welcome message\n"
+        "/help - Show available commands\n"
+        "/subscribe - Get access\n"
+        "/watchlist - View your watchlist\n"
     )
+    await update.message.reply_text(welcome_message)
+
+async def help_command(update: Update, context):
+    """Handle the /help command"""
+    help_message = (
+        "📚 Available Commands:\n\n"
+        "/start - Initialize the bot\n"
+        "/help - Show this help message\n"
+        "/subscribe - Get access (3 SOL)\n"
+        "/watchlist - View your tracked swarms\n"
+    )
+    await update.message.reply_text(help_message)
+
+async def watchlist_command(update: Update, context):
+    """Handle the /watchlist command"""
+    from .airtable import AirtableClient
+    
+    user_id = str(update.message.from_user.id)
+    airtable = AirtableClient()
+    
+    user = airtable.get_user(user_id)
+    if not user:
+        await update.message.reply_text(
+            "Please use /start to initialize your account first."
+        )
+        return
+        
+    if user['fields'].get('status') != 'premium':
+        await update.message.reply_text(
+            "⭐️ Premium Access Required\n\n"
+            "Track unlimited swarms with premium access:\n"
+            "• Real-time price alerts\n"
+            "• Revenue notifications\n"
+            "• Priority support\n\n"
+            "One-time payment: 3 SOL\n"
+            "Use /subscribe to get started!"
+        )
+        return
+    
+    try:
+        watchlist = json.loads(user['fields'].get('watchlist', '[]'))
+        message = "📋 Your Watchlist:\n\n"
+        if not watchlist:
+            message += "No swarms in watchlist yet.\n"
+        else:
+            for swarm in watchlist:
+                try:
+                    swarm_name, token = swarm.split('_')
+                    message += f"• {swarm_name.upper()} ({token.upper()})\n"
+                except ValueError:
+                    message += f"• {swarm}\n"
+        
+        await update.message.reply_text(message)
+        
+    except Exception as e:
+        print(f"Error in watchlist command: {e}")
+        await update.message.reply_text("Error retrieving watchlist. Please try again.")
 
 @app.post("/api/telegram")
 async def telegram_webhook(request: Request):
@@ -105,7 +138,7 @@ async def telegram_webhook(request: Request):
             # Process the update in the new loop
             update = Update.de_json(data, application.bot)
             
-            # Simple vérification : si chat_id est négatif, c'est un groupe
+            # Simple verification: if chat_id is negative, it's a group
             if update.message and update.message.chat.id < 0:
                 print(f"Ignoring group message from chat {update.message.chat.id}")
                 return Response(status_code=200)
@@ -124,6 +157,7 @@ async def telegram_webhook(request: Request):
                         return Response(status_code=200)
                 
                 # Initialize Airtable client
+                from .airtable import AirtableClient
                 airtable = AirtableClient()
                 
                 # Get user data
@@ -137,44 +171,6 @@ async def telegram_webhook(request: Request):
                     "/subscribe - Get access\n"
                     "/watchlist - View your watchlist"
                 )
-                
-                # Send status message
-                try:
-                    watchlist = json.loads(user_data['fields'].get('watchlist', '[]'))
-                    alert_prefs = json.loads(user_data['fields'].get('alert_preferences', '{}'))
-                    preferences = json.loads(user_data['fields'].get('preferences', '{}'))
-                    
-                    status_msg = "📊 Current Status:\n\n"
-                    status_msg += f"Status: {user_data['fields'].get('status', 'free')}\n\n"
-                    status_msg += "📋 Watchlist:\n"
-                    if watchlist:
-                        for swarm in watchlist:
-                            try:
-                                swarm_name, token = swarm.split('_')
-                                status_msg += f"• {swarm_name.upper()} ({token.upper()})\n"
-                            except ValueError:
-                                status_msg += f"• {swarm}\n"
-                    else:
-                        status_msg += "• No swarms in watchlist\n"
-                    
-                    status_msg += "\n⚡ Alert Preferences:\n"
-                    status_msg += f"• Price changes: {alert_prefs.get('price_change', 5)}%\n"
-                    status_msg += f"• New shares: {'Yes' if alert_prefs.get('new_shares', True) else 'No'}\n"
-                    status_msg += f"• Announcements: {'Yes' if alert_prefs.get('announcements', True) else 'No'}\n"
-                    
-                    if preferences.get('investment_style') or preferences.get('risk_tolerance'):
-                        status_msg += "\n🎯 Preferences:\n"
-                        if preferences.get('investment_style'):
-                            status_msg += f"• Style: {preferences['investment_style']}\n"
-                        if preferences.get('risk_tolerance'):
-                            status_msg += f"• Risk: {preferences['risk_tolerance']}\n"
-                        if preferences.get('preferred_tiers'):
-                            status_msg += f"• Preferred tiers: {', '.join(preferences['preferred_tiers'])}\n"
-                    
-                    await update.message.reply_text(status_msg)
-                    
-                except Exception as e:
-                    print(f"Error sending status message: {e}")
             
             return Response(status_code=200)
             
