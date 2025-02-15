@@ -27,7 +27,7 @@ class SecondaryMarketClient:
             # Create MemcmpOpts instance for the filter
             memcmp_filter = MemcmpOpts(
                 offset=0,
-                bytes=discriminator_b58
+                bytes=discriminator
             )
             
             # Make RPC call with proper filter object
