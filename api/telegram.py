@@ -156,21 +156,35 @@ async def telegram_webhook(request: Request):
                         await watchlist_command(update, None)
                         return Response(status_code=200)
                 
-                # Initialize Airtable client
+                # If not a command, process with Claude
+                from src.services.claude_client import ClaudeClient
                 from .airtable import AirtableClient
+                
+                # Initialize clients
+                claude = ClaudeClient()
                 airtable = AirtableClient()
                 
                 # Get user data
                 user_data = airtable.get_user(str(update.message.from_user.id))
                 
-                # Send default response for non-command messages
-                await update.message.reply_text(
-                    "Please use one of the available commands:\n"
-                    "/start - Initialize the bot\n"
-                    "/help - Show available commands\n"
-                    "/subscribe - Get access\n"
-                    "/watchlist - View your watchlist"
+                # Get Claude's response
+                response = await claude.get_response(
+                    update.message.text,
+                    user_data
                 )
+                
+                # Send Claude's response to user
+                await update.message.reply_text(response["user_response"])
+                
+                # Process any Airtable operations if present
+                if response.get("airtable_op"):
+                    op = response["airtable_op"]
+                    if op["operation"] == "add_to_watchlist":
+                        # Add telegram_id if not in params
+                        op["params"]["telegram_id"] = str(update.message.from_user.id)
+                        # Execute operation
+                        # ... (implement operation handling)
+                    # Add other operation handlers as needed
             
             return Response(status_code=200)
             
