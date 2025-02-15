@@ -64,7 +64,7 @@ async def subscribe_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     # Generate payment URL with user's ID
-    payment_url = f"https://swarms.universalbasiccompute.ai/premium?ref={user_id}"
+    payment_url = f"https://swarm-ventures.vercel.app/premium?ref={user_id}"
     
     subscription_message = (
         "🌟 SwarmVentures Premium Access\n\n"

@@ -404,7 +404,7 @@ Response: {
 # UBC Swarm Launchpad Documentation
 
 ## Platform Access
-- Website: https://swarms.universalbasiccompute.ai/
+- Website: https://swarm-ventures.vercel.app/
 - Wallet Requirement: Any Solana-compatible wallet (e.g., Phantom)
 - Network: Solana Mainnet
 
