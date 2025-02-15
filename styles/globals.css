@@ -199,8 +199,30 @@ input, select {
   @apply max-w-7xl mx-auto;
 }
 
-.premium-container {
-  @apply max-w-6xl mx-auto px-4 py-12;
+/* Grid system enhancements */
+.grid {
+  @apply w-full;
+}
+
+.grid-cols-1 {
+  @apply grid-cols-1;
+}
+
+.lg\:grid-cols-2 {
+  @apply lg:grid-cols-2;
+}
+
+.gap-12 {
+  @apply gap-12;
+}
+
+/* Ensure payment card sticks properly */
+.lg\:sticky {
+  @apply lg:sticky;
+}
+
+.lg\:top-8 {
+  @apply lg:top-8;
 }
 
 /* Grid system enhancements */
