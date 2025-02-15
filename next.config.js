@@ -5,6 +5,9 @@ const nextConfig = {
     config.resolve.fallback = { fs: false, path: false };
     return config;
   },
+  experimental: {
+    appDir: false
+  }
 }
 
 module.exports = nextConfig
