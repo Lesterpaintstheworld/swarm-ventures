@@ -1,9 +1,4 @@
-__pycache__
-*.pyc
+node_modules
 .env
 .env.*
-!.env.example
-.git
-.gitignore
-README.md
-tests
+.next
