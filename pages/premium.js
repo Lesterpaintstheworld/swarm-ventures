@@ -69,12 +69,12 @@ const Premium = () => {
   };
 
   return (
-    <>
+    <Layout>
       <Head>
         <title>SwarmVentures Premium Access</title>
         <meta name="description" content="Unlock unlimited swarm tracking and real-time alerts" />
       </Head>
-
+      
       <div className="min-h-screen bg-gradient-to-b from-black via-black to-dark-gray text-silver">
         <div className="max-w-6xl mx-auto px-4 py-12">
           {/* Header */}
