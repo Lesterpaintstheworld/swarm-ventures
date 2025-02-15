@@ -9,4 +9,3 @@ starlette>=0.14.0
 solana>=0.30.0
 asyncio>=3.4.3
 base58>=2.1.1
-base64>=0.1.0
