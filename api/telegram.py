@@ -77,6 +77,44 @@ async def help_command(update: Update, context):
     )
     await update.message.reply_text(help_message)
 
+async def subscribe_command(update: Update, context):
+    """Handle subscription requests"""
+    user_id = str(update.message.from_user.id)
+    username = update.message.from_user.username
+    
+    # Initialize Airtable client
+    from .airtable import AirtableClient
+    airtable = AirtableClient()
+    
+    # Check if already premium
+    user = airtable.get_user(user_id)
+    if user and user['fields'].get('status') == 'premium':
+        await update.message.reply_text(
+            "✨ You already have premium access!\n\n"
+            "Use /watchlist to manage your tracked swarms."
+        )
+        return
+    
+    # Generate payment URL with user's ID
+    payment_url = f"https://swarms.universalbasiccompute.ai/premium?ref={user_id}"
+    
+    subscription_message = (
+        "🌟 SwarmVentures Premium Access\n\n"
+        "Features:\n"
+        "• Unlimited swarm tracking\n"
+        "• Real-time price alerts\n"
+        "• Revenue notifications\n"
+        "• Priority support\n\n"
+        "One-time Payment: 3 SOL\n\n"
+        "To get access:\n"
+        "1. Click the payment link below\n"
+        "2. Connect your Solana wallet\n"
+        "3. Complete the payment\n\n"
+        f"🔗 Get Premium: {payment_url}\n\n"
+        "Your account will be upgraded automatically after payment confirmation."
+    )
+    await update.message.reply_text(subscription_message)
+
 async def watchlist_command(update: Update, context):
     """Handle the /watchlist command"""
     from .airtable import AirtableClient
