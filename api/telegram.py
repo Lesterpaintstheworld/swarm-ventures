@@ -1,4 +1,5 @@
 import os
+import time
 import asyncio
 from fastapi import FastAPI, Request, Response, HTTPException
 from datetime import datetime, timedelta
@@ -122,31 +123,20 @@ async def telegram_webhook(request: Request):
                         await watchlist_command(update, None)
                         return Response(status_code=200)
                 
-                # Initialize clients
-                claude = ClaudeClient()
+                # Initialize Airtable client
                 airtable = AirtableClient()
                 
-                # Store user message
-                user_message = {
-                    'role': 'user',
-                    'content': update.message.text
-                }
-                airtable.store_message(str(update.message.from_user.id), user_message)
-                
-                # Get user data and Claude's response
+                # Get user data
                 user_data = airtable.get_user(str(update.message.from_user.id))
-                response = await claude.get_response(
-                    user_message=update.message.text,
-                    user_data=user_data
-                )
                 
-                # Store and send assistant response
-                assistant_message = {
-                    'role': 'assistant',
-                    'content': response['user_response']
-                }
-                airtable.store_message(str(update.message.from_user.id), assistant_message)
-                await update.message.reply_text(response['user_response'])
+                # Send default response for non-command messages
+                await update.message.reply_text(
+                    "Please use one of the available commands:\n"
+                    "/start - Initialize the bot\n"
+                    "/help - Show available commands\n"
+                    "/subscribe - Get access\n"
+                    "/watchlist - View your watchlist"
+                )
                 
                 # Handle Airtable operations
                 if response.get('airtable_op'):
