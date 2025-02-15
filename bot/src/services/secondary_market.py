@@ -38,11 +38,13 @@ class SecondaryMarketClient:
             
             listings = []
             
-            # Check if response is a dictionary
-            if isinstance(response, dict):
+            # Extract accounts from response
+            if hasattr(response, 'result'):
+                accounts = response.result
+            elif isinstance(response, dict):
                 accounts = response.get('result', [])
             else:
-                accounts = getattr(response, 'value', [])
+                accounts = response
                 
             if not accounts:
                 print("No accounts found")
@@ -51,21 +53,17 @@ class SecondaryMarketClient:
             # Process each account
             for account in accounts:
                 try:
-                    # Handle both dictionary and object responses
+                    # Extract account data
                     if isinstance(account, dict):
-                        account_data = account.get('account', {}).get('data', [])
-                        if isinstance(account_data, list):
-                            account_data = account_data[0]
+                        data = account.get('account', {}).get('data', [''])[0]
                     else:
-                        account_data = getattr(getattr(account, 'account', None), 'data', None)
-                        if isinstance(account_data, list):
-                            account_data = account_data[0]
+                        data = account.account.data[0] if hasattr(account, 'account') else ''
                     
-                    if not account_data:
+                    if not data:
                         continue
                         
                     # Decode the listing data
-                    listing_data = self._decode_listing_data(account_data)
+                    listing_data = self._decode_listing_data(data)
                     if not listing_data:
                         continue
                         
