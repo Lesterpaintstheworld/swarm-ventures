@@ -81,6 +81,9 @@ class AirtableClient {
 
   async createListing(listingData) {
     try {
+      // Validate token data
+      const tokenLabel = listingData.token?.label || 'USDC'; // Default to USDC if not specified
+
       const response = await fetch(`https://api.airtable.com/v0/${this.baseId}/Listings`, {
         method: 'POST',
         headers: {
@@ -90,7 +93,7 @@ class AirtableClient {
         body: JSON.stringify({
           records: [{
             fields: {
-              id: `L${Math.floor(100000 + Math.random() * 900000)}`, // Generate 6-digit ID
+              id: listingData.listing_id || `L${Math.floor(100000 + Math.random() * 900000)}`,
               swarm_id: listingData.swarm_id,
               number_of_shares: listingData.number_of_shares,
               price_per_share: listingData.price_per_share,
@@ -98,7 +101,7 @@ class AirtableClient {
               seller_wallet: listingData.seller,
               listing_date: new Date().toISOString(),
               status: 'active',
-              token_type: listingData.token.label
+              token_type: tokenLabel
             }
           }]
         })
@@ -110,6 +113,7 @@ class AirtableClient {
         throw new Error('Failed to create listing record');
       }
 
+      console.log('Created listing:', data.records[0]); // Add logging
       return data.records[0];
     } catch (error) {
       console.error('Airtable listing creation error:', error);

@@ -37,14 +37,18 @@ async def notify_new_listing(listing: ListingNotification):
         print(json.dumps({
             "timestamp": datetime.now().isoformat(),
             "event": "new_listing_received",
-            "listing_data": {
-                "swarm_id": listing.swarm_id,
-                "shares": listing.number_of_shares,
-                "price": listing.price_per_share,
-                "total": listing.total_price,
-                "listing_id": listing.listing_id
-            }
+            "listing_data": listing.dict()  # Use .dict() instead of direct access
         }, indent=2))
+
+        # Create listing in Airtable
+        from utils.airtable import AirtableClient
+        airtable = AirtableClient()
+        
+        try:
+            await airtable.createListing(listing.dict())
+        except Exception as e:
+            print(f"Error creating listing in Airtable: {e}")
+            # Continue with notifications even if Airtable creation fails
 
         # Format notification message
         message = (
