@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Add base styles for dark mode */
+@layer base {
+  body {
+    @apply bg-black text-silver;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-silver;
+  }
+}
+
 @layer components {
   .metallic-button {
     @apply bg-gradient-to-r from-silver to-light-silver
