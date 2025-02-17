@@ -14,6 +14,9 @@ module.exports = {
         'dark-gray': '#1a1a1a',
         'black': '#000000',
       },
+      boxShadow: {
+        'glow': '0 0 15px rgba(192,192,192,0.3)',
+      },
     },
   },
   plugins: [],

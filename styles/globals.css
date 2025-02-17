@@ -1,131 +1,55 @@
-.metallic-button {
-  background: linear-gradient(to right, #C0C0C0, #E8E8E8);
-  color: black;
-  font-weight: bold;
-  padding: 1rem 1.5rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
-}
+@layer components {
+  .metallic-button {
+    @apply bg-gradient-to-r from-silver to-light-silver
+           text-black font-bold p-4 rounded-lg
+           transition-all duration-200
+           hover:opacity-90;
+  }
 
-.metallic-button:hover {
-  opacity: 0.9;
-}
+  .card {
+    @apply bg-gradient-to-br from-dark-gray to-black
+           p-8 rounded-2xl border border-silver/10;
+  }
 
-.card {
-  background: linear-gradient(to bottom right, #1a1a1a, #000000);
-  padding: 2rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(192,192,192,0.1);
-}
+  .premium-feature {
+    @apply bg-gradient-to-br from-dark-gray to-black
+           p-8 rounded-2xl border border-silver/10
+           hover:border-silver/20;
+  }
 
-.premium-feature {
-  background: linear-gradient(to bottom right, #1a1a1a, #000000);
-  padding: 2rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(192,192,192,0.1);
-}
+  .premium-button {
+    @apply bg-gradient-to-r from-silver to-light-silver
+           text-black font-bold py-4 px-6 rounded-lg
+           transition-all duration-200
+           hover:opacity-90
+           disabled:opacity-50 disabled:cursor-not-allowed
+           w-full text-center;
+  }
 
-.container {
-  max-width: 80rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
+  .premium-icon {
+    @apply w-12 h-12 flex items-center justify-center
+           text-2xl bg-gradient-to-r from-silver to-light-silver
+           text-black rounded-full mb-4
+           transition-transform duration-300
+           hover:scale-110;
+  }
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .premium-payment-card {
-    @apply mt-8;
+  .premium-benefit {
+    @apply flex items-center space-x-4
+           text-silver/70 p-4
+           bg-black/20 rounded-lg
+           border border-silver/5;
   }
 }
 
-.premium-icon {
-  @apply w-12 h-12 flex items-center justify-center 
-         text-2xl bg-gradient-to-r from-silver to-light-silver 
-         text-black rounded-full mb-4 
-         transition-transform duration-300 
-         hover:scale-110;
-}
-
-.premium-benefit {
-  @apply flex items-center space-x-4 
-         text-silver/70 p-4 
-         bg-black/20 rounded-lg 
-         border border-silver/5;
-}
-
-.premium-button {
-  @apply bg-gradient-to-r from-silver to-light-silver 
-         text-black font-bold py-4 px-6 rounded-lg 
-         transition-all duration-200 
-         hover:opacity-90 hover:shadow-glow 
-         disabled:opacity-50 disabled:cursor-not-allowed
-         w-full text-center;
-}
-
-.premium-price {
-  @apply relative inline-block;
-}
-
-.premium-price::after {
-  @apply content-[''] absolute -inset-0.5 
-         bg-gradient-to-r from-silver/20 to-light-silver/20 
-         rounded-lg blur opacity-75;
-}
-
-/* Homepage specific styles */
-.hero-section {
-  @apply relative min-h-[80vh] flex items-center 
-         justify-center bg-gradient-to-b from-black 
-         via-black to-dark-gray;
-}
-
-.stat-card {
-  @apply bg-gradient-to-br from-dark-gray to-black 
-         p-6 rounded-2xl border border-silver/10 
-         backdrop-blur-lg transition-all duration-300
-         hover:border-silver/20 hover:shadow-glow;
-}
-
-.stat-number {
-  @apply text-4xl font-bold gradient-text mb-2;
-}
-
-.premium-feature {
-  @apply bg-gradient-to-br from-dark-gray to-black 
-         p-8 rounded-2xl border border-silver/10 
-         backdrop-blur-lg transition-all duration-300
-         hover:border-silver/20 hover:shadow-glow;
-}
-
-.premium-badge {
-  @apply bg-gradient-to-r from-silver to-light-silver 
-         text-black text-sm font-bold px-3 py-1 
-         rounded-full mb-4 inline-block;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .hero-section {
-    @apply py-16;
-  }
-  
-  .stat-card {
-    @apply p-4;
-  }
-  
-  .stat-number {
-    @apply text-3xl;
+@layer utilities {
+  .shadow-glow {
+    box-shadow: 0 0 15px rgba(192,192,192,0.3);
   }
 }
 
-/* Animations */
 @keyframes glow {
-  0% {
-    box-shadow: 0 0 5px rgba(192,192,192,0.2);
-  }
-  100% {
+  0%, 100% {
     box-shadow: 0 0 5px rgba(192,192,192,0.2);
   }
   50% {
@@ -135,137 +59,6 @@
 
 .animate-glow {
   animation: glow 2s ease-in-out infinite;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .hero-content h1 {
-    @apply text-4xl;
-  }
-  
-  .stats-grid {
-    @apply grid-cols-1;
-  }
-  
-  .premium-feature {
-    @apply flex-col space-x-0 space-y-4;
-  }
-}
-
-/* Custom Shadows */
-.shadow-glow {
-  box-shadow: 0 0 15px rgba(192,192,192,0.3);
-}
-
-/* Wallet Button Override */
-.wallet-adapter-button {
-  @apply metallic-button !important;
-}
-
-/* Loading States */
-.loading-dots:after {
-  content: '...';
-  animation: dots 1.5s steps(4, end) infinite;
-}
-
-@keyframes dots {
-  0% { content: '.'; }
-  20% { content: '.'; }
-  40% { content: '..'; }
-  60% { content: '...'; }
-  80% { content: ''; }
-  100% { content: ''; }
-}
-
-/* Form Elements */
-input, select {
-  @apply bg-dark-gray border border-silver/20 
-         rounded-lg px-4 py-2 text-silver 
-         focus:outline-none focus:border-silver/50 
-         transition-all duration-200;
-}
-
-/* Tooltips */
-.tooltip {
-  @apply relative inline-block;
-}
-
-.tooltip:hover:after {
-  @apply content-[attr(data-tooltip)] absolute bottom-full 
-         left-1/2 transform -translate-x-1/2 px-3 py-1 
-         text-xs text-black bg-silver rounded-md;
-}
-
-/* Premium Page Specific */
-.container {
-  @apply max-w-7xl mx-auto;
-}
-
-/* Grid system enhancements */
-.grid {
-  @apply w-full;
-}
-
-.grid-cols-1 {
-  @apply grid-cols-1;
-}
-
-.grid-cols-lg-2 {
-  @apply lg:grid-cols-2;
-}
-
-.gap-12 {
-  @apply gap-12;
-}
-
-/* Ensure payment card sticks properly */
-.sticky-lg {
-  @apply lg:sticky;
-}
-
-.top-8-lg {
-  @apply lg:top-8;
-}
-
-/* Grid system enhancements */
-.grid {
-  @apply w-full;
-}
-
-.grid-cols-1 {
-  @apply grid-cols-1;
-}
-
-
-.gap-12 {
-  @apply gap-12;
-}
-
-.premium-header {
-  @apply text-center mb-16;
-}
-
-.premium-title {
-  @apply text-5xl font-bold mb-6 bg-gradient-to-r from-silver to-light-silver bg-clip-text text-transparent;
-}
-
-.premium-subtitle {
-  @apply text-xl text-silver/70 max-w-2xl mx-auto;
-}
-
-.premium-grid {
-  @apply grid grid-cols-1 lg:grid-cols-2 gap-12;
-}
-
-.premium-card {
-  @apply bg-gradient-to-br from-dark-gray to-black p-8 rounded-2xl border border-silver/10;
-}
-
-.premium-button {
-  @apply w-full bg-gradient-to-r from-silver to-light-silver 
-         text-black font-bold py-4 px-6 rounded-lg 
-         transition-all duration-200 hover:opacity-90 
-         disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
 /* Wallet Button Override */
