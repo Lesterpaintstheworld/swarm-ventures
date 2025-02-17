@@ -81,8 +81,8 @@ class AirtableClient {
 
   async createListing(listingData) {
     try {
-        // Get token label safely with fallback
-        const tokenLabel = listingData.token ? listingData.token.label : 'USDC';
+        // Simplified token handling - just use the string directly
+        const tokenType = listingData.token || 'USDC';
 
         const response = await fetch(`https://api.airtable.com/v0/${this.baseId}/Listings`, {
             method: 'POST',
@@ -101,7 +101,7 @@ class AirtableClient {
                         seller_wallet: listingData.seller,
                         listing_date: new Date().toISOString(),
                         status: 'active',
-                        token_type: tokenLabel
+                        token_type: tokenType
                     }
                 }]
             })

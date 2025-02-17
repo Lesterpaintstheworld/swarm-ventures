@@ -14,10 +14,7 @@ async def simulate_listing():
         "price_per_share": round(random.uniform(10, 15), 2),
         "seller": "ABC...XYZ",
         "listing_id": f"L{random.randint(100000, 999999)}",
-        "token": {
-            "label": "USDC",
-            "icon": "/tokens/usdc.svg"
-        }
+        "token": "USDC"
     }
     
     # Calculate total price
