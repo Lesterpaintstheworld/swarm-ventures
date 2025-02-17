@@ -30,32 +30,18 @@ class ListingNotification(BaseModel):
     }
 
 @app.post("/api/notify-new-listing")
-async def notify_new_listing():
+async def notify_new_listing(listing: ListingNotification):
     try:
-        # Mock listing data for testing
-        mock_listing = {
-            "swarm_id": "xforge",
-            "number_of_shares": 1000,
-            "price_per_share": 10.0,
-            "seller": "ABC...XYZ",
-            "total_price": 10000,
-            "listing_id": "L123456",
-            "token": {
-                "label": "USDC",
-                "icon": "/tokens/usdc.svg"
-            }
-        }
-
-        # Format notification message
+        # Format notification message using the received listing data
         message = (
             "🔔 New Listing Alert!\n\n"
-            f"Swarm: {mock_listing['swarm_id'].upper()}\n"
-            f"Shares: {mock_listing['number_of_shares']:,}\n"
-            f"Price/Share: {mock_listing['price_per_share']:,.2f} {mock_listing['token']['label']}\n"
-            f"Total Price: {mock_listing['total_price']:,.2f} {mock_listing['token']['label']}\n"
-            f"Seller: {mock_listing['seller']}\n\n"
-            f"Listing ID: {mock_listing['listing_id']}\n\n"
-            f"🔗 View Listing: https://swarms.universalbasiccompute.ai/invest/{mock_listing['swarm_id']}"
+            f"Swarm: {listing.swarm_id.upper()}\n"
+            f"Shares: {listing.number_of_shares:,}\n"
+            f"Price/Share: {listing.price_per_share:,.2f} {listing.token.label}\n"
+            f"Total Price: {listing.total_price:,.2f} {listing.token.label}\n"
+            f"Seller: {listing.seller}\n\n"
+            f"Listing ID: {listing.listing_id}\n\n"
+            f"🔗 View Listing: https://swarms.universalbasiccompute.ai/invest/{listing.swarm_id}"
         )
 
         # Get all users from Airtable
