@@ -2,7 +2,31 @@ import random
 import asyncio
 import json
 from datetime import datetime
-from api.notifications import ListingNotification, bot
+import os
+import sys
+
+# Add the project root to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
+from pydantic import BaseModel, Field
+import telegram
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Initialize Telegram bot
+bot = telegram.Bot(token=os.getenv('TELEGRAM_BOT_TOKEN'))
+
+# Define the ListingNotification model
+class ListingNotification(BaseModel):
+    swarm_id: str
+    number_of_shares: int
+    price_per_share: float
+    seller: str
+    total_price: float
+    listing_id: str
+    token: str = Field(description="Token symbol (e.g., 'USDC')")
 
 async def simulate_listing():
     # Available swarms for simulation
