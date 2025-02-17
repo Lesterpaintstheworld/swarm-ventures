@@ -81,43 +81,43 @@ class AirtableClient {
 
   async createListing(listingData) {
     try {
-      // Validate token data
-      const tokenLabel = listingData.token?.label || 'USDC'; // Default to USDC if not specified
+        // Get token label safely with fallback
+        const tokenLabel = listingData.token ? listingData.token.label : 'USDC';
 
-      const response = await fetch(`https://api.airtable.com/v0/${this.baseId}/Listings`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          records: [{
-            fields: {
-              id: listingData.listing_id || `L${Math.floor(100000 + Math.random() * 900000)}`,
-              swarm_id: listingData.swarm_id,
-              number_of_shares: listingData.number_of_shares,
-              price_per_share: listingData.price_per_share,
-              total_price: listingData.total_price,
-              seller_wallet: listingData.seller,
-              listing_date: new Date().toISOString(),
-              status: 'active',
-              token_type: tokenLabel
-            }
-          }]
-        })
-      });
+        const response = await fetch(`https://api.airtable.com/v0/${this.baseId}/Listings`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${this.apiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                records: [{
+                    fields: {
+                        id: listingData.listing_id || `L${Math.floor(100000 + Math.random() * 900000)}`,
+                        swarm_id: listingData.swarm_id,
+                        number_of_shares: listingData.number_of_shares,
+                        price_per_share: listingData.price_per_share,
+                        total_price: listingData.total_price,
+                        seller_wallet: listingData.seller,
+                        listing_date: new Date().toISOString(),
+                        status: 'active',
+                        token_type: tokenLabel
+                    }
+                }]
+            })
+        });
 
-      const data = await response.json();
-      
-      if (!data.records || data.records.length === 0) {
-        throw new Error('Failed to create listing record');
-      }
+        const data = await response.json();
+        
+        if (!data.records || data.records.length === 0) {
+            throw new Error('Failed to create listing record');
+        }
 
-      console.log('Created listing:', data.records[0]); // Add logging
-      return data.records[0];
+        console.log('Created listing:', data.records[0]);
+        return data.records[0];
     } catch (error) {
-      console.error('Airtable listing creation error:', error);
-      throw error;
+        console.error('Airtable listing creation error:', error, listingData);
+        throw error;
     }
   }
 }
