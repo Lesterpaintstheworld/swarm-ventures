@@ -34,10 +34,11 @@ class ListingNotification(BaseModel):
 @app.post("/api/notify-new-listing")
 async def notify_new_listing(listing: ListingNotification):
     try:
+        listing_dict = listing.dict()  # Convert Pydantic model to dict
         print(json.dumps({
             "timestamp": datetime.now().isoformat(),
             "event": "new_listing_received",
-            "listing_data": listing.dict()  # Use .dict() instead of direct access
+            "listing_data": listing_dict
         }, indent=2))
 
         # Create listing in Airtable
@@ -45,21 +46,24 @@ async def notify_new_listing(listing: ListingNotification):
         airtable = AirtableClient()
         
         try:
-            await airtable.createListing(listing.dict())
+            await airtable.createListing(listing_dict)
         except Exception as e:
             print(f"Error creating listing in Airtable: {e}")
             # Continue with notifications even if Airtable creation fails
 
+        # Get token label safely
+        token_label = listing_dict.get('token', {}).get('label', 'USDC')
+
         # Format notification message
         message = (
             "🔔 New Listing Alert!\n\n"
-            f"Swarm: {listing.swarm_id.upper()}\n"
-            f"Shares: {listing.number_of_shares:,}\n"
-            f"Price/Share: {listing.price_per_share:,.2f} {listing.token.label}\n"
-            f"Total Price: {listing.total_price:,.2f} {listing.token.label}\n"
-            f"Seller: {listing.seller}\n\n"
-            f"Listing ID: {listing.listing_id}\n\n"
-            f"🔗 View Listing: https://swarms.universalbasiccompute.ai/invest/{listing.swarm_id}"
+            f"Swarm: {listing_dict['swarm_id'].upper()}\n"
+            f"Shares: {listing_dict['number_of_shares']:,}\n"
+            f"Price/Share: {listing_dict['price_per_share']:,.2f} {token_label}\n"
+            f"Total Price: {listing_dict['total_price']:,.2f} {token_label}\n"
+            f"Seller: {listing_dict['seller']}\n\n"
+            f"Listing ID: {listing_dict['listing_id']}\n\n"
+            f"🔗 View Listing: https://swarms.universalbasiccompute.ai/invest/{listing_dict['swarm_id']}"
         )
 
         print(json.dumps({
