@@ -25,7 +25,7 @@ class ListingNotification(BaseModel):
     seller: str
     total_price: float
     listing_id: str
-    token: str = "USDC"  # Default to USDC
+    token: str = "USDC"  # Changed from Dict to str with default value
 
 @app.post("/api/notify-new-listing")
 async def notify_new_listing(listing: ListingNotification):
@@ -47,16 +47,13 @@ async def notify_new_listing(listing: ListingNotification):
             print(f"Error creating listing in Airtable: {e}")
             # Continue with notifications even if Airtable creation fails
 
-        # Get token label safely
-        token_label = listing_dict.get('token', {}).get('label', 'USDC')
-
         # Format notification message
         message = (
             "🔔 New Listing Alert!\n\n"
             f"Swarm: {listing_dict['swarm_id'].upper()}\n"
             f"Shares: {listing_dict['number_of_shares']:,}\n"
-            f"Price/Share: {listing_dict['price_per_share']:,.2f} {token_label}\n"
-            f"Total Price: {listing_dict['total_price']:,.2f} {token_label}\n"
+            f"Price/Share: {listing_dict['price_per_share']:,.2f} {listing_dict['token']}\n"
+            f"Total Price: {listing_dict['total_price']:,.2f} {listing_dict['token']}\n"
             f"Seller: {listing_dict['seller']}\n\n"
             f"Listing ID: {listing_dict['listing_id']}\n\n"
             f"🔗 View Listing: https://swarms.universalbasiccompute.ai/invest/{listing_dict['swarm_id']}"
