@@ -18,6 +18,10 @@ app = FastAPI()
 # Initialize Telegram bot
 bot = telegram.Bot(token=os.getenv('TELEGRAM_BOT_TOKEN'))
 
+class Token(BaseModel):
+    label: str
+    icon: str = "/tokens/usdc.svg"
+
 class ListingNotification(BaseModel):
     swarm_id: str
     number_of_shares: int
@@ -25,10 +29,7 @@ class ListingNotification(BaseModel):
     seller: str
     total_price: float
     listing_id: str
-    token: Optional[dict] = {
-        "label": "USDC",
-        "icon": "/tokens/usdc.svg"
-    }
+    token: Token = Token(label="USDC", icon="/tokens/usdc.svg")
 
 @app.post("/api/notify-new-listing")
 async def notify_new_listing(listing: ListingNotification):
