@@ -1,4 +1,3 @@
-import '../styles/base.css';
 import '../styles/globals.css';
 import { useEffect } from 'react';
 import { WalletProvider } from '@solana/wallet-adapter-react';
