@@ -7,7 +7,7 @@ import asyncio
 import os
 import json
 from dotenv import load_dotenv
-from src.utils.airtable import AirtableClient
+from .airtable import AirtableClient
 
 # Load environment variables
 load_dotenv()
