@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 import telegram
@@ -18,6 +18,7 @@ app = FastAPI()
 # Initialize Telegram bot
 bot = telegram.Bot(token=os.getenv('TELEGRAM_BOT_TOKEN'))
 
+# Update the model definition with proper validation
 class ListingNotification(BaseModel):
     swarm_id: str
     number_of_shares: int
@@ -25,7 +26,20 @@ class ListingNotification(BaseModel):
     seller: str
     total_price: float
     listing_id: str
-    token: str
+    token: str = Field(description="Token symbol (e.g., 'USDC')")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "swarm_id": "kinos",
+                "number_of_shares": 100,
+                "price_per_share": 10.5,
+                "seller": "ABC...XYZ",
+                "listing_id": "L123456",
+                "token": "USDC",
+                "total_price": 1050.0
+            }
+        }
 
 @app.post("/api/notify-new-listing")
 async def notify_new_listing(listing: ListingNotification):
