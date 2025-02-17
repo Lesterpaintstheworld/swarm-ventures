@@ -25,12 +25,12 @@ class ListingNotification(BaseModel):
     seller: str
     total_price: float
     listing_id: str
-    token: str = "USDC"  # Changed from Dict to str with default value
+    token: str
 
 @app.post("/api/notify-new-listing")
 async def notify_new_listing(listing: ListingNotification):
     try:
-        listing_dict = listing.dict()  # Convert Pydantic model to dict
+        listing_dict = listing.model_dump()  # Use model_dump() instead of dict()
         print(json.dumps({
             "timestamp": datetime.now().isoformat(),
             "event": "new_listing_received",
