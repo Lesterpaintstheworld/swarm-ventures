@@ -78,6 +78,44 @@ class AirtableClient {
       return false;
     }
   }
+
+  async createListing(listingData) {
+    try {
+      const response = await fetch(`https://api.airtable.com/v0/${this.baseId}/Listings`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          records: [{
+            fields: {
+              id: `L${Math.floor(100000 + Math.random() * 900000)}`, // Generate 6-digit ID
+              swarm_id: listingData.swarm_id,
+              number_of_shares: listingData.number_of_shares,
+              price_per_share: listingData.price_per_share,
+              total_price: listingData.total_price,
+              seller_wallet: listingData.seller,
+              listing_date: new Date().toISOString(),
+              status: 'active',
+              token_type: listingData.token.label
+            }
+          }]
+        })
+      });
+
+      const data = await response.json();
+      
+      if (!data.records || data.records.length === 0) {
+        throw new Error('Failed to create listing record');
+      }
+
+      return data.records[0];
+    } catch (error) {
+      console.error('Airtable listing creation error:', error);
+      throw error;
+    }
+  }
 }
 
 export { AirtableClient };
