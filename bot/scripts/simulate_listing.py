@@ -69,7 +69,7 @@ async def simulate_listing():
         print(message)
 
         # Create listing in Airtable
-        from utils.airtable import AirtableClient
+        from src.utils.airtable import AirtableClient  # Updated import path
         airtable = AirtableClient()
         
         try:
