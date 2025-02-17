@@ -61,7 +61,7 @@ const Premium = () => {
         SystemProgram.transfer({
           fromPubkey: wallet.publicKey,
           toPubkey: treasuryWallet,
-          lamports: 0.01 * LAMPORTS_PER_SOL,
+          lamports: 3 * LAMPORTS_PER_SOL,
         })
       );
 
@@ -92,7 +92,7 @@ const Premium = () => {
         body: JSON.stringify({
           telegram_id: ref,
           transaction_signature: signature,
-          amount: 0.01,
+          amount: 3,
           wallet_address: wallet.publicKey.toString()
         })
       });
@@ -205,7 +205,7 @@ const Premium = () => {
                 <div className="text-center mb-8">
                   <div className="premium-price">
                     <span className="text-sm text-silver/50 uppercase tracking-wider">One-time Payment</span>
-                    <div className="text-5xl font-bold gradient-text mt-2">0.01 SOL</div>
+                    <div className="text-5xl font-bold gradient-text mt-2">3 SOL</div>
                   </div>
                   <p className="text-silver/70 mt-4">Lifetime access to premium features</p>
                 </div>
