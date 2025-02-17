@@ -36,13 +36,13 @@ async def notify_new_listing():
         mock_listing = {
             "swarm_id": "xforge",
             "number_of_shares": 1000,
-            "price_per_share": 404.3,
+            "price_per_share": 10.0,
             "seller": "ABC...XYZ",
-            "total_price": 404300,
+            "total_price": 10000,
             "listing_id": "L123456",
             "token": {
-                "label": "$COMPUTE",
-                "icon": "/tokens/compute.svg"
+                "label": "USDC",
+                "icon": "/tokens/usdc.svg"
             }
         }
 
