@@ -99,7 +99,7 @@ async def notify_new_listing(notification: NewListingNotification):
         }, indent=2))
 
         # Create listing in Airtable
-        from utils.airtable import AirtableClient
+        from api.airtable import AirtableClient
         airtable = AirtableClient()
         
         try:
@@ -126,6 +126,7 @@ async def notify_new_listing(notification: NewListingNotification):
         }, indent=2))
 
         # Get all users from Airtable
+        from api.airtable import AirtableClient
         airtable = AirtableClient()
         users = airtable.get_all_users()
 
