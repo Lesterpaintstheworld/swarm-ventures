@@ -226,6 +226,10 @@ async def notify_sale(notification: SaleNotification):
             "sale_data": notification_dict
         }, indent=2))
 
+        # Mettre à jour le listing comme vendu
+        airtable = AirtableClient()
+        await airtable.update_listing_sold(notification.listing.id)
+
         # Format notification message
         message = (
             "💰 Sale Completed!\n\n"

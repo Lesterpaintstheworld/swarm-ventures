@@ -12,6 +12,11 @@ class AirtableClient:
             os.getenv('AIRTABLE_BASE_ID'),
             os.getenv('AIRTABLE_TABLE_NAME')
         )
+        self.listings_table = Table(
+            os.getenv('AIRTABLE_API_KEY'),
+            os.getenv('AIRTABLE_BASE_ID'),
+            'Listings'  # Table des listings
+        )
     
     def get_user(self, telegram_id: str):
         """Get user by Telegram ID"""
@@ -36,6 +41,23 @@ class AirtableClient:
             })
             return True
         return False
+
+    async def update_listing_sold(self, listing_id: str):
+        """Update listing with sold date when sale is completed"""
+        try:
+            # Recherche le listing par son ID
+            records = self.listings_table.all(formula=f"{{listing_id}}='{listing_id}'")
+            if records:
+                # Met à jour avec la date de vente
+                self.listings_table.update(records[0]['id'], {
+                    'dateSold': datetime.now().isoformat(),
+                    'status': 'sold'
+                })
+                return True
+            return False
+        except Exception as e:
+            print(f"Error updating listing sold status: {e}")
+            return False
 
     def get_subscription_status(self, telegram_id: str) -> str:
         """Get user's subscription status"""
