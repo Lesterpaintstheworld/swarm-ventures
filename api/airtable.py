@@ -78,3 +78,32 @@ class AirtableClient:
             })
             return True
         return False
+
+    async def createListing(self, notification_data: dict):
+        """Create new listing in Airtable"""
+        try:
+            listing_data = notification_data['listing']
+            swarm_data = notification_data['swarm']
+            
+            # Prépare les données pour Airtable
+            airtable_data = {
+                "listing_id": listing_data['id'],
+                "seller": listing_data['seller'],
+                "number_of_shares": listing_data['numberOfShares'],
+                "price_per_share": listing_data['pricePerShare'],
+                "desired_token": listing_data['desiredToken'],
+                "swarm_id": swarm_data['id'],
+                "swarm_name": swarm_data['name'],
+                "swarm_image": swarm_data['image'],
+                "status": "active",
+                "created_date": datetime.now().isoformat(),
+                "total_value": listing_data['numberOfShares'] * listing_data['pricePerShare']
+            }
+            
+            # Crée le listing dans Airtable
+            result = self.listings_table.create(airtable_data)
+            return result
+            
+        except Exception as e:
+            print(f"Error creating listing in Airtable: {e}")
+            raise e
