@@ -18,14 +18,51 @@ app = FastAPI()
 # Initialize Telegram bot
 bot = telegram.Bot(token=os.getenv('TELEGRAM_BOT_TOKEN'))
 
-# Update the model definition with proper validation
-class ListingNotification(BaseModel):
+# Model for swarm information
+class SwarmInfo(BaseModel):
+    id: str
+    name: str
+    image: str
+
+# Model for listing information
+class ListingInfo(BaseModel):
+    id: str
+    seller: str
+    numberOfShares: int
+    pricePerShare: float
+    desiredToken: str
+
+# Model for new listing notifications
+class NewListingNotification(BaseModel):
+    listing: ListingInfo
+    swarm: SwarmInfo
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "listing": {
+                    "id": "L123456",
+                    "seller": "ABC...XYZ",
+                    "numberOfShares": 100,
+                    "pricePerShare": 10.5,
+                    "desiredToken": "USDC"
+                },
+                "swarm": {
+                    "id": "kinos",
+                    "name": "Kinos",
+                    "image": "https://example.com/image.jpg"
+                }
+            }
+        }
+
+# Model for completed sale notifications
+class SaleNotification(BaseModel):
     swarm_id: str
     number_of_shares: int
     price_per_share: float
     seller: str
+    buyer: str
     total_price: float
-    listing_id: str
     token: str = Field(description="Token symbol (e.g., 'USDC')")
 
     class Config:
@@ -35,16 +72,16 @@ class ListingNotification(BaseModel):
                 "number_of_shares": 100,
                 "price_per_share": 10.5,
                 "seller": "ABC...XYZ",
-                "listing_id": "L123456",
-                "token": "USDC",
-                "total_price": 1050.0
+                "buyer": "DEF...UVW",
+                "total_price": 1050.0,
+                "token": "USDC"
             }
         }
 
 @app.post("/api/notify-new-listing")
-async def notify_new_listing(listing: ListingNotification):
+async def notify_new_listing(notification: NewListingNotification):
     try:
-        listing_dict = listing.model_dump()  # Use model_dump() instead of dict()
+        notification_dict = notification.model_dump()
         print(json.dumps({
             "timestamp": datetime.now().isoformat(),
             "event": "new_listing_received",
@@ -63,14 +100,13 @@ async def notify_new_listing(listing: ListingNotification):
 
         # Format notification message
         message = (
-            "🔔 New Listing Alert!\n\n"
-            f"Swarm: {listing_dict['swarm_id'].upper()}\n"
-            f"Shares: {listing_dict['number_of_shares']:,}\n"
-            f"Price/Share: {listing_dict['price_per_share']:,.2f} {listing_dict['token']}\n"
-            f"Total Price: {listing_dict['total_price']:,.2f} {listing_dict['token']}\n"
-            f"Seller: {listing_dict['seller']}\n\n"
-            f"Listing ID: {listing_dict['listing_id']}\n\n"
-            f"🔗 View Listing: https://swarms.universalbasiccompute.ai/invest/{listing_dict['swarm_id']}"
+            "🔔 New Listing Available!\n\n"
+            f"Swarm: {notification.swarm.name}\n"
+            f"Shares: {notification.listing.numberOfShares:,}\n"
+            f"Price/Share: {notification.listing.pricePerShare:,.2f} {notification.listing.desiredToken}\n"
+            f"Seller: {notification.listing.seller}\n\n"
+            f"Listing ID: {notification.listing.id}\n\n"
+            f"🔗 View Listing: https://swarms.universalbasiccompute.ai/invest/{notification.swarm.id}"
         )
 
         print(json.dumps({
@@ -174,6 +210,75 @@ async def notify_new_listing(listing: ListingNotification):
         error_data = {
             "timestamp": datetime.now().isoformat(),
             "event": "notification_error",
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
+        print(json.dumps(error_data, indent=2))
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/notify-sale")
+async def notify_sale(notification: SaleNotification):
+    try:
+        notification_dict = notification.model_dump()
+        print(json.dumps({
+            "timestamp": datetime.now().isoformat(),
+            "event": "sale_completed",
+            "sale_data": notification_dict
+        }, indent=2))
+
+        # Format notification message
+        message = (
+            "💰 Sale Completed!\n\n"
+            f"Swarm: {notification.swarm_id}\n"
+            f"Shares: {notification.number_of_shares:,}\n"
+            f"Price/Share: {notification.price_per_share:,.2f} {notification.token}\n"
+            f"Total: {notification.total_price:,.2f} {notification.token}\n"
+            f"Seller: {notification.seller}\n"
+            f"Buyer: {notification.buyer}"
+        )
+
+        # Get all users from Airtable
+        airtable = AirtableClient()
+        users = airtable.get_all_users()
+
+        # Send notification to all users
+        notification_tasks = []
+        failed_notifications = []
+        for user in users:
+            try:
+                telegram_id = user['fields'].get('telegram_id')
+                if telegram_id:
+                    notification_tasks.append(
+                        bot.send_message(
+                            chat_id=telegram_id,
+                            text=message,
+                            parse_mode='HTML'
+                        )
+                    )
+            except Exception as e:
+                failed_notifications.append({
+                    "telegram_id": telegram_id,
+                    "error": str(e)
+                })
+
+        # Send all notifications concurrently
+        if notification_tasks:
+            results = await asyncio.gather(*notification_tasks, return_exceptions=True)
+            success_count = sum(1 for r in results if not isinstance(r, Exception))
+            failure_count = sum(1 for r in results if isinstance(r, Exception))
+
+        return {
+            "status": "success",
+            "notifications_sent": len(notification_tasks),
+            "successful_notifications": success_count,
+            "failed_notifications": failure_count,
+            "failures": failed_notifications
+        }
+
+    except Exception as e:
+        error_data = {
+            "timestamp": datetime.now().isoformat(),
+            "event": "sale_notification_error",
             "error": str(e),
             "error_type": type(e).__name__
         }
