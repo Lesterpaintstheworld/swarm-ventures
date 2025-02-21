@@ -29,7 +29,8 @@ def simulate_listing():
 
     try:
         response = requests.post(
-            'https://swarmventures.universalbasiccompute.ai/api/notify-new-listing',
+            'http://localhost:8000/api/notify-new-listing',  # Local testing URL
+            # or 'https://api.swarmventures.universalbasiccompute.ai/api/notify-new-listing'
             json=notification_data,
             headers={'Content-Type': 'application/json'}
         )
