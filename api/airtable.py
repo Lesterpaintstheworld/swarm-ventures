@@ -107,3 +107,13 @@ class AirtableClient:
         except Exception as e:
             print(f"Error creating listing in Airtable: {e}")
             raise e
+
+    def get_all_users(self):
+        """Get all users from Airtable"""
+        try:
+            # Récupère tous les utilisateurs de la table
+            records = self.table.all()
+            return records
+        except Exception as e:
+            print(f"Error getting all users: {e}")
+            return []
