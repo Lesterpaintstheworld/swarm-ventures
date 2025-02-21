@@ -50,7 +50,7 @@ class AirtableClient:
             if records:
                 # Met à jour avec la date de vente
                 self.listings_table.update(records[0]['id'], {
-                    'dateSold': datetime.now().isoformat(),
+                    'sold_date': datetime.now().isoformat(),  # Changed from dateSold to sold_date
                     'status': 'sold'
                 })
                 return True
