@@ -213,11 +213,11 @@ const Boids = ({ count = 200 }) => {
   return (
     <points ref={mesh}>
       <pointsMaterial
-        size={0.8}           // Reduced from 1.5
+        size={2.5}           // Increased for better visibility
         sizeAttenuation={true}
         color={0xffcc00}
         transparent={true}
-        opacity={0.5}        // Reduced from 0.8
+        opacity={0.8}        // Increased for better visibility
         vertexColors={false}
         blending={THREE.AdditiveBlending}
       />
@@ -292,7 +292,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 
   return (
     <lineSegments ref={lines}>
-      <lineBasicMaterial color={0xffffff} transparent opacity={0.3} />  // Reduced from 0.6
+      <lineBasicMaterial color={0xffffff} transparent opacity={0.5} />  // Increased for better visibility
     </lineSegments>
   );
 };
@@ -300,9 +300,9 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 // Main swarm component
 const SwarmParticles = () => {
   return (
-    <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 0 }}>
+    <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
       <Canvas 
-        camera={{ position: [0, 0, 180], fov: 50 }}  // Moved camera further back, reduced FOV
+        camera={{ position: [0, 0, 100], fov: 60 }}  // Moved camera closer with wider FOV
         style={{ background: 'linear-gradient(to bottom, #000000, #111111)' }}
         dpr={[1, 2]} // Improve rendering on high-DPI displays
       >
@@ -310,8 +310,8 @@ const SwarmParticles = () => {
         <fog attach="fog" args={['#000000', 30, 100]} />
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
-        <Boids count={300} />
-        <Connections count={300} maxDistance={10} />  // Reduced from 15
+        <Boids count={200} />
+        <Connections count={200} maxDistance={15} />  // Increased distance for more connections
         <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
       </Canvas>
     </div>
