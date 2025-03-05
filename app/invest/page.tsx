@@ -19,7 +19,7 @@ export default function Invest() {
   }, []);
 
   const [selectedToken, setSelectedToken] = useState("UBC");
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState("100000"); // Default to UBC minimum
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -36,15 +36,20 @@ export default function Invest() {
     setError("");
     
     try {
-      // Check if Phantom is installed
-      const isPhantomInstalled = window.phantom?.solana?.isPhantom;
+      // Make sure we're in a browser environment
+      if (typeof window === 'undefined' || !window.phantom) {
+        throw new Error("Phantom wallet is not installed. Please install it from https://phantom.app/");
+      }
       
-      if (!isPhantomInstalled) {
+      // Check if Phantom is installed
+      const provider = window.phantom?.solana;
+      
+      if (!provider?.isPhantom) {
         throw new Error("Phantom wallet is not installed. Please install it from https://phantom.app/");
       }
       
       // Connect to Phantom
-      const response = await window.phantom?.solana?.connect();
+      const response = await provider.connect();
       setWalletAddress(response.publicKey.toString());
       setWalletConnected(true);
     } catch (error) {
@@ -71,14 +76,17 @@ export default function Invest() {
         throw new Error("Please connect your wallet first");
       }
       
-      // In a real implementation, you would create and send a transaction here
-      // For this demo, we'll just simulate a successful transaction
-      
       // Destination wallet address
       const destinationWallet = "A8Sn2X28ev9w1s58VUgNQaEHoqE2msjM9bEonq8tdSAk";
       
-      // Simulate transaction delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // In a real implementation, you would create and send a transaction here
+      // For this demo, we'll just open a link to Phantom's send page
+      
+      // Format the URL for Phantom's send page
+      const phantomSendUrl = `https://phantom.app/ul/transfer?recipient=${destinationWallet}&amount=${numAmount}&splToken=${selectedToken}`;
+      
+      // Open the URL in a new tab
+      window.open(phantomSendUrl, '_blank');
       
       // Show success message
       setSuccess(true);
@@ -231,7 +239,10 @@ export default function Invest() {
                           ? "border-[#d4af37] bg-[#d4af37]/10" 
                           : "border-gray-700 bg-gray-900 hover:border-gray-500"
                       } transition-colors flex items-center justify-center`}
-                      onClick={() => setSelectedToken("UBC")}
+                      onClick={() => {
+                        setSelectedToken("UBC");
+                        setAmount("100000");
+                      }}
                     >
                       <div className="text-center">
                         <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 mx-auto flex items-center justify-center mb-2">
@@ -249,7 +260,10 @@ export default function Invest() {
                           ? "border-[#d4af37] bg-[#d4af37]/10" 
                           : "border-gray-700 bg-gray-900 hover:border-gray-500"
                       } transition-colors flex items-center justify-center`}
-                      onClick={() => setSelectedToken("COMPUTE")}
+                      onClick={() => {
+                        setSelectedToken("COMPUTE");
+                        setAmount("1000000");
+                      }}
                     >
                       <div className="text-center">
                         <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-teal-500 mx-auto flex items-center justify-center mb-2">
