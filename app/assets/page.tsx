@@ -198,10 +198,7 @@ const SwarmCard = ({ swarm }) => {
           )}
         </div>
         <h3 className="text-xl font-bold mb-2 gold-text">{swarm.name}</h3>
-        <p className="text-gray-300 text-sm mb-4 line-clamp-3">{swarm.description}</p>
-        <a href="#" className="gold-button px-4 py-2 rounded-full text-sm font-medium inline-block">
-          Invest
-        </a>
+        <p className="text-gray-300 text-sm mb-4">{swarm.description}</p>
       </div>
     </div>
   );
