@@ -85,40 +85,15 @@ export default function Invest() {
         COMPUTE: "B1N1HcMm4RysYz4smsXwmk2UnS8NziqKCM6Ho8i62vXo"
       };
     
-      // Get the Phantom provider
-      const provider = window.phantom?.solana;
-    
-      if (!provider?.isPhantom) {
-        throw new Error("Phantom wallet is not installed or not connected");
-      }
-    
-      // Create a Solana web3 connection and transaction
-      // Note: In a real implementation, you would use @solana/web3.js
-      // For this demo, we'll use Phantom's direct transfer method
-    
-      try {
-        // Request the user to transfer tokens to the destination wallet
-        await provider.request({
-          method: 'transfer',
-          params: {
-            to: destinationWallet,
-            amount: numAmount,
-            token: tokenAddresses[selectedToken]
-          }
-        });
-        
-        // Show success message
-        setSuccess(true);
-      } catch (transferError) {
-        console.error("Transfer error:", transferError);
-        
-        // If direct transfer fails, fall back to opening the send page
-        const phantomSendUrl = `https://phantom.app/ul/transfer?recipient=${destinationWallet}&amount=${numAmount}&splToken=${tokenAddresses[selectedToken]}`;
-        window.open(phantomSendUrl, '_blank');
-        
-        // Still show success since we've directed the user to complete the transaction
-        setSuccess(true);
-      }
+      // Instead of trying to use the direct transfer method which is causing errors,
+      // let's use the Phantom send URL which is more reliable
+      const phantomSendUrl = `https://phantom.app/ul/transfer?recipient=${destinationWallet}&amount=${numAmount}&splToken=${tokenAddresses[selectedToken]}`;
+      
+      // Open the URL in a new tab
+      window.open(phantomSendUrl, '_blank');
+      
+      // Show success message
+      setSuccess(true);
       
     } catch (error) {
       console.error("Error processing investment:", error);
