@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Initialize Airtable
-const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
+const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY || '' }).base(process.env.AIRTABLE_BASE_ID || '');
 
 // Initialize Telegram Bot
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN || '', { polling: false });
