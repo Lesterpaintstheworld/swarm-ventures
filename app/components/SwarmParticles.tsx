@@ -217,7 +217,7 @@ const Boids = ({ count = 200 }) => {
         sizeAttenuation={true}
         color={0xffcc00}
         transparent={true}
-        opacity={0.625}  // Increased by 25% (from 0.5 to 0.625)
+        opacity={0.5}  // Reduced by 20% (from 0.625 to 0.5)
         vertexColors={false}
         blending={THREE.AdditiveBlending}
       />
@@ -292,7 +292,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 
   return (
     <lineSegments ref={lines}>
-      <lineBasicMaterial color={0xffffff} transparent opacity={0.4375} />  // Increased by 25% (from 0.35 to 0.4375)
+      <lineBasicMaterial color={0xffffff} transparent opacity={0.35} />  // Reduced by 20% (from 0.4375 to 0.35)
     </lineSegments>
   );
 };
