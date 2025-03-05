@@ -19,31 +19,31 @@ export default function Home() {
       
       <div className="container mx-auto px-4 py-12">
         {/* Hero Section */}
-        <header className="hero-header flex flex-col items-center justify-center min-h-[100vh] pt-32 pb-20 text-center relative z-10">
+        <header className="hero-header flex flex-col items-center justify-center min-h-[95vh] pt-32 pb-10 text-center relative z-10">
           <div className="my-auto py-16 flex flex-col items-center max-w-5xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-bold mb-10">
+            <h1 className="text-6xl md:text-8xl font-bold mb-10">
               <span className="gold-gradient">SwarmVentures</span>
             </h1>
-            <h2 className="text-xl md:text-2xl mb-16 silver-text max-w-3xl mx-auto">
+            <h2 className="text-xl md:text-3xl mb-16 silver-text max-w-3xl mx-auto">
               Professional Portfolio Management for AI Swarms
             </h2>
             
             <div className="metallic-card p-8 md:p-10 rounded-xl max-w-3xl mx-auto mb-16">
-              <p className="text-lg mb-6">
+              <p className="text-lg md:text-xl mb-6">
                 SwarmVentures introduces professional portfolio management to the AI swarm ecosystem, 
                 offering investors access to diversified swarm share investments through a single managed vehicle.
               </p>
-              <p className="silver-text">
+              <p className="silver-text md:text-lg">
                 Our initial offering optimizes risk-adjusted returns through strategic allocation, 
                 active trading, and deep market expertise.
               </p>
             </div>
             
             <div className="flex flex-col md:flex-row gap-6 justify-center">
-              <a href="#investment" className="gold-button px-8 py-4 rounded-full font-bold text-lg">
+              <a href="#investment" className="gold-button px-10 py-5 rounded-full font-bold text-xl">
                 Invest Now
               </a>
-              <a href="#learn-more" className="silver-button px-8 py-4 rounded-full font-bold text-lg">
+              <a href="#learn-more" className="silver-button px-10 py-5 rounded-full font-bold text-xl">
                 Learn More
               </a>
             </div>
@@ -92,46 +92,6 @@ export default function Home() {
           </div>
         </section>
         
-        {/* Portfolio Composition */}
-        <section className="py-20 relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center">
-            <span className="gold-gradient">Portfolio Composition</span>
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="metallic-card p-6 rounded-xl">
-              <h3 className="text-xl font-bold mb-4 gold-text">Core Performance Swarms (40%)</h3>
-              <p className="mb-4">Established track record with consistent revenue generation and proven market demand.</p>
-              <div className="w-full bg-gray-800 rounded-full h-2 mb-6">
-                <div className="bg-gradient-to-r from-[#b8860b] to-[#d4af37] h-2 rounded-full" style={{ width: '40%' }}></div>
-              </div>
-            </div>
-            
-            <div className="metallic-card p-6 rounded-xl">
-              <h3 className="text-xl font-bold mb-4 gold-text">Growth Opportunity Swarms (30%)</h3>
-              <p className="mb-4">Strong technical capabilities with expanding market share and innovative applications.</p>
-              <div className="w-full bg-gray-800 rounded-full h-2 mb-6">
-                <div className="bg-gradient-to-r from-[#b8860b] to-[#d4af37] h-2 rounded-full" style={{ width: '30%' }}></div>
-              </div>
-            </div>
-            
-            <div className="metallic-card p-6 rounded-xl">
-              <h3 className="text-xl font-bold mb-4 gold-text">Value Swarms (20%)</h3>
-              <p className="mb-4">Undervalued capabilities with strong fundamentals and potential for market reappraisal.</p>
-              <div className="w-full bg-gray-800 rounded-full h-2 mb-6">
-                <div className="bg-gradient-to-r from-[#b8860b] to-[#d4af37] h-2 rounded-full" style={{ width: '20%' }}></div>
-              </div>
-            </div>
-            
-            <div className="metallic-card p-6 rounded-xl">
-              <h3 className="text-xl font-bold mb-4 gold-text">Strategic Reserve (10%)</h3>
-              <p className="mb-4">Tactical opportunities, market stabilization, and new entry positions.</p>
-              <div className="w-full bg-gray-800 rounded-full h-2 mb-6">
-                <div className="bg-gradient-to-r from-[#b8860b] to-[#d4af37] h-2 rounded-full" style={{ width: '10%' }}></div>
-              </div>
-            </div>
-          </div>
-        </section>
         
         {/* Investment Section */}
         <section id="investment" className="py-20 relative z-10">
@@ -165,7 +125,7 @@ export default function Home() {
             
             <div className="mt-10 text-center">
               <a href="#register" className="gold-button px-8 py-4 rounded-full font-bold text-lg inline-block">
-                Register Interest
+                Invest
               </a>
             </div>
           </div>

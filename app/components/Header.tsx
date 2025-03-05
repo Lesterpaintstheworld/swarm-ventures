@@ -94,7 +94,7 @@ const Header = () => {
             href="#register"
             className="gold-button px-5 py-2 rounded-full font-medium"
           >
-            Register Interest
+            Invest
           </Link>
         </nav>
       </div>
@@ -139,7 +139,7 @@ const Header = () => {
             className="gold-button px-5 py-2 rounded-full font-medium text-center"
             onClick={() => setMenuOpen(false)}
           >
-            Register Interest
+            Invest
           </Link>
         </nav>
       </div>
