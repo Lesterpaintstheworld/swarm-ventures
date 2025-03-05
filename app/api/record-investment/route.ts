@@ -49,7 +49,7 @@ export async function POST(request: Request) {
         `SwarmVentures - Professional Portfolio Management`;
 
       // Get the image path
-      const imagePath = path.join(process.cwd(), 'public', 'swarmventures.png');
+      const imagePath = path.join(process.cwd(), 'public', 'swarmventures.jpg');
       
       // Send the message with photo
       if (fs.existsSync(imagePath)) {
