@@ -108,6 +108,16 @@ body {
 .container {
   position: relative;
   z-index: 1;
+  padding-top: 80px; /* Add padding for the fixed header */
+}
+
+/* And update the header styles */
+header {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+header.scrolled {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 /* Add these styles for better metallic effect */

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import dynamic from 'next/dynamic';
+import Header from './components/Header';
 
 // Import SwarmParticles with SSR disabled
 const SwarmParticles = dynamic(
@@ -13,6 +14,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       <SwarmParticles />
+      <Header />
       
       <div className="container mx-auto px-4 py-12">
         {/* Hero Section */}
