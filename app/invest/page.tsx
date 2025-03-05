@@ -93,56 +93,20 @@ export default function Invest() {
       }
       
       try {
-        // For Solana tokens, we need to use the proper method
-        // First, create a transaction for token transfer
-        const connection = provider.connection;
+        // Since we can't directly use the Phantom API for transfers in this context,
+        // we'll use a simpler approach that works more reliably
         
-        // Use the connect method to ensure we have the latest connection
-        await provider.connect();
+        // Create a transaction URL for Phantom's web UI
+        const phantomSendUrl = `https://phantom.app/ul/transfer?recipient=${destinationWallet}&amount=${numAmount}&splToken=${tokenAddresses[selectedToken]}`;
         
-        // Create a simple transaction to send tokens
-        // This will open the Phantom wallet directly
-        const tokenMint = tokenAddresses[selectedToken];
-        
-        // Use the proper method to create a token transfer
-        await provider.signAndSendTransaction({
-          feePayer: provider.publicKey,
-          recentBlockhash: await connection.getRecentBlockhash(),
-          instructions: [
-            {
-              programId: tokenMint,
-              keys: [
-                { pubkey: provider.publicKey, isSigner: true, isWritable: true },
-                { pubkey: destinationWallet, isSigner: false, isWritable: true },
-                { pubkey: tokenMint, isSigner: false, isWritable: false }
-              ],
-              data: Buffer.from([numAmount])
-            }
-          ]
-        });
+        // Open the URL in a new tab
+        window.open(phantomSendUrl, '_blank');
         
         // Show success message
         setSuccess(true);
       } catch (transferError) {
         console.error("Transfer error:", transferError);
-        
-        // If the direct method fails, try using the Solana protocol
-        // This is a more reliable way to open the Phantom wallet
-        const solanaProtocolUrl = `solana:${destinationWallet}?amount=${numAmount}&spl-token=${tokenAddresses[selectedToken]}`;
-        
-        // Try to open using the solana: protocol which should trigger the wallet
-        window.location.href = solanaProtocolUrl;
-        
-        // If that doesn't work, fall back to the Phantom URL scheme
-        setTimeout(() => {
-          const phantomSendUrl = `https://phantom.app/ul/transfer?recipient=${destinationWallet}&amount=${numAmount}&splToken=${tokenAddresses[selectedToken]}`;
-          window.open(phantomSendUrl, '_blank');
-        }, 1000);
-        
-        // Set a timeout to show success after a short delay
-        setTimeout(() => {
-          setSuccess(true);
-        }, 2000);
+        setError("Failed to initiate transfer. Please try manually sending funds to the wallet address.");
       }
       
     } catch (error) {
