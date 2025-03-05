@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
