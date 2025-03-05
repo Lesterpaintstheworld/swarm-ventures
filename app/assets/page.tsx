@@ -7,6 +7,14 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import dynamic from 'next/dynamic';
 
+// Define Swarm interface
+interface Swarm {
+  name: string;
+  image: string;
+  categories: string[];
+  description: string;
+}
+
 // Import SwarmParticles with SSR disabled
 const SwarmParticles = dynamic(
   () => import('../components/SwarmParticles'),
@@ -174,7 +182,7 @@ const inceptionSwarms = [
 ];
 
 // Swarm Card Component
-const SwarmCard = ({ swarm }) => {
+const SwarmCard = ({ swarm }: { swarm: Swarm }) => {
   return (
     <div className="metallic-card rounded-xl overflow-hidden transition-all duration-300 hover:transform hover:scale-[1.02]">
       <div className="p-6">
