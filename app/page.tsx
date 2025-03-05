@@ -13,7 +13,7 @@ const SwarmParticles = dynamic(
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden z-10">
+    <div className="min-h-screen bg-black text-white relative overflow-hidden z-10" style={{ backgroundColor: '#000000' }}>
       <SwarmParticles />
       <Header />
       

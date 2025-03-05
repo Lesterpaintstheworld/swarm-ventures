@@ -303,7 +303,7 @@ const SwarmParticles = () => {
     <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
       <Canvas 
         camera={{ position: [0, 0, 80], fov: 70 }}
-        style={{ background: 'linear-gradient(to bottom, #000000, #111111)' }}
+        style={{ background: '#000000' }}
         dpr={[1, 2]} // Improve rendering on high-DPI displays
       >
         <color attach="background" args={['#000000']} />
@@ -312,7 +312,7 @@ const SwarmParticles = () => {
         <pointLight position={[10, 10, 10]} intensity={1} />
         <Boids count={200} />
         <Connections count={200} maxDistance={20} />
-        <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
+        <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
       </Canvas>
     </div>
   );
