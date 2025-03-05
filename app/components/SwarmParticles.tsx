@@ -55,12 +55,12 @@ const Boids = ({ count = 200 }) => {
     separation: 15,
     alignment: 25,
     cohesion: 25,
-    separationForce: 0.1,
-    alignmentForce: 0.08,
-    cohesionForce: 0.08,
-    maxSpeed: 0.5,
-    maxForce: 0.07,
-    bounds: 30
+    separationForce: 0.05,  // Reduced from 0.1
+    alignmentForce: 0.04,   // Reduced from 0.08
+    cohesionForce: 0.04,    // Reduced from 0.08
+    maxSpeed: 0.2,          // Reduced from 0.5
+    maxForce: 0.03,         // Reduced from 0.07
+    bounds: 40              // Increased from 30
   };
 
   // Calculate steering forces for flocking behavior
@@ -213,11 +213,11 @@ const Boids = ({ count = 200 }) => {
   return (
     <points ref={mesh}>
       <pointsMaterial
-        size={5}
+        size={1.5}  // Reduced from 5
         sizeAttenuation={true}
         color={0xffcc00}
         transparent={true}
-        opacity={1.0}
+        opacity={0.8}  // Reduced from 1.0
         vertexColors={false}
         blending={THREE.AdditiveBlending}
       />
@@ -302,7 +302,7 @@ const SwarmParticles = () => {
   return (
     <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 0 }}>
       <Canvas 
-        camera={{ position: [0, 0, 50], fov: 75 }} 
+        camera={{ position: [0, 0, 120], fov: 60 }}  // Moved camera back, reduced FOV
         style={{ background: 'linear-gradient(to bottom, #000000, #111111)' }}
         dpr={[1, 2]} // Improve rendering on high-DPI displays
       >
@@ -311,7 +311,7 @@ const SwarmParticles = () => {
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
         <Boids count={300} />
-        <Connections count={300} maxDistance={10} />
+        <Connections count={300} maxDistance={15} />  // Increased from 10
         <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
       </Canvas>
     </div>
