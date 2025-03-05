@@ -248,7 +248,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
     if (!lines.current) return;
     
     // Find all boid points
-    const boids = scene.children.find(child => child.type === 'Points');
+    const boids = scene.children.find(child => child.type === 'Points') as THREE.Points | undefined;
     if (!boids || !boids.geometry || !boids.geometry.attributes.position) return;
     
     const positions = boids.geometry.attributes.position.array;
