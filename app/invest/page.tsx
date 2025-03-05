@@ -153,6 +153,32 @@ export default function Invest() {
         
         console.log('Transaction successful:', signature);
         
+        // Record the investment in Airtable
+        try {
+          const response = await fetch('/api/record-investment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              wallet: walletAddress,
+              token: selectedToken,
+              amount: numAmount,
+              signature: signature,
+              createdAt: new Date().toISOString()
+            }),
+          });
+          
+          if (!response.ok) {
+            console.error('Failed to record investment in database');
+          } else {
+            console.log('Investment recorded in database');
+          }
+        } catch (recordError) {
+          console.error('Error recording investment:', recordError);
+          // We don't want to throw an error here as the transaction was successful
+        }
+        
         // Show success message
         setSuccess(true);
       } catch (transferError) {
