@@ -95,8 +95,18 @@ export default function Invest() {
       
       try {
         // We'll need to dynamically import the Solana web3.js and SPL token libraries
-        const { Connection, PublicKey, Transaction } = await import('@solana/web3.js');
-        const { getAssociatedTokenAddress, createTransferInstruction } = await import('@solana/spl-token');
+        let solanaWeb3, splToken;
+        
+        try {
+          solanaWeb3 = await import('@solana/web3.js');
+          splToken = await import('@solana/spl-token');
+        } catch (importError) {
+          console.error('Error importing Solana libraries:', importError);
+          throw new Error('Required Solana libraries are not installed. Please contact support.');
+        }
+        
+        const { Connection, PublicKey, Transaction } = solanaWeb3;
+        const { getAssociatedTokenAddress, createTransferInstruction } = splToken;
         
         // Create a connection to the Solana network
         const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
