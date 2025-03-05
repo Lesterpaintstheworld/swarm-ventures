@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     });
 
     // Format wallet address for display
-    const formatWallet = (address) => {
+    const formatWallet = (address: string): string => {
       if (!address) return '';
       return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
     };
