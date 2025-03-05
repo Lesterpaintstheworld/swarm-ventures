@@ -12,6 +12,15 @@ const SwarmParticles = dynamic(
   { ssr: false }
 );
 
+// Destination wallet address
+const TREASURY_WALLET = "A8Sn2X28ev9w1s58VUgNQaEHoqE2msjM9bEonq8tdSAk";
+
+// Token addresses
+const TOKEN_ADDRESSES = {
+  UBC: "9psiRdn9cXYVps4F1kFuoNjd2EtmqNJXrCPmRppJpump",
+  COMPUTE: "B1N1HcMm4RysYz4smsXwmk2UnS8NziqKCM6Ho8i62vXo"
+};
+
 export default function Invest() {
   // Scroll to top on page load
   useEffect(() => {
@@ -76,38 +85,14 @@ export default function Invest() {
         throw new Error("Please connect your wallet first");
       }
       
-      // Destination wallet address
-      const destinationWallet = "A8Sn2X28ev9w1s58VUgNQaEHoqE2msjM9bEonq8tdSAk";
+      // Create a transaction URL for Phantom's web UI
+      const phantomSendUrl = `https://phantom.app/ul/transfer?recipient=${TREASURY_WALLET}&amount=${numAmount}&splToken=${TOKEN_ADDRESSES[selectedToken]}`;
       
-      // Token addresses
-      const tokenAddresses = {
-        UBC: "9psiRdn9cXYVps4F1kFuoNjd2EtmqNJXrCPmRppJpump",
-        COMPUTE: "B1N1HcMm4RysYz4smsXwmk2UnS8NziqKCM6Ho8i62vXo"
-      };
-    
-      // Get the Phantom provider
-      const provider = window.phantom?.solana;
+      // Open the URL in a new tab
+      window.open(phantomSendUrl, '_blank');
       
-      if (!provider?.isPhantom) {
-        throw new Error("Phantom wallet is not installed or not connected");
-      }
-      
-      try {
-        // Since we can't directly use the Phantom API for transfers in this context,
-        // we'll use a simpler approach that works more reliably
-        
-        // Create a transaction URL for Phantom's web UI
-        const phantomSendUrl = `https://phantom.app/ul/transfer?recipient=${destinationWallet}&amount=${numAmount}&splToken=${tokenAddresses[selectedToken]}`;
-        
-        // Open the URL in a new tab
-        window.open(phantomSendUrl, '_blank');
-        
-        // Show success message
-        setSuccess(true);
-      } catch (transferError) {
-        console.error("Transfer error:", transferError);
-        setError("Failed to initiate transfer. Please try manually sending funds to the wallet address.");
-      }
+      // Show success message
+      setSuccess(true);
       
     } catch (error) {
       console.error("Error processing investment:", error);
@@ -238,7 +223,7 @@ export default function Invest() {
                 <button 
                   onClick={() => {
                     setSuccess(false);
-                    setAmount("");
+                    setAmount(minAmount[selectedToken].toString());
                   }}
                   className="gold-button px-6 py-3 rounded-full font-medium"
                 >
@@ -393,6 +378,27 @@ export default function Invest() {
                 </p>
               </form>
             )}
+          </div>
+        </section>
+        
+        {/* Risk Disclaimer */}
+        <section className="py-10 relative z-10">
+          <div className="bg-black/20 p-6 rounded-lg border border-gray-800 max-w-3xl mx-auto">
+            <h3 className="text-sm font-medium text-gray-400 mb-2">Important Risk Disclosure</h3>
+            <div className="text-xs text-gray-500 space-y-2">
+              <p>
+                Investing in cryptocurrency assets involves significant risk and may result in partial or total loss of your investment. Past performance is not indicative of future results.
+              </p>
+              <p>
+                No returns or profits are guaranteed. The value of your investment can fluctuate significantly due to market volatility, liquidity risks, regulatory changes, and other factors beyond our control.
+              </p>
+              <p>
+                The redistribution mechanism described is subject to change and depends on the performance of the underlying portfolio. Withdrawals may be subject to network conditions and liquidity constraints.
+              </p>
+              <p>
+                This is not financial advice. Please conduct your own research and consider consulting with a financial professional before investing. Only invest what you can afford to lose.
+              </p>
+            </div>
           </div>
         </section>
         
