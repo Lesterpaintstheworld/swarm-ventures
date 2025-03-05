@@ -7,7 +7,7 @@ import * as THREE from "three";
 
 // Boid simulation for flocking behavior
 const Boids = ({ count = 200 }) => {
-  const mesh = useRef();
+  const mesh = useRef<THREE.Points>(null);
   const { size, viewport } = useThree();
   const aspect = size.width / viewport.width;
   const geometryRef = useRef(new THREE.BufferGeometry());
@@ -227,7 +227,7 @@ const Boids = ({ count = 200 }) => {
 
 // Connections between boids
 const Connections = ({ count = 200, maxDistance = 10 }) => {
-  const lines = useRef();
+  const lines = useRef<THREE.LineSegments>(null);
   const { size, viewport } = useThree();
   const aspect = size.width / viewport.width;
   const linePositionsRef = useRef(new Float32Array(count * count * 6)); // Pre-allocate max possible size
