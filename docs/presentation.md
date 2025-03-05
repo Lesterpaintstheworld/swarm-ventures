@@ -3,6 +3,17 @@
 
 ---
 
+## Visual Style Guide
+
+* **Color Palette**: Black, gold, and silver - creating a premium, sophisticated aesthetic
+* **Texture**: Metallic, shining surfaces with reflective elements
+* **Motion Elements**: Dynamic particle animations resembling bird flocks in synchronized movement
+* **Overall Feel**: Premium, exclusive, and technologically advanced
+* **Presentation Elements**: Subtle gold accents on black backgrounds, silver highlights for key data points
+* **Transitions**: Flowing, particle-based transitions between sections
+
+---
+
 ## Executive Summary
 
 SwarmVentures introduces professional portfolio management to the AI swarm ecosystem, offering investors access to diversified swarm share investments through a single managed vehicle. Our initial offering optimizes risk-adjusted returns through strategic allocation, active trading, and deep market expertise.
