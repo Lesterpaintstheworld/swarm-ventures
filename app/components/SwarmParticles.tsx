@@ -26,10 +26,10 @@ const Boids = ({ count = 200 }) => {
     // Initialize positions and velocities
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      positions[i3] = (Math.random() - 0.5) * 30;
-      positions[i3 + 1] = (Math.random() - 0.5) * 30;
-      positions[i3 + 2] = (Math.random() - 0.5) * 30;
-      
+      positions[i3] = (Math.random() - 0.5) * 20;
+      positions[i3 + 1] = (Math.random() - 0.5) * 20;
+      positions[i3 + 2] = (Math.random() - 0.5) * 20;
+    
       velocities[i3] = (Math.random() - 0.5) * 0.2;
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.2;
       velocities[i3 + 2] = (Math.random() - 0.5) * 0.2;
@@ -213,7 +213,7 @@ const Boids = ({ count = 200 }) => {
   return (
     <points ref={mesh}>
       <pointsMaterial
-        size={3}
+        size={5}
         sizeAttenuation={true}
         color={0xffcc00}
         transparent={true}
@@ -300,12 +300,18 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 // Main swarm component
 const SwarmParticles = () => {
   return (
-    <div className="swarm-particles">
-      <Canvas camera={{ position: [0, 0, 80], fov: 75 }} style={{ background: 'linear-gradient(to bottom, #000000, #111111)' }}>
+    <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
+      <Canvas 
+        camera={{ position: [0, 0, 50], fov: 75 }} 
+        style={{ background: 'linear-gradient(to bottom, #000000, #111111)' }}
+        dpr={[1, 2]} // Improve rendering on high-DPI displays
+      >
+        <color attach="background" args={['#000000']} />
+        <fog attach="fog" args={['#000000', 30, 100]} />
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
-        <Boids count={150} />
-        <Connections count={150} maxDistance={15} />
+        <Boids count={300} />
+        <Connections count={300} maxDistance={10} />
         <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
       </Canvas>
     </div>

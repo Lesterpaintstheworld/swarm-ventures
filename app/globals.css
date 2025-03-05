@@ -98,11 +98,16 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
-  z-index: -1;
-  pointer-events: none; /* Allow clicking through the canvas */
+  z-index: 0; /* Change from -1 to 0 to ensure it's visible */
+}
+
+/* And add this to make the content appear above the canvas */
+.container {
+  position: relative;
+  z-index: 1;
 }
 
 /* Add these styles for better metallic effect */
