@@ -101,19 +101,20 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  z-index: 0; /* Change from -1 to 0 to ensure it's visible */
+  z-index: -1; /* Set to -1 to ensure it's behind content */
 }
 
 /* And add this to make the content appear above the canvas */
 .container {
   position: relative;
-  z-index: 1;
-  padding-top: 80px; /* Add padding for the fixed header */
+  z-index: 10;
+  padding-top: 100px; /* Increase padding for the fixed header */
 }
 
 /* And update the header styles */
 header {
   border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  z-index: 50; /* Ensure header is above all content */
 }
 
 header.scrolled {

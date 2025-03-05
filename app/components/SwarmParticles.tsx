@@ -300,7 +300,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 // Main swarm component
 const SwarmParticles = () => {
   return (
-    <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
+    <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 0 }}>
       <Canvas 
         camera={{ position: [0, 0, 50], fov: 75 }} 
         style={{ background: 'linear-gradient(to bottom, #000000, #111111)' }}

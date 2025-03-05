@@ -13,7 +13,7 @@ const SwarmParticles = dynamic(
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white relative overflow-hidden z-10">
       <SwarmParticles />
       <Header />
       
