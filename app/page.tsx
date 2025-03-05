@@ -27,9 +27,9 @@ const Boids = ({ count = 200 }) => {
     // Initialize positions and velocities
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      positions[i3] = (Math.random() - 0.5) * 50;
-      positions[i3 + 1] = (Math.random() - 0.5) * 50;
-      positions[i3 + 2] = (Math.random() - 0.5) * 50;
+      positions[i3] = (Math.random() - 0.5) * 30;
+      positions[i3 + 1] = (Math.random() - 0.5) * 30;
+      positions[i3 + 2] = (Math.random() - 0.5) * 30;
       
       velocities[i3] = (Math.random() - 0.5) * 0.2;
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.2;
@@ -53,15 +53,15 @@ const Boids = ({ count = 200 }) => {
 
   // Flocking parameters
   const params = {
-    separation: 25,
-    alignment: 30,
-    cohesion: 30,
-    separationForce: 0.08,
-    alignmentForce: 0.06,
-    cohesionForce: 0.06,
-    maxSpeed: 0.7,
-    maxForce: 0.05,
-    bounds: 40
+    separation: 15,
+    alignment: 25,
+    cohesion: 25,
+    separationForce: 0.1,
+    alignmentForce: 0.08,
+    cohesionForce: 0.08,
+    maxSpeed: 0.5,
+    maxForce: 0.07,
+    bounds: 30
   };
 
   // Calculate steering forces for flocking behavior
@@ -214,9 +214,9 @@ const Boids = ({ count = 200 }) => {
   return (
     <points ref={mesh}>
       <pointsMaterial
-        size={1.5}
+        size={3}
         sizeAttenuation={true}
-        color={0xd4af37}
+        color={0xffcc00}
         transparent={true}
         opacity={1.0}
         vertexColors={false}
@@ -293,7 +293,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 
   return (
     <lineSegments ref={lines}>
-      <lineBasicMaterial color={0xc0c0c0} transparent opacity={0.4} />
+      <lineBasicMaterial color={0xffffff} transparent opacity={0.6} />
     </lineSegments>
   );
 };
@@ -302,7 +302,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 const SwarmParticles = () => {
   return (
     <div className="swarm-particles">
-      <Canvas camera={{ position: [0, 0, 100], fov: 60 }}>
+      <Canvas camera={{ position: [0, 0, 80], fov: 75 }} style={{ background: 'linear-gradient(to bottom, #000000, #111111)' }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
         <Boids count={150} />
