@@ -26,9 +26,9 @@ const Boids = ({ count = 200 }) => {
     // Initialize positions and velocities
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      positions[i3] = (Math.random() - 0.5) * 40;    // Increased from 15
-      positions[i3 + 1] = (Math.random() - 0.5) * 40; // Increased from 15
-      positions[i3 + 2] = (Math.random() - 0.5) * 40; // Increased from 15
+      positions[i3] = (Math.random() - 0.5) * 30;    // Decreased from 40
+      positions[i3 + 1] = (Math.random() - 0.5) * 30; // Decreased from 40
+      positions[i3 + 2] = (Math.random() - 0.5) * 30; // Decreased from 40
     
       velocities[i3] = (Math.random() - 0.5) * 0.2;
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.2;
@@ -52,15 +52,15 @@ const Boids = ({ count = 200 }) => {
 
   // Flocking parameters
   const params = {
-    separation: 25,         // Increased from 15
-    alignment: 35,          // Decreased from 40
-    cohesion: 30,           // Decreased from 45
-    separationForce: 0.12,  // Increased from 0.08
-    alignmentForce: 0.06,   // Decreased from 0.1
-    cohesionForce: 0.05,    // Decreased from 0.1
-    maxSpeed: 0.2,          // Decreased from 0.25
-    maxForce: 0.04,         // Decreased from 0.05
-    bounds: 60              // Increased from 40
+    separation: 20,         // Decreased from 25
+    alignment: 40,          // Increased from 35
+    cohesion: 40,           // Increased from 30
+    separationForce: 0.08,  // Decreased from 0.12
+    alignmentForce: 0.08,   // Increased from 0.06
+    cohesionForce: 0.08,    // Increased from 0.05
+    maxSpeed: 0.15,         // Decreased from 0.2
+    maxForce: 0.03,         // Decreased from 0.04
+    bounds: 50              // Decreased from 60
   };
 
   // Calculate steering forces for flocking behavior
@@ -311,7 +311,7 @@ const SwarmParticles = () => {
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
         <Boids count={200} />
-        <Connections count={200} maxDistance={15} />  // Decreased from 20
+        <Connections count={200} maxDistance={18} />  // Increased from 15
         <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
       </Canvas>
     </div>
