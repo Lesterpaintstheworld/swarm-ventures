@@ -94,42 +94,57 @@ export default function Invest() {
       const tokenAddress = TOKEN_ADDRESSES[selectedToken];
       
       try {
-        // Instead of using the 'transfer' method which is causing the "Unsupported path" error,
-        // we'll use a different approach that's compatible with Phantom's API
+        // We'll need to dynamically import the Solana web3.js and SPL token libraries
+        const { Connection, PublicKey, Transaction } = await import('@solana/web3.js');
+        const { getAssociatedTokenAddress, createTransferInstruction } = await import('@solana/spl-token');
         
-        // First, ensure the wallet is connected
-        if (!solanaProvider.isConnected) {
-          await solanaProvider.connect();
-        }
+        // Create a connection to the Solana network
+        const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
         
-        // Get the connected wallet's public key
-        const fromPublicKey = solanaProvider.publicKey;
+        // Convert string addresses to PublicKey objects
+        const tokenMint = new PublicKey(tokenAddress);
+        const treasuryPublicKey = new PublicKey(destinationWallet);
+        const userPublicKey = new PublicKey(walletAddress);
         
-        // Create a transaction using Phantom's signAndSendTransaction method
-        // This is a more direct approach that should work with Phantom
+        // Get the associated token accounts
+        const userTokenAccount = await getAssociatedTokenAddress(tokenMint, userPublicKey);
+        const treasuryTokenAccount = await getAssociatedTokenAddress(tokenMint, treasuryPublicKey);
         
-        // For SPL token transfers, we need to create a proper transaction
-        // Since we don't have access to the full Solana web3.js library here,
-        // we'll use a simpler approach
+        // Create a new transaction
+        const transaction = new Transaction();
         
-        // Open Phantom's send page with the correct parameters
-        // This is the most reliable way to trigger a transfer
-        const phantomUrl = `https://phantom.app/ul/transfer?recipient=${destinationWallet}&amount=${numAmount}&splToken=${tokenAddress}`;
+        // Add the transfer instruction
+        // For SPL tokens, we need to get the token account's decimals
+        const tokenAccountInfo = await connection.getTokenAccountBalance(userTokenAccount);
+        const decimals = tokenAccountInfo.value.decimals;
         
-        // Create an invisible iframe to trigger Phantom without opening a new tab
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = phantomUrl;
-        document.body.appendChild(iframe);
+        // Create the transfer instruction with the correct amount (adjusted for decimals)
+        const transferInstruction = createTransferInstruction(
+          userTokenAccount,
+          treasuryTokenAccount,
+          userPublicKey,
+          BigInt(Math.floor(numAmount * Math.pow(10, decimals)))
+        );
         
-        // Remove the iframe after a short delay
-        setTimeout(() => {
-          document.body.removeChild(iframe);
-          
-          // Show success message
-          setSuccess(true);
-        }, 1000);
+        // Add the instruction to the transaction
+        transaction.add(transferInstruction);
         
+        // Get a recent blockhash to include in the transaction
+        const { blockhash } = await connection.getLatestBlockhash();
+        transaction.recentBlockhash = blockhash;
+        transaction.feePayer = userPublicKey;
+        
+        // Sign and send the transaction using the Phantom wallet
+        const signedTransaction = await solanaProvider.signTransaction(transaction);
+        const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+        
+        // Wait for confirmation
+        await connection.confirmTransaction(signature);
+        
+        console.log('Transaction successful:', signature);
+        
+        // Show success message
+        setSuccess(true);
       } catch (transferError) {
         console.error('Transfer error:', transferError);
         setError(`Failed to create transfer: ${transferError.message || "Unknown error"}`);
