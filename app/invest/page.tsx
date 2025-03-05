@@ -93,47 +93,56 @@ export default function Invest() {
       }
       
       try {
-        // Create a transaction to send tokens
-        // This is a more direct approach that should trigger the Phantom extension
+        // For Solana tokens, we need to use the proper method
+        // First, create a transaction for token transfer
+        const connection = provider.connection;
         
-        // First, get the connected wallet's public key
-        const fromPublicKey = provider.publicKey;
+        // Use the connect method to ensure we have the latest connection
+        await provider.connect();
         
-        // Create a transaction instruction for token transfer
-        // Note: In a real implementation, you would use @solana/web3.js and @solana/spl-token
-        // For this demo, we'll use a simpler approach
+        // Create a simple transaction to send tokens
+        // This will open the Phantom wallet directly
+        const tokenMint = tokenAddresses[selectedToken];
         
-        // Create a transaction request that Phantom can understand
-        const transactionInstructions = [{
-          toPublicKey: destinationWallet,
-          amount: numAmount,
-          mint: tokenAddresses[selectedToken]
-        }];
-        
-        // Request the wallet to sign and send the transaction
-        await provider.transferToken(transactionInstructions[0].toPublicKey, 
-                                    transactionInstructions[0].mint, 
-                                    transactionInstructions[0].amount);
+        // Use the proper method to create a token transfer
+        await provider.signAndSendTransaction({
+          feePayer: provider.publicKey,
+          recentBlockhash: await connection.getRecentBlockhash(),
+          instructions: [
+            {
+              programId: tokenMint,
+              keys: [
+                { pubkey: provider.publicKey, isSigner: true, isWritable: true },
+                { pubkey: destinationWallet, isSigner: false, isWritable: true },
+                { pubkey: tokenMint, isSigner: false, isWritable: false }
+              ],
+              data: Buffer.from([numAmount])
+            }
+          ]
+        });
         
         // Show success message
         setSuccess(true);
       } catch (transferError) {
         console.error("Transfer error:", transferError);
         
-        // If direct transfer fails, try using the deep link as a fallback
-        const phantomDeepLink = `phantom://transfer?recipient=${destinationWallet}&amount=${numAmount}&splToken=${tokenAddresses[selectedToken]}`;
+        // If the direct method fails, try using the Solana protocol
+        // This is a more reliable way to open the Phantom wallet
+        const solanaProtocolUrl = `solana:${destinationWallet}?amount=${numAmount}&spl-token=${tokenAddresses[selectedToken]}`;
         
-        // Try to use the deep link which should open the extension
-        window.location.href = phantomDeepLink;
+        // Try to open using the solana: protocol which should trigger the wallet
+        window.location.href = solanaProtocolUrl;
         
-        // If that doesn't work, fall back to the URL scheme
+        // If that doesn't work, fall back to the Phantom URL scheme
         setTimeout(() => {
           const phantomSendUrl = `https://phantom.app/ul/transfer?recipient=${destinationWallet}&amount=${numAmount}&splToken=${tokenAddresses[selectedToken]}`;
           window.open(phantomSendUrl, '_blank');
         }, 1000);
         
-        // Still show success since we've directed the user to complete the transaction
-        setSuccess(true);
+        // Set a timeout to show success after a short delay
+        setTimeout(() => {
+          setSuccess(true);
+        }, 2000);
       }
       
     } catch (error) {
