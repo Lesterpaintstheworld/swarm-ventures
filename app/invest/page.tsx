@@ -373,6 +373,28 @@ export default function Invest() {
                   </div>
                 )}
                 
+                <div className="mt-6 pt-4 border-t border-gray-700">
+                  <h3 className="text-sm font-medium text-[#d4af37] mb-2">Investment Conditions</h3>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li className="flex items-start">
+                      <span className="text-[#d4af37] mr-2">•</span>
+                      <span>75% of profits redistributed weekly</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4af37] mr-2">•</span>
+                      <span>Profits redistributed in invested currency</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4af37] mr-2">•</span>
+                      <span>Funds withdrawable on request with 24h notice</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4af37] mr-2">•</span>
+                      <span>0.9% fee on withdrawals</span>
+                    </li>
+                  </ul>
+                </div>
+                
                 <p className="text-sm text-gray-400 text-center">
                   By investing, you agree to our <Link href="#terms" className="text-[#d4af37] hover:underline">Terms & Conditions</Link> and acknowledge the <Link href="#disclaimer" className="text-[#d4af37] hover:underline">Risk Disclaimer</Link>.
                 </p>
