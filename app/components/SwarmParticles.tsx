@@ -52,15 +52,15 @@ const Boids = ({ count = 200 }) => {
 
   // Flocking parameters
   const params = {
-    separation: 10,        // Reduced from 15
-    alignment: 30,         // Increased from 25
-    cohesion: 35,          // Increased from 25
-    separationForce: 0.03, // Reduced from 0.05
-    alignmentForce: 0.06,  // Increased from 0.04
-    cohesionForce: 0.06,   // Increased from 0.04
-    maxSpeed: 0.1,         // Reduced from 0.2
-    maxForce: 0.02,        // Reduced from 0.03
-    bounds: 30             // Reduced from 40
+    separation: 15,
+    alignment: 40,
+    cohesion: 45,
+    separationForce: 0.08,
+    alignmentForce: 0.1,
+    cohesionForce: 0.1,
+    maxSpeed: 0.25,
+    maxForce: 0.05,
+    bounds: 40
   };
 
   // Calculate steering forces for flocking behavior
@@ -213,11 +213,11 @@ const Boids = ({ count = 200 }) => {
   return (
     <points ref={mesh}>
       <pointsMaterial
-        size={2.5}           // Increased for better visibility
+        size={4}
         sizeAttenuation={true}
         color={0xffcc00}
         transparent={true}
-        opacity={0.8}        // Increased for better visibility
+        opacity={1.0}
         vertexColors={false}
         blending={THREE.AdditiveBlending}
       />
@@ -292,7 +292,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 
   return (
     <lineSegments ref={lines}>
-      <lineBasicMaterial color={0xffffff} transparent opacity={0.5} />  // Increased for better visibility
+      <lineBasicMaterial color={0xffffff} transparent opacity={0.7} />
     </lineSegments>
   );
 };
@@ -302,7 +302,7 @@ const SwarmParticles = () => {
   return (
     <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
       <Canvas 
-        camera={{ position: [0, 0, 100], fov: 60 }}  // Moved camera closer with wider FOV
+        camera={{ position: [0, 0, 80], fov: 70 }}
         style={{ background: 'linear-gradient(to bottom, #000000, #111111)' }}
         dpr={[1, 2]} // Improve rendering on high-DPI displays
       >
@@ -311,7 +311,7 @@ const SwarmParticles = () => {
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
         <Boids count={200} />
-        <Connections count={200} maxDistance={15} />  // Increased distance for more connections
+        <Connections count={200} maxDistance={20} />
         <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
       </Canvas>
     </div>
