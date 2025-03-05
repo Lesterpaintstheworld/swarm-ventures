@@ -79,17 +79,23 @@ export default function Invest() {
       // Destination wallet address
       const destinationWallet = "A8Sn2X28ev9w1s58VUgNQaEHoqE2msjM9bEonq8tdSAk";
       
+      // Token addresses
+      const tokenAddresses = {
+        UBC: "9psiRdn9cXYVps4F1kFuoNjd2EtmqNJXrCPmRppJpump",
+        COMPUTE: "B1N1HcMm4RysYz4smsXwmk2UnS8NziqKCM6Ho8i62vXo"
+      };
+    
       // Get the Phantom provider
       const provider = window.phantom?.solana;
-      
+    
       if (!provider?.isPhantom) {
         throw new Error("Phantom wallet is not installed or not connected");
       }
-      
+    
       // Create a Solana web3 connection and transaction
       // Note: In a real implementation, you would use @solana/web3.js
       // For this demo, we'll use Phantom's direct transfer method
-      
+    
       try {
         // Request the user to transfer tokens to the destination wallet
         await provider.request({
@@ -97,8 +103,7 @@ export default function Invest() {
           params: {
             to: destinationWallet,
             amount: numAmount,
-            token: selectedToken === "UBC" ? "UBC_TOKEN_ADDRESS" : "COMPUTE_TOKEN_ADDRESS"
-            // In a real implementation, you would use the actual token mint addresses
+            token: tokenAddresses[selectedToken]
           }
         });
         
@@ -108,7 +113,7 @@ export default function Invest() {
         console.error("Transfer error:", transferError);
         
         // If direct transfer fails, fall back to opening the send page
-        const phantomSendUrl = `https://phantom.app/ul/transfer?recipient=${destinationWallet}&amount=${numAmount}&splToken=${selectedToken}`;
+        const phantomSendUrl = `https://phantom.app/ul/transfer?recipient=${destinationWallet}&amount=${numAmount}&splToken=${tokenAddresses[selectedToken]}`;
         window.open(phantomSendUrl, '_blank');
         
         // Still show success since we've directed the user to complete the transaction
