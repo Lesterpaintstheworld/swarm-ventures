@@ -108,13 +108,29 @@ body {
 .container {
   position: relative;
   z-index: 10;
-  padding-top: 100px; /* Increase padding for the fixed header */
+  padding-top: 0; /* Remove the top padding since we're adding it to individual sections */
+}
+
+/* Add styles for sections */
+section {
+  padding-top: 100px;
+  padding-bottom: 80px;
 }
 
 /* And update the header styles */
 header {
   border-bottom: 1px solid rgba(212, 175, 55, 0.1);
   z-index: 50; /* Ensure header is above all content */
+}
+
+/* Add styles for the header to ensure it doesn't overlap */
+header.page-header {
+  z-index: 50;
+}
+
+header.hero-header {
+  margin-top: -80px; /* Offset the header height */
+  padding-top: 120px; /* Add extra padding to account for the header */
 }
 
 header.scrolled {

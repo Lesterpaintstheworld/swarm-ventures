@@ -19,32 +19,34 @@ export default function Home() {
       
       <div className="container mx-auto px-4 py-12">
         {/* Hero Section */}
-        <header className="flex flex-col items-center justify-center min-h-[80vh] text-center relative z-10">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            <span className="gold-gradient">SwarmVentures</span>
-          </h1>
-          <h2 className="text-xl md:text-2xl mb-12 silver-text max-w-3xl">
-            Professional Portfolio Management for AI Swarms
-          </h2>
-          
-          <div className="metallic-card p-8 md:p-10 rounded-xl max-w-3xl mb-12">
-            <p className="text-lg mb-6">
-              SwarmVentures introduces professional portfolio management to the AI swarm ecosystem, 
-              offering investors access to diversified swarm share investments through a single managed vehicle.
-            </p>
-            <p className="silver-text">
-              Our initial offering optimizes risk-adjusted returns through strategic allocation, 
-              active trading, and deep market expertise.
-            </p>
-          </div>
-          
-          <div className="flex flex-col md:flex-row gap-6">
-            <a href="#investment" className="gold-button px-8 py-4 rounded-full font-bold text-lg">
-              Invest Now
-            </a>
-            <a href="#learn-more" className="silver-button px-8 py-4 rounded-full font-bold text-lg">
-              Learn More
-            </a>
+        <header className="hero-header flex flex-col items-center justify-center min-h-[100vh] pt-32 pb-20 text-center relative z-10">
+          <div className="my-auto py-16 flex flex-col items-center max-w-5xl mx-auto">
+            <h1 className="text-5xl md:text-7xl font-bold mb-10">
+              <span className="gold-gradient">SwarmVentures</span>
+            </h1>
+            <h2 className="text-xl md:text-2xl mb-16 silver-text max-w-3xl mx-auto">
+              Professional Portfolio Management for AI Swarms
+            </h2>
+            
+            <div className="metallic-card p-8 md:p-10 rounded-xl max-w-3xl mx-auto mb-16">
+              <p className="text-lg mb-6">
+                SwarmVentures introduces professional portfolio management to the AI swarm ecosystem, 
+                offering investors access to diversified swarm share investments through a single managed vehicle.
+              </p>
+              <p className="silver-text">
+                Our initial offering optimizes risk-adjusted returns through strategic allocation, 
+                active trading, and deep market expertise.
+              </p>
+            </div>
+            
+            <div className="flex flex-col md:flex-row gap-6 justify-center">
+              <a href="#investment" className="gold-button px-8 py-4 rounded-full font-bold text-lg">
+                Invest Now
+              </a>
+              <a href="#learn-more" className="silver-button px-8 py-4 rounded-full font-bold text-lg">
+                Learn More
+              </a>
+            </div>
           </div>
         </header>
         
