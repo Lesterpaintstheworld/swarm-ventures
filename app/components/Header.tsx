@@ -79,7 +79,7 @@ const Header = () => {
             Assets
           </Link>
           <Link
-            href="#investment"
+            href="/invest"
             className="gold-button px-5 py-2 rounded-full font-medium"
           >
             Invest
@@ -109,7 +109,7 @@ const Header = () => {
             Assets
           </Link>
           <Link
-            href="#investment"
+            href="/invest"
             className="gold-button px-5 py-2 rounded-full font-medium text-center"
             onClick={() => setMenuOpen(false)}
           >

@@ -60,12 +60,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="#investment" className="text-gray-400 hover:text-[#d4af37] transition-colors">
-                  Investment
-                </Link>
-              </li>
-              <li>
-                <Link href="#register" className="text-gray-400 hover:text-[#d4af37] transition-colors">
+                <Link href="/invest" className="text-gray-400 hover:text-[#d4af37] transition-colors">
                   Invest
                 </Link>
               </li>

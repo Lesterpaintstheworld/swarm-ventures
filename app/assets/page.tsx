@@ -268,7 +268,7 @@ export default function Assets() {
               Join SwarmVentures Alpha and gain professional exposure to the rapidly growing AI swarm ecosystem 
               through our actively managed portfolio.
             </p>
-            <Link href="/#investment" className="gold-button px-8 py-4 rounded-full font-bold text-lg inline-block">
+            <Link href="/invest" className="gold-button px-8 py-4 rounded-full font-bold text-lg inline-block">
               Invest Now
             </Link>
           </div>

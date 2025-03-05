@@ -41,9 +41,9 @@ export default function Home() {
             </div>
             
             <div className="flex flex-col md:flex-row gap-6 justify-center">
-              <a href="#investment" className="gold-button px-10 py-5 rounded-full font-bold text-xl">
+              <Link href="/invest" className="gold-button px-10 py-5 rounded-full font-bold text-xl">
                 Invest Now
-              </a>
+              </Link>
               <Link href="/learn-more" className="silver-button px-10 py-5 rounded-full font-bold text-xl">
                 Learn More
               </Link>
@@ -125,9 +125,9 @@ export default function Home() {
             </div>
             
             <div className="mt-10 text-center">
-              <a href="#register" className="gold-button px-8 py-4 rounded-full font-bold text-lg inline-block">
+              <Link href="/invest" className="gold-button px-8 py-4 rounded-full font-bold text-lg inline-block">
                 Invest
-              </a>
+              </Link>
             </div>
           </div>
         </section>
