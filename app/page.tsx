@@ -11,6 +11,7 @@ const Boids = ({ count = 200 }) => {
   const mesh = useRef();
   const { size, viewport } = useThree();
   const aspect = size.width / viewport.width;
+  const geometryRef = useRef(new THREE.BufferGeometry());
 
   // Boid parameters - use refs instead of state to avoid re-renders
   const boidDataRef = useRef({
@@ -35,6 +36,20 @@ const Boids = ({ count = 200 }) => {
       velocities[i3 + 2] = (Math.random() - 0.5) * 0.2;
     }
   }, [count]);
+
+  // Initialize the geometry
+  useEffect(() => {
+    if (mesh.current) {
+      // Create the position buffer attribute
+      geometryRef.current.setAttribute(
+        'position',
+        new THREE.BufferAttribute(boidDataRef.current.positions, 3)
+      );
+      
+      // Assign the geometry to the mesh
+      mesh.current.geometry = geometryRef.current;
+    }
+  }, []);
 
   // Flocking parameters
   const params = {
@@ -187,7 +202,7 @@ const Boids = ({ count = 200 }) => {
 
   // Animation loop
   useFrame(() => {
-    if (!mesh.current) return;
+    if (!mesh.current || !mesh.current.geometry || !mesh.current.geometry.attributes.position) return;
     
     // Apply flocking behavior directly without setting state
     applyFlockingBehavior();
@@ -198,14 +213,6 @@ const Boids = ({ count = 200 }) => {
 
   return (
     <points ref={mesh}>
-      <bufferGeometry>
-        <bufferAttribute
-          attachObject={['attributes', 'position']}
-          count={count}
-          array={boidDataRef.current.positions}
-          itemSize={3}
-        />
-      </bufferGeometry>
       <pointsMaterial
         size={0.7}
         sizeAttenuation={true}
