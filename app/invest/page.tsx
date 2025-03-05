@@ -87,57 +87,43 @@ export default function Invest() {
         throw new Error("Please connect your wallet first");
       }
 
-      // Following the approach from the KinKong example
-      // We'll use the Phantom wallet's direct transfer method
+      // Destination wallet address
+      const destinationWallet = TREASURY_WALLET;
       
-      // Create a transaction URL for Phantom's web UI as a fallback
-      const phantomSendUrl = `https://phantom.app/ul/transfer?recipient=${TREASURY_WALLET}&amount=${numAmount}&splToken=${TOKEN_ADDRESSES[selectedToken]}`;
+      // Token addresses
+      const tokenAddress = TOKEN_ADDRESSES[selectedToken];
       
       try {
-        // First try to use the direct transfer method
-        // This is similar to how the KinKong example handles it
-        
-        // Get the user's public key
-        const publicKey = solanaProvider.publicKey;
-        
-        // Create a simple transaction to send tokens
-        // In a production app, you would use @solana/web3.js and @solana/spl-token
-        // to create a proper transaction
-        
-        // For now, we'll use a simplified approach that should work with Phantom
-        const result = await solanaProvider.request({
-          method: 'signAndSendTransaction',
-          params: {
-            message: {
-              // This is a simplified version - in a real app, you would create a proper
-              // SPL token transfer transaction using the Solana web3.js library
-              instructions: [
-                {
-                  programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', // SPL Token program ID
-                  data: Buffer.from([3, ...new Uint8Array(8).fill(0)]), // Transfer instruction with amount
-                  keys: [
-                    { pubkey: publicKey.toString(), isSigner: true, isWritable: true },
-                    { pubkey: TREASURY_WALLET, isSigner: false, isWritable: true },
-                    { pubkey: TOKEN_ADDRESSES[selectedToken], isSigner: false, isWritable: false }
-                  ]
-                }
-              ]
-            }
-          }
-        });
-        
-        console.log('Transaction result:', result);
+        // Use the Phantom wallet's transferToken method directly
+        // This is the most direct way to trigger a token transfer in the wallet
+        await solanaProvider.transferToken(
+          new solanaProvider.PublicKey(destinationWallet),
+          new solanaProvider.PublicKey(tokenAddress),
+          numAmount
+        );
         
         // Show success message
         setSuccess(true);
-      } catch (directTransferError) {
-        console.error('Direct transfer error:', directTransferError);
+      } catch (transferError) {
+        console.error('Transfer error:', transferError);
         
-        // If direct transfer fails, fall back to opening the Phantom web UI
-        window.open(phantomSendUrl, '_blank');
-        
-        // Still show success since we've directed the user to complete the transaction
-        setSuccess(true);
+        // If the direct method fails, try using the connect method first to ensure the wallet is ready
+        try {
+          await solanaProvider.connect();
+          
+          // Then try the transfer again
+          await solanaProvider.transferToken(
+            new solanaProvider.PublicKey(destinationWallet),
+            new solanaProvider.PublicKey(tokenAddress),
+            numAmount
+          );
+          
+          // Show success message
+          setSuccess(true);
+        } catch (retryError) {
+          console.error('Retry transfer error:', retryError);
+          setError("Failed to initiate transfer. Please try again or check your wallet connection.");
+        }
       }
     } catch (error) {
       console.error("Error processing investment:", error);
