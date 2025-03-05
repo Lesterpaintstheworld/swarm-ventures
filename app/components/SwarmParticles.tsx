@@ -213,11 +213,11 @@ const Boids = ({ count = 200 }) => {
   return (
     <points ref={mesh}>
       <pointsMaterial
-        size={4}
+        size={2.5}  // Reduced from 4
         sizeAttenuation={true}
         color={0xffcc00}
         transparent={true}
-        opacity={1.0}
+        opacity={0.5}  // Reduced from 1.0 to 0.5 (50% less visible)
         vertexColors={false}
         blending={THREE.AdditiveBlending}
       />
@@ -292,7 +292,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 
   return (
     <lineSegments ref={lines}>
-      <lineBasicMaterial color={0xffffff} transparent opacity={0.7} />
+      <lineBasicMaterial color={0xffffff} transparent opacity={0.35} />  // Reduced from 0.7 to 0.35 (50% less visible)
     </lineSegments>
   );
 };
