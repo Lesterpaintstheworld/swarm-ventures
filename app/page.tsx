@@ -221,6 +221,19 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
   const lines = useRef();
   const { size, viewport } = useThree();
   const aspect = size.width / viewport.width;
+  const linePositionsRef = useRef(new Float32Array(count * count * 6)); // Pre-allocate max possible size
+  const lineGeometryRef = useRef(new THREE.BufferGeometry());
+
+  // Initialize the geometry once
+  useEffect(() => {
+    if (lines.current) {
+      lineGeometryRef.current.setAttribute(
+        'position', 
+        new THREE.BufferAttribute(linePositionsRef.current, 3)
+      );
+      lines.current.geometry = lineGeometryRef.current;
+    }
+  }, []);
 
   useFrame(({ scene }) => {
     if (!lines.current) return;
@@ -230,7 +243,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
     if (!boids || !boids.geometry || !boids.geometry.attributes.position) return;
     
     const positions = boids.geometry.attributes.position.array;
-    const linePositions = [];
+    let lineIndex = 0;
     
     // Create connections between nearby boids
     for (let i = 0; i < count; i++) {
@@ -244,24 +257,32 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
         const distance = posA.distanceTo(posB);
         
         if (distance < maxDistance) {
-          linePositions.push(posA.x, posA.y, posA.z);
-          linePositions.push(posB.x, posB.y, posB.z);
+          linePositionsRef.current[lineIndex++] = posA.x;
+          linePositionsRef.current[lineIndex++] = posA.y;
+          linePositionsRef.current[lineIndex++] = posA.z;
+          linePositionsRef.current[lineIndex++] = posB.x;
+          linePositionsRef.current[lineIndex++] = posB.y;
+          linePositionsRef.current[lineIndex++] = posB.z;
         }
       }
     }
     
-    // Update line geometry
-    if (linePositions.length > 0) {
-      const geometry = new THREE.BufferGeometry();
-      geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-      lines.current.geometry.dispose();
-      lines.current.geometry = geometry;
+    // Update the buffer attribute with the new positions
+    if (lineIndex > 0) {
+      // Update the count of vertices
+      const positionAttribute = lineGeometryRef.current.getAttribute('position');
+      positionAttribute.count = lineIndex / 3;
+      positionAttribute.needsUpdate = true;
+    } else {
+      // If no connections, set count to 0
+      const positionAttribute = lineGeometryRef.current.getAttribute('position');
+      positionAttribute.count = 0;
+      positionAttribute.needsUpdate = true;
     }
   });
 
   return (
     <lineSegments ref={lines}>
-      <bufferGeometry />
       <lineBasicMaterial color={0xc0c0c0} transparent opacity={0.2} />
     </lineSegments>
   );
