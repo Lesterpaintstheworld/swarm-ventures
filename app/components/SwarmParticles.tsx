@@ -26,9 +26,9 @@ const Boids = ({ count = 200 }) => {
     // Initialize positions and velocities
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      positions[i3] = (Math.random() - 0.5) * 20;
-      positions[i3 + 1] = (Math.random() - 0.5) * 20;
-      positions[i3 + 2] = (Math.random() - 0.5) * 20;
+      positions[i3] = (Math.random() - 0.5) * 15;  // Reduced from 20
+      positions[i3 + 1] = (Math.random() - 0.5) * 15;  // Reduced from 20
+      positions[i3 + 2] = (Math.random() - 0.5) * 15;  // Reduced from 20
     
       velocities[i3] = (Math.random() - 0.5) * 0.2;
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.2;
@@ -52,15 +52,15 @@ const Boids = ({ count = 200 }) => {
 
   // Flocking parameters
   const params = {
-    separation: 15,
-    alignment: 25,
-    cohesion: 25,
-    separationForce: 0.05,  // Reduced from 0.1
-    alignmentForce: 0.04,   // Reduced from 0.08
-    cohesionForce: 0.04,    // Reduced from 0.08
-    maxSpeed: 0.2,          // Reduced from 0.5
-    maxForce: 0.03,         // Reduced from 0.07
-    bounds: 40              // Increased from 30
+    separation: 10,        // Reduced from 15
+    alignment: 30,         // Increased from 25
+    cohesion: 35,          // Increased from 25
+    separationForce: 0.03, // Reduced from 0.05
+    alignmentForce: 0.06,  // Increased from 0.04
+    cohesionForce: 0.06,   // Increased from 0.04
+    maxSpeed: 0.1,         // Reduced from 0.2
+    maxForce: 0.02,        // Reduced from 0.03
+    bounds: 30             // Reduced from 40
   };
 
   // Calculate steering forces for flocking behavior
@@ -213,11 +213,11 @@ const Boids = ({ count = 200 }) => {
   return (
     <points ref={mesh}>
       <pointsMaterial
-        size={1.5}  // Reduced from 5
+        size={0.8}           // Reduced from 1.5
         sizeAttenuation={true}
         color={0xffcc00}
         transparent={true}
-        opacity={0.8}  // Reduced from 1.0
+        opacity={0.5}        // Reduced from 0.8
         vertexColors={false}
         blending={THREE.AdditiveBlending}
       />
@@ -292,7 +292,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 
   return (
     <lineSegments ref={lines}>
-      <lineBasicMaterial color={0xffffff} transparent opacity={0.6} />
+      <lineBasicMaterial color={0xffffff} transparent opacity={0.3} />  // Reduced from 0.6
     </lineSegments>
   );
 };
@@ -302,7 +302,7 @@ const SwarmParticles = () => {
   return (
     <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 0 }}>
       <Canvas 
-        camera={{ position: [0, 0, 120], fov: 60 }}  // Moved camera back, reduced FOV
+        camera={{ position: [0, 0, 180], fov: 50 }}  // Moved camera further back, reduced FOV
         style={{ background: 'linear-gradient(to bottom, #000000, #111111)' }}
         dpr={[1, 2]} // Improve rendering on high-DPI displays
       >
@@ -311,7 +311,7 @@ const SwarmParticles = () => {
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
         <Boids count={300} />
-        <Connections count={300} maxDistance={15} />  // Increased from 10
+        <Connections count={300} maxDistance={10} />  // Reduced from 15
         <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} />
       </Canvas>
     </div>
