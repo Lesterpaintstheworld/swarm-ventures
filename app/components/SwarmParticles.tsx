@@ -26,9 +26,9 @@ const Boids = ({ count = 200 }) => {
     // Initialize positions and velocities
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      positions[i3] = (Math.random() - 0.5) * 15;  // Reduced from 20
-      positions[i3 + 1] = (Math.random() - 0.5) * 15;  // Reduced from 20
-      positions[i3 + 2] = (Math.random() - 0.5) * 15;  // Reduced from 20
+      positions[i3] = (Math.random() - 0.5) * 40;    // Increased from 15
+      positions[i3 + 1] = (Math.random() - 0.5) * 40; // Increased from 15
+      positions[i3 + 2] = (Math.random() - 0.5) * 40; // Increased from 15
     
       velocities[i3] = (Math.random() - 0.5) * 0.2;
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.2;
@@ -52,15 +52,15 @@ const Boids = ({ count = 200 }) => {
 
   // Flocking parameters
   const params = {
-    separation: 15,
-    alignment: 40,
-    cohesion: 45,
-    separationForce: 0.08,
-    alignmentForce: 0.1,
-    cohesionForce: 0.1,
-    maxSpeed: 0.25,
-    maxForce: 0.05,
-    bounds: 40
+    separation: 25,         // Increased from 15
+    alignment: 35,          // Decreased from 40
+    cohesion: 30,           // Decreased from 45
+    separationForce: 0.12,  // Increased from 0.08
+    alignmentForce: 0.06,   // Decreased from 0.1
+    cohesionForce: 0.05,    // Decreased from 0.1
+    maxSpeed: 0.2,          // Decreased from 0.25
+    maxForce: 0.04,         // Decreased from 0.05
+    bounds: 60              // Increased from 40
   };
 
   // Calculate steering forces for flocking behavior
@@ -302,7 +302,7 @@ const SwarmParticles = () => {
   return (
     <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
       <Canvas 
-        camera={{ position: [0, 0, 80], fov: 70 }}
+        camera={{ position: [0, 0, 120], fov: 65 }}  // Moved camera back, reduced FOV
         style={{ background: '#000000' }}
         dpr={[1, 2]} // Improve rendering on high-DPI displays
       >
@@ -311,7 +311,7 @@ const SwarmParticles = () => {
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
         <Boids count={200} />
-        <Connections count={200} maxDistance={20} />
+        <Connections count={200} maxDistance={15} />  // Decreased from 20
         <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
       </Canvas>
     </div>
