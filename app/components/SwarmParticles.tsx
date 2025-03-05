@@ -311,7 +311,7 @@ const SwarmParticles = () => {
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
         <Boids count={200} />
-        <Connections count={200} maxDistance={18} />  // Increased from 15
+        <Connections count={200} maxDistance={12} />  // Reduced from 18
         <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
       </Canvas>
     </div>
