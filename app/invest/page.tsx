@@ -90,40 +90,36 @@ export default function Invest() {
       // Destination wallet address
       const destinationWallet = TREASURY_WALLET;
       
-      // Token addresses
+      // Token address
       const tokenAddress = TOKEN_ADDRESSES[selectedToken];
       
       try {
-        // Use the Phantom wallet's transferToken method directly
-        // This is the most direct way to trigger a token transfer in the wallet
-        await solanaProvider.transferToken(
-          new solanaProvider.PublicKey(destinationWallet),
-          new solanaProvider.PublicKey(tokenAddress),
-          numAmount
-        );
+        // Create a transaction directly using the Phantom provider
+        // This will trigger the Phantom wallet UI without opening a new tab
+        
+        // First, check if the wallet is still connected
+        if (!solanaProvider.isConnected) {
+          await solanaProvider.connect();
+        }
+        
+        // Create a simple transaction to send tokens
+        // This uses the Phantom wallet's built-in transfer method
+        const transaction = await solanaProvider.request({
+          method: 'transfer',
+          params: {
+            recipient: destinationWallet,
+            amount: numAmount,
+            splToken: tokenAddress
+          }
+        });
+        
+        console.log('Transaction created:', transaction);
         
         // Show success message
         setSuccess(true);
       } catch (transferError) {
         console.error('Transfer error:', transferError);
-        
-        // If the direct method fails, try using the connect method first to ensure the wallet is ready
-        try {
-          await solanaProvider.connect();
-          
-          // Then try the transfer again
-          await solanaProvider.transferToken(
-            new solanaProvider.PublicKey(destinationWallet),
-            new solanaProvider.PublicKey(tokenAddress),
-            numAmount
-          );
-          
-          // Show success message
-          setSuccess(true);
-        } catch (retryError) {
-          console.error('Retry transfer error:', retryError);
-          setError("Failed to initiate transfer. Please try again or check your wallet connection.");
-        }
+        setError(`Failed to create transfer: ${transferError.message || "Unknown error"}`);
       }
     } catch (error) {
       console.error("Error processing investment:", error);
