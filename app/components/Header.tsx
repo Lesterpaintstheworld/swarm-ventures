@@ -73,6 +73,12 @@ const Header = () => {
             Learn More
           </Link>
           <Link
+            href="/assets"
+            className="text-white hover:text-[#d4af37] transition-colors"
+          >
+            Assets
+          </Link>
+          <Link
             href="#investment"
             className="gold-button px-5 py-2 rounded-full font-medium"
           >
@@ -94,6 +100,13 @@ const Header = () => {
             onClick={() => setMenuOpen(false)}
           >
             Learn More
+          </Link>
+          <Link
+            href="/assets"
+            className="text-white hover:text-[#d4af37] transition-colors"
+            onClick={() => setMenuOpen(false)}
+          >
+            Assets
           </Link>
           <Link
             href="#investment"
