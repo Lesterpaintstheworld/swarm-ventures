@@ -109,7 +109,7 @@ export default function Invest() {
         const { getAssociatedTokenAddress, createTransferInstruction } = splToken;
         
         // Create a connection to the Solana network
-        const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=affcff39-0fde-4f65-9846-3e58bc3a2af5', 'confirmed');
+        const connection = new Connection(process.env.NEXT_PUBLIC_HELIUS_RPC_URL || 'https://api.mainnet-beta.solana.com', 'confirmed');
         
         // Convert string addresses to PublicKey objects
         const tokenMint = new PublicKey(tokenAddress);
