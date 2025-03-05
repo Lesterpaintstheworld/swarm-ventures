@@ -302,7 +302,7 @@ const SwarmParticles = () => {
   return (
     <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
       <Canvas 
-        camera={{ position: [0, 0, 120], fov: 65 }}  // Moved camera back, reduced FOV
+        camera={{ position: [0, 0, 80], fov: 70 }}  // Moved camera closer and increased FOV
         style={{ background: '#000000' }}
         dpr={[1, 2]} // Improve rendering on high-DPI displays
       >
