@@ -177,15 +177,9 @@ const inceptionSwarms = [
 const SwarmCard = ({ swarm }) => {
   return (
     <div className="metallic-card rounded-xl overflow-hidden transition-all duration-300 hover:transform hover:scale-[1.02]">
-      <div className="relative h-48 bg-gradient-to-r from-gray-900 to-black">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-16 h-16 rounded-full bg-black/50 flex items-center justify-center">
-            <span className="text-[#d4af37] text-2xl">AI</span>
-          </div>
-        </div>
-      </div>
       <div className="p-6">
-        <div className="flex flex-wrap gap-2 mb-3">
+        <h3 className="text-xl font-bold mb-3 gold-text">{swarm.name}</h3>
+        <div className="flex flex-wrap gap-2 mb-4">
           {swarm.categories.slice(0, 3).map((category, index) => (
             <span key={index} className="text-xs px-2 py-1 rounded-full bg-gray-800 text-gray-300">
               {category}
@@ -197,8 +191,7 @@ const SwarmCard = ({ swarm }) => {
             </span>
           )}
         </div>
-        <h3 className="text-xl font-bold mb-2 gold-text">{swarm.name}</h3>
-        <p className="text-gray-300 text-sm mb-4">{swarm.description}</p>
+        <p className="text-gray-300 text-sm">{swarm.description}</p>
       </div>
     </div>
   );
