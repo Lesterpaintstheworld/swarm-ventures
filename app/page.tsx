@@ -1,156 +1,286 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
+import * as THREE from "three";
 
-// Swarm animation component
-const SwarmParticles = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+// Boid simulation for flocking behavior
+const Boids = ({ count = 200 }) => {
+  const mesh = useRef();
+  const { size, viewport } = useThree();
+  const aspect = size.width / viewport.width;
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  // Boid parameters
+  const [positions, setPositions] = useState(() => {
+    const positions = new Float32Array(count * 3);
+    const velocities = new Float32Array(count * 3);
+    const accelerations = new Float32Array(count * 3);
+    
+    // Initialize positions and velocities
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      positions[i3] = (Math.random() - 0.5) * 50;
+      positions[i3 + 1] = (Math.random() - 0.5) * 50;
+      positions[i3 + 2] = (Math.random() - 0.5) * 50;
+      
+      velocities[i3] = (Math.random() - 0.5) * 0.2;
+      velocities[i3 + 1] = (Math.random() - 0.5) * 0.2;
+      velocities[i3 + 2] = (Math.random() - 0.5) * 0.2;
+    }
+    
+    return { positions, velocities, accelerations };
+  });
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  // Flocking parameters
+  const params = {
+    separation: 20,
+    alignment: 20,
+    cohesion: 20,
+    separationForce: 0.05,
+    alignmentForce: 0.05,
+    cohesionForce: 0.05,
+    maxSpeed: 0.5,
+    maxForce: 0.03,
+    bounds: 50
+  };
 
-    // Set canvas dimensions
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    // Particle class
-    class Particle {
-      x: number;
-      y: number;
-      size: number;
-      speedX: number;
-      speedY: number;
-      color: string;
-
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 0.5;
-        this.speedX = Math.random() * 1 - 0.5;
-        this.speedY = Math.random() * 1 - 0.5;
-        this.color = Math.random() > 0.5 ? 'rgba(212, 175, 55, 0.7)' : 'rgba(192, 192, 192, 0.7)';
-      }
-
-      update() {
-        // Follow mouse with subtle attraction
-        if (mouse.x && mouse.y) {
-          const dx = mouse.x - this.x;
-          const dy = mouse.y - this.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < 200) {
-            this.speedX += dx * 0.0005;
-            this.speedY += dy * 0.0005;
-          }
-        }
-
-        // Add some randomness to movement
-        this.speedX += (Math.random() - 0.5) * 0.01;
-        this.speedY += (Math.random() - 0.5) * 0.01;
+  // Calculate steering forces for flocking behavior
+  const applyFlockingBehavior = () => {
+    const { positions, velocities, accelerations } = positions;
+    
+    // Reset accelerations
+    for (let i = 0; i < count * 3; i++) {
+      accelerations[i] = 0;
+    }
+    
+    // Apply flocking rules
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      
+      // Temporary vectors for calculations
+      const position = new THREE.Vector3(positions[i3], positions[i3 + 1], positions[i3 + 2]);
+      const velocity = new THREE.Vector3(velocities[i3], velocities[i3 + 1], velocities[i3 + 2]);
+      
+      // Separation - steer to avoid crowding local flockmates
+      const separation = new THREE.Vector3();
+      let separationCount = 0;
+      
+      // Alignment - steer towards the average heading of local flockmates
+      const alignment = new THREE.Vector3();
+      let alignmentCount = 0;
+      
+      // Cohesion - steer to move toward the average position of local flockmates
+      const cohesion = new THREE.Vector3();
+      let cohesionCount = 0;
+      
+      // Check against all other boids
+      for (let j = 0; j < count; j++) {
+        if (i === j) continue;
         
-        // Limit speed
-        const maxSpeed = 1.5;
-        const currentSpeed = Math.sqrt(this.speedX * this.speedX + this.speedY * this.speedY);
-        if (currentSpeed > maxSpeed) {
-          this.speedX = (this.speedX / currentSpeed) * maxSpeed;
-          this.speedY = (this.speedY / currentSpeed) * maxSpeed;
+        const j3 = j * 3;
+        const otherPosition = new THREE.Vector3(positions[j3], positions[j3 + 1], positions[j3 + 2]);
+        const otherVelocity = new THREE.Vector3(velocities[j3], velocities[j3 + 1], velocities[j3 + 2]);
+        
+        const distance = position.distanceTo(otherPosition);
+        
+        // Separation
+        if (distance < params.separation) {
+          const diff = new THREE.Vector3().subVectors(position, otherPosition);
+          diff.normalize();
+          diff.divideScalar(distance); // Weight by distance
+          separation.add(diff);
+          separationCount++;
         }
-
-        this.x += this.speedX;
-        this.y += this.speedY;
-
-        // Wrap around edges
-        if (this.x < 0) this.x = canvas.width;
-        if (this.x > canvas.width) this.x = 0;
-        if (this.y < 0) this.y = canvas.height;
-        if (this.y > canvas.height) this.y = 0;
-      }
-
-      draw() {
-        if (!ctx) return;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    // Create particles
-    const particlesArray: Particle[] = [];
-    const numberOfParticles = Math.min(100, Math.floor(canvas.width * canvas.height / 10000));
-    
-    for (let i = 0; i < numberOfParticles; i++) {
-      particlesArray.push(new Particle());
-    }
-
-    // Mouse position tracking
-    const mouse = { x: undefined as number | undefined, y: undefined as number | undefined };
-    
-    canvas.addEventListener('mousemove', (event) => {
-      mouse.x = event.x;
-      mouse.y = event.y;
-    });
-
-    canvas.addEventListener('mouseleave', () => {
-      mouse.x = undefined;
-      mouse.y = undefined;
-    });
-
-    // Connect particles with lines
-    function connectParticles() {
-      if (!ctx) return;
-      
-      for (let a = 0; a < particlesArray.length; a++) {
-        for (let b = a; b < particlesArray.length; b++) {
-          const dx = particlesArray[a].x - particlesArray[b].x;
-          const dy = particlesArray[a].y - particlesArray[b].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < 100) {
-            ctx.strokeStyle = `rgba(212, 175, 55, ${0.1 * (1 - distance/100)})`;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-            ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-            ctx.stroke();
-          }
+        
+        // Alignment
+        if (distance < params.alignment) {
+          alignment.add(otherVelocity);
+          alignmentCount++;
+        }
+        
+        // Cohesion
+        if (distance < params.cohesion) {
+          cohesion.add(otherPosition);
+          cohesionCount++;
         }
       }
-    }
-
-    // Animation loop
-    function animate() {
-      if (!ctx) return;
       
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      for (let i = 0; i < particlesArray.length; i++) {
-        particlesArray[i].update();
-        particlesArray[i].draw();
+      // Calculate average and apply forces
+      if (separationCount > 0) {
+        separation.divideScalar(separationCount);
+        separation.normalize();
+        separation.multiplyScalar(params.maxSpeed);
+        separation.sub(velocity);
+        separation.clampLength(0, params.maxForce);
+        separation.multiplyScalar(params.separationForce);
       }
       
-      connectParticles();
-      requestAnimationFrame(animate);
+      if (alignmentCount > 0) {
+        alignment.divideScalar(alignmentCount);
+        alignment.normalize();
+        alignment.multiplyScalar(params.maxSpeed);
+        alignment.sub(velocity);
+        alignment.clampLength(0, params.maxForce);
+        alignment.multiplyScalar(params.alignmentForce);
+      }
+      
+      if (cohesionCount > 0) {
+        cohesion.divideScalar(cohesionCount);
+        cohesion.sub(position);
+        cohesion.normalize();
+        cohesion.multiplyScalar(params.maxSpeed);
+        cohesion.sub(velocity);
+        cohesion.clampLength(0, params.maxForce);
+        cohesion.multiplyScalar(params.cohesionForce);
+      }
+      
+      // Apply forces
+      accelerations[i3] += separation.x + alignment.x + cohesion.x;
+      accelerations[i3 + 1] += separation.y + alignment.y + cohesion.y;
+      accelerations[i3 + 2] += separation.z + alignment.z + cohesion.z;
     }
+    
+    // Update positions and velocities
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      
+      // Update velocity
+      velocities[i3] += accelerations[i3];
+      velocities[i3 + 1] += accelerations[i3 + 1];
+      velocities[i3 + 2] += accelerations[i3 + 2];
+      
+      // Limit speed
+      const speed = Math.sqrt(
+        velocities[i3] * velocities[i3] + 
+        velocities[i3 + 1] * velocities[i3 + 1] + 
+        velocities[i3 + 2] * velocities[i3 + 2]
+      );
+      
+      if (speed > params.maxSpeed) {
+        velocities[i3] = (velocities[i3] / speed) * params.maxSpeed;
+        velocities[i3 + 1] = (velocities[i3 + 1] / speed) * params.maxSpeed;
+        velocities[i3 + 2] = (velocities[i3 + 2] / speed) * params.maxSpeed;
+      }
+      
+      // Update position
+      positions[i3] += velocities[i3];
+      positions[i3 + 1] += velocities[i3 + 1];
+      positions[i3 + 2] += velocities[i3 + 2];
+      
+      // Boundary conditions - wrap around
+      const bounds = params.bounds;
+      if (positions[i3] > bounds) positions[i3] = -bounds;
+      if (positions[i3] < -bounds) positions[i3] = bounds;
+      if (positions[i3 + 1] > bounds) positions[i3 + 1] = -bounds;
+      if (positions[i3 + 1] < -bounds) positions[i3 + 1] = bounds;
+      if (positions[i3 + 2] > bounds) positions[i3 + 2] = -bounds;
+      if (positions[i3 + 2] < -bounds) positions[i3 + 2] = bounds;
+    }
+    
+    return { positions, velocities, accelerations };
+  };
 
-    animate();
+  // Animation loop
+  useFrame(() => {
+    if (!mesh.current) return;
+    
+    // Apply flocking behavior
+    const newPositions = applyFlockingBehavior();
+    setPositions(newPositions);
+    
+    // Update geometry
+    mesh.current.geometry.attributes.position.needsUpdate = true;
+  });
 
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-    };
-  }, []);
+  return (
+    <points ref={mesh}>
+      <bufferGeometry>
+        <bufferAttribute
+          attachObject={['attributes', 'position']}
+          count={count}
+          array={positions.positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.7}
+        sizeAttenuation={true}
+        color={0xd4af37}
+        transparent={true}
+        opacity={0.8}
+        vertexColors={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+};
 
-  return <canvas ref={canvasRef} className="swarm-particles" />;
+// Connections between boids
+const Connections = ({ count = 200, maxDistance = 10 }) => {
+  const lines = useRef();
+  const { size, viewport } = useThree();
+  const aspect = size.width / viewport.width;
+
+  useFrame(({ scene }) => {
+    if (!lines.current) return;
+    
+    // Find all boid points
+    const boids = scene.children.find(child => child.type === 'Points');
+    if (!boids || !boids.geometry || !boids.geometry.attributes.position) return;
+    
+    const positions = boids.geometry.attributes.position.array;
+    const linePositions = [];
+    
+    // Create connections between nearby boids
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      const posA = new THREE.Vector3(positions[i3], positions[i3 + 1], positions[i3 + 2]);
+      
+      for (let j = i + 1; j < count; j++) {
+        const j3 = j * 3;
+        const posB = new THREE.Vector3(positions[j3], positions[j3 + 1], positions[j3 + 2]);
+        
+        const distance = posA.distanceTo(posB);
+        
+        if (distance < maxDistance) {
+          linePositions.push(posA.x, posA.y, posA.z);
+          linePositions.push(posB.x, posB.y, posB.z);
+        }
+      }
+    }
+    
+    // Update line geometry
+    if (linePositions.length > 0) {
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+      lines.current.geometry.dispose();
+      lines.current.geometry = geometry;
+    }
+  });
+
+  return (
+    <lineSegments ref={lines}>
+      <bufferGeometry />
+      <lineBasicMaterial color={0xc0c0c0} transparent opacity={0.2} />
+    </lineSegments>
+  );
+};
+
+// Main swarm component
+const SwarmParticles = () => {
+  return (
+    <div className="swarm-particles">
+      <Canvas camera={{ position: [0, 0, 70], fov: 75 }}>
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} intensity={1} />
+        <Boids count={150} />
+        <Connections count={150} maxDistance={15} />
+        <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
+      </Canvas>
+    </div>
+  );
 };
 
 export default function Home() {
