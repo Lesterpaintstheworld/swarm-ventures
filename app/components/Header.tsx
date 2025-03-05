@@ -67,7 +67,7 @@ const Header = () => {
         {/* Desktop navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <Link
-            href="#learn-more"
+            href="/learn-more"
             className="text-white hover:text-[#d4af37] transition-colors"
           >
             Learn More
@@ -89,7 +89,7 @@ const Header = () => {
       >
         <nav className="container mx-auto px-4 flex flex-col space-y-4">
           <Link
-            href="#learn-more"
+            href="/learn-more"
             className="text-white hover:text-[#d4af37] transition-colors"
             onClick={() => setMenuOpen(false)}
           >

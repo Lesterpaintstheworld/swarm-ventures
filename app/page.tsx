@@ -43,9 +43,9 @@ export default function Home() {
               <a href="#investment" className="gold-button px-10 py-5 rounded-full font-bold text-xl">
                 Invest Now
               </a>
-              <a href="#learn-more" className="silver-button px-10 py-5 rounded-full font-bold text-xl">
+              <Link href="/learn-more" className="silver-button px-10 py-5 rounded-full font-bold text-xl">
                 Learn More
-              </a>
+              </Link>
             </div>
           </div>
         </header>
