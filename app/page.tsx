@@ -13,7 +13,7 @@ const Boids = ({ count = 200 }) => {
   const aspect = size.width / viewport.width;
 
   // Boid parameters
-  const [positions, setPositions] = useState(() => {
+  const [boidData, setBoidData] = useState(() => {
     const positions = new Float32Array(count * 3);
     const velocities = new Float32Array(count * 3);
     const accelerations = new Float32Array(count * 3);
@@ -48,7 +48,7 @@ const Boids = ({ count = 200 }) => {
 
   // Calculate steering forces for flocking behavior
   const applyFlockingBehavior = () => {
-    const { positions, velocities, accelerations } = positions;
+    const { positions, velocities, accelerations } = boidData;
     
     // Reset accelerations
     for (let i = 0; i < count * 3; i++) {
@@ -179,16 +179,15 @@ const Boids = ({ count = 200 }) => {
       if (positions[i3 + 2] < -bounds) positions[i3 + 2] = bounds;
     }
     
-    return { positions, velocities, accelerations };
+    // No need to return anything as we're modifying the arrays in place
   };
 
   // Animation loop
   useFrame(() => {
     if (!mesh.current) return;
     
-    // Apply flocking behavior
-    const newPositions = applyFlockingBehavior();
-    setPositions(newPositions);
+    // Apply flocking behavior directly without setting state
+    applyFlockingBehavior();
     
     // Update geometry
     mesh.current.geometry.attributes.position.needsUpdate = true;
@@ -200,7 +199,7 @@ const Boids = ({ count = 200 }) => {
         <bufferAttribute
           attachObject={['attributes', 'position']}
           count={count}
-          array={positions.positions}
+          array={boidData.positions}
           itemSize={3}
         />
       </bufferGeometry>
