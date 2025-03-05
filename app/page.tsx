@@ -12,11 +12,16 @@ const Boids = ({ count = 200 }) => {
   const { size, viewport } = useThree();
   const aspect = size.width / viewport.width;
 
-  // Boid parameters
-  const [boidData, setBoidData] = useState(() => {
-    const positions = new Float32Array(count * 3);
-    const velocities = new Float32Array(count * 3);
-    const accelerations = new Float32Array(count * 3);
+  // Boid parameters - use refs instead of state to avoid re-renders
+  const boidDataRef = useRef({
+    positions: new Float32Array(count * 3),
+    velocities: new Float32Array(count * 3),
+    accelerations: new Float32Array(count * 3)
+  });
+
+  // Initialize the data once
+  useEffect(() => {
+    const { positions, velocities } = boidDataRef.current;
     
     // Initialize positions and velocities
     for (let i = 0; i < count; i++) {
@@ -29,9 +34,7 @@ const Boids = ({ count = 200 }) => {
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.2;
       velocities[i3 + 2] = (Math.random() - 0.5) * 0.2;
     }
-    
-    return { positions, velocities, accelerations };
-  });
+  }, [count]);
 
   // Flocking parameters
   const params = {
@@ -48,7 +51,7 @@ const Boids = ({ count = 200 }) => {
 
   // Calculate steering forces for flocking behavior
   const applyFlockingBehavior = () => {
-    const { positions, velocities, accelerations } = boidData;
+    const { positions, velocities, accelerations } = boidDataRef.current;
     
     // Reset accelerations
     for (let i = 0; i < count * 3; i++) {
@@ -199,7 +202,7 @@ const Boids = ({ count = 200 }) => {
         <bufferAttribute
           attachObject={['attributes', 'position']}
           count={count}
-          array={boidData.positions}
+          array={boidDataRef.current.positions}
           itemSize={3}
         />
       </bufferGeometry>
