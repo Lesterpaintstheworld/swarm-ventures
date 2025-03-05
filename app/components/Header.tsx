@@ -70,28 +70,10 @@ const Header = () => {
             href="#learn-more"
             className="text-white hover:text-[#d4af37] transition-colors"
           >
-            About
+            Learn More
           </Link>
           <Link
             href="#investment"
-            className="text-white hover:text-[#d4af37] transition-colors"
-          >
-            Invest
-          </Link>
-          <Link
-            href="#team"
-            className="text-white hover:text-[#d4af37] transition-colors"
-          >
-            Team
-          </Link>
-          <Link
-            href="#contact"
-            className="text-white hover:text-[#d4af37] transition-colors"
-          >
-            Contact
-          </Link>
-          <Link
-            href="#register"
             className="gold-button px-5 py-2 rounded-full font-medium"
           >
             Invest
@@ -111,31 +93,10 @@ const Header = () => {
             className="text-white hover:text-[#d4af37] transition-colors"
             onClick={() => setMenuOpen(false)}
           >
-            About
+            Learn More
           </Link>
           <Link
             href="#investment"
-            className="text-white hover:text-[#d4af37] transition-colors"
-            onClick={() => setMenuOpen(false)}
-          >
-            Invest
-          </Link>
-          <Link
-            href="#team"
-            className="text-white hover:text-[#d4af37] transition-colors"
-            onClick={() => setMenuOpen(false)}
-          >
-            Team
-          </Link>
-          <Link
-            href="#contact"
-            className="text-white hover:text-[#d4af37] transition-colors"
-            onClick={() => setMenuOpen(false)}
-          >
-            Contact
-          </Link>
-          <Link
-            href="#register"
             className="gold-button px-5 py-2 rounded-full font-medium text-center"
             onClick={() => setMenuOpen(false)}
           >
