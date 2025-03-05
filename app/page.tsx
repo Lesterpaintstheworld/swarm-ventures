@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dynamic from 'next/dynamic';
 import Header from './components/Header';
+import Footer from './components/Footer';
 
 // Import SwarmParticles with SSR disabled
 const SwarmParticles = dynamic(
@@ -169,28 +170,7 @@ export default function Home() {
         </section>
       </div>
       
-      {/* Footer */}
-      <footer className="border-t border-gray-800 py-12 relative z-10">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-6 md:mb-0">
-              <h2 className="text-2xl font-bold gold-gradient">SwarmVentures</h2>
-              <p className="silver-text mt-2">Professional Portfolio Management for AI Swarms</p>
-            </div>
-            
-            <div className="flex gap-8">
-              <a href="#about" className="hover:text-[#d4af37] transition-colors">About</a>
-              <a href="#team" className="hover:text-[#d4af37] transition-colors">Team</a>
-              <a href="#contact" className="hover:text-[#d4af37] transition-colors">Contact</a>
-              <a href="#terms" className="hover:text-[#d4af37] transition-colors">Terms</a>
-            </div>
-          </div>
-          
-          <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
-            <p>© 2023 SwarmVentures. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
