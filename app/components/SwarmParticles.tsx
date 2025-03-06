@@ -42,10 +42,12 @@ const Boids = ({ count = 200 }) => {
     accelerations: new Float32Array(count * 3)
   });
   
-  // Attraction point for all particles
-  const centerAttractionStrength = 0.02; // Reduced from 0.06 to 0.02 for more balanced behavior
-  const attractionPoint = useRef(new THREE.Vector3(0, 0, 0));
-  const nextAttractionChangeTime = useRef(0);
+  // Attraction points for all particles
+  const centerAttractionStrength = 0.015; // Reduced strength since we'll have two points
+  const attractionPoint1 = useRef(new THREE.Vector3(0, 0, 0));
+  const attractionPoint2 = useRef(new THREE.Vector3(0, 0, 0));
+  const nextAttractionChangeTime1 = useRef(0);
+  const nextAttractionChangeTime2 = useRef(0);
 
   // Initialize the data once
   useEffect(() => {
@@ -66,27 +68,37 @@ const Boids = ({ count = 200 }) => {
   
   // Set up random attraction point changes
   useEffect(() => {
-    // Set initial attraction point
-    setRandomAttractionPoint();
+    // Set initial attraction points
+    setRandomAttractionPoint(1);
+    setRandomAttractionPoint(2);
     
     // Function to set a new random attraction point
-    function setRandomAttractionPoint() {
+    function setRandomAttractionPoint(pointNumber: number) {
       // Generate a random point within the bounds
       const bounds = params.bounds * 0.7; // Stay within 70% of the bounds to keep particles more visible
-      attractionPoint.current.set(
+      const point = pointNumber === 1 ? attractionPoint1.current : attractionPoint2.current;
+      
+      point.set(
         (Math.random() * 2 - 1) * bounds,
         (Math.random() * 2 - 1) * bounds,
         (Math.random() * 2 - 1) * bounds
       );
       
       // Set next change time to be between 2 and 6 seconds from now
-      nextAttractionChangeTime.current = Date.now() + 2000 + Math.random() * 4000;
+      const nextChangeTime = pointNumber === 1 ? nextAttractionChangeTime1 : nextAttractionChangeTime2;
+      nextChangeTime.current = Date.now() + 2000 + Math.random() * 4000;
     }
     
-    // Set up interval to check if it's time to change the attraction point
+    // Set up interval to check if it's time to change the attraction points
     const intervalId = setInterval(() => {
-      if (Date.now() > nextAttractionChangeTime.current) {
-        setRandomAttractionPoint();
+      const now = Date.now();
+      
+      if (now > nextAttractionChangeTime1.current) {
+        setRandomAttractionPoint(1);
+      }
+      
+      if (now > nextAttractionChangeTime2.current) {
+        setRandomAttractionPoint(2);
       }
     }, 500); // Check every half second
     
@@ -276,28 +288,44 @@ const Boids = ({ count = 200 }) => {
         accelerations[i3 + 2] += mouseRepel.z;
       }
       
-      // Apply attraction to the random point for all particles
-      // Create a vector pointing from the particle to the attraction point
-      const attractionVector = new THREE.Vector3(
-        attractionPoint.current.x - position.x,
-        attractionPoint.current.y - position.y,
-        attractionPoint.current.z - position.z
+      // Apply attraction to the first random point
+      const attractionVector1 = new THREE.Vector3(
+        attractionPoint1.current.x - position.x,
+        attractionPoint1.current.y - position.y,
+        attractionPoint1.current.z - position.z
       );
-      
-      // Calculate distance to attraction point
-      const distanceToAttraction = attractionVector.length();
-      
-      // Normalize and apply the attraction strength with distance-based scaling
-      // Attraction is weaker when already close to the target
-      attractionVector.normalize();
-      const scaledAttractionStrength = centerAttractionStrength * 
-        Math.min(1.0, distanceToAttraction / 30); // Reduces attraction when closer than 30 units
-      attractionVector.multiplyScalar(scaledAttractionStrength);
-      
-      // Apply the attraction force
-      accelerations[i3] += attractionVector.x;
-      accelerations[i3 + 1] += attractionVector.y;
-      accelerations[i3 + 2] += attractionVector.z;
+
+      // Calculate distance to first attraction point
+      const distanceToAttraction1 = attractionVector1.length();
+
+      // Normalize and apply the attraction strength with cube law scaling
+      attractionVector1.normalize();
+      // Use cube law for stronger attraction at medium distances
+      const scaledAttractionStrength1 = centerAttractionStrength * 
+        Math.pow(Math.min(1.0, distanceToAttraction1 / 40), 3); // Cube law with distance scaling
+      attractionVector1.multiplyScalar(scaledAttractionStrength1);
+
+      // Apply attraction to the second random point
+      const attractionVector2 = new THREE.Vector3(
+        attractionPoint2.current.x - position.x,
+        attractionPoint2.current.y - position.y,
+        attractionPoint2.current.z - position.z
+      );
+
+      // Calculate distance to second attraction point
+      const distanceToAttraction2 = attractionVector2.length();
+
+      // Normalize and apply the attraction strength with cube law scaling
+      attractionVector2.normalize();
+      // Use cube law for stronger attraction at medium distances
+      const scaledAttractionStrength2 = centerAttractionStrength * 
+        Math.pow(Math.min(1.0, distanceToAttraction2 / 40), 3); // Cube law with distance scaling
+      attractionVector2.multiplyScalar(scaledAttractionStrength2);
+
+      // Apply both attraction forces
+      accelerations[i3] += attractionVector1.x + attractionVector2.x;
+      accelerations[i3 + 1] += attractionVector1.y + attractionVector2.y;
+      accelerations[i3 + 2] += attractionVector1.z + attractionVector2.z;
       
       // Apply click force if active
       if (clickActive.current) {
