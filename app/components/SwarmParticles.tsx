@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -24,6 +24,16 @@ const Boids = ({ count = 200 }) => {
   const clickForceStrength = 0.3; // Much stronger than mouse repel strength
   const clickForceDuration = 1000; // Duration of the click force in milliseconds
   const clickForceDecay = 0.95; // How quickly the force decays
+  
+  // Explosion effect state
+  const clickExplosionParticles = useRef<THREE.Points | null>(null);
+  const explosionGeometry = useRef(new THREE.BufferGeometry());
+  const explosionMaterial = useRef<THREE.PointsMaterial | null>(null);
+  const explosionActive = useRef(false);
+  const explosionTime = useRef(0);
+  const explosionPosition = useRef(new THREE.Vector3(0, 0, 0));
+  const explosionParticleCount = 150; // Number of particles in the explosion
+  const explosionDuration = 1.5; // Duration in seconds
 
   // Boid parameters - use refs instead of state to avoid re-renders
   const boidDataRef = useRef({
@@ -79,6 +89,62 @@ const Boids = ({ count = 200 }) => {
     };
   }, []);
   
+  // Initialize explosion particles
+  useEffect(() => {
+    // Initialize explosion particles
+    const positions = new Float32Array(explosionParticleCount * 3);
+    const velocities = new Float32Array(explosionParticleCount * 3);
+    const colors = new Float32Array(explosionParticleCount * 3);
+    const sizes = new Float32Array(explosionParticleCount);
+    
+    // Set initial positions (will be updated on click)
+    for (let i = 0; i < explosionParticleCount; i++) {
+      const i3 = i * 3;
+      positions[i3] = 0;
+      positions[i3 + 1] = 0;
+      positions[i3 + 2] = 0;
+      
+      // Random velocities in all directions
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI;
+      const speed = 2 + Math.random() * 3;
+      
+      velocities[i3] = Math.sin(phi) * Math.cos(theta) * speed;
+      velocities[i3 + 1] = Math.sin(phi) * Math.sin(theta) * speed;
+      velocities[i3 + 2] = Math.cos(phi) * speed;
+      
+      // Gold to orange color gradient
+      const t = Math.random();
+      colors[i3] = 1.0;  // R: full red
+      colors[i3 + 1] = 0.6 + t * 0.3;  // G: varying from gold to orange
+      colors[i3 + 2] = t * 0.2;  // B: slight blue for sparkle
+      
+      // Random sizes
+      sizes[i] = 2 + Math.random() * 4;
+    }
+    
+    explosionGeometry.current.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    explosionGeometry.current.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+    explosionGeometry.current.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    explosionGeometry.current.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    
+    // Create material with custom shader for better looking particles
+    explosionMaterial.current = new THREE.PointsMaterial({
+      size: 3,
+      sizeAttenuation: true,
+      color: 0xffcc00,
+      transparent: true,
+      opacity: 0.8,
+      vertexColors: true,
+      blending: THREE.AdditiveBlending,
+    });
+    
+    // Hide explosion initially
+    if (explosionMaterial.current) {
+      explosionMaterial.current.visible = false;
+    }
+  }, []);
+
   // Add click event listener
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -94,6 +160,32 @@ const Boids = ({ count = 200 }) => {
       setTimeout(() => {
         clickActive.current = false;
       }, clickForceDuration);
+      
+      // Trigger explosion effect
+      explosionActive.current = true;
+      explosionTime.current = 0;
+      
+      // Set explosion position to match click position
+      explosionPosition.current.copy(clickForce.current);
+      explosionPosition.current.x *= 50; // Scale to match world coordinates
+      explosionPosition.current.y *= 50;
+      
+      // Update explosion particle positions to start from click point
+      if (explosionGeometry.current && explosionGeometry.current.attributes.position) {
+        const positions = explosionGeometry.current.attributes.position.array as Float32Array;
+        for (let i = 0; i < explosionParticleCount; i++) {
+          const i3 = i * 3;
+          positions[i3] = explosionPosition.current.x;
+          positions[i3 + 1] = explosionPosition.current.y;
+          positions[i3 + 2] = explosionPosition.current.z;
+        }
+        explosionGeometry.current.attributes.position.needsUpdate = true;
+      }
+      
+      // Make explosion visible
+      if (explosionMaterial.current) {
+        explosionMaterial.current.visible = true;
+      }
     };
 
     window.addEventListener('click', handleClick);
@@ -297,7 +389,7 @@ const Boids = ({ count = 200 }) => {
   };
 
   // Animation loop
-  useFrame(() => {
+  useFrame((state, delta) => {
     if (!mesh.current || !mesh.current.geometry || !mesh.current.geometry.attributes.position) return;
     
     // Apply flocking behavior directly without setting state
@@ -305,20 +397,61 @@ const Boids = ({ count = 200 }) => {
     
     // Update geometry
     mesh.current.geometry.attributes.position.needsUpdate = true;
+    
+    // Update explosion effect if active
+    if (explosionActive.current && explosionGeometry.current && explosionGeometry.current.attributes.position) {
+      explosionTime.current += delta;
+      
+      if (explosionTime.current >= explosionDuration) {
+        explosionActive.current = false;
+        if (explosionMaterial.current) {
+          explosionMaterial.current.visible = false;
+        }
+      } else {
+        const positions = explosionGeometry.current.attributes.position.array as Float32Array;
+        const velocities = explosionGeometry.current.attributes.velocity.array as Float32Array;
+        const t = explosionTime.current / explosionDuration;
+        
+        // Update explosion particle positions
+        for (let i = 0; i < explosionParticleCount; i++) {
+          const i3 = i * 3;
+          
+          // Move particles outward based on their velocity
+          positions[i3] += velocities[i3] * delta;
+          positions[i3 + 1] += velocities[i3 + 1] * delta;
+          positions[i3 + 2] += velocities[i3 + 2] * delta;
+        }
+        
+        // Fade out particles over time
+        if (explosionMaterial.current) {
+          explosionMaterial.current.opacity = 0.8 * (1 - t);
+          explosionMaterial.current.size = 3 * (1 - t * 0.5);
+        }
+        
+        explosionGeometry.current.attributes.position.needsUpdate = true;
+      }
+    }
   });
 
   return (
-    <points ref={mesh}>
-      <pointsMaterial
-        size={2.5}  // Reduced from 4
-        sizeAttenuation={true}
-        color={0xffcc00}
-        transparent={true}
-        opacity={0.5}  // Reduced by 20% (from 0.625 to 0.5)
-        vertexColors={false}
-        blending={THREE.AdditiveBlending}
-      />
-    </points>
+    <>
+      <points ref={mesh}>
+        <pointsMaterial
+          size={2.5}  // Reduced from 4
+          sizeAttenuation={true}
+          color={0xffcc00}
+          transparent={true}
+          opacity={0.5}  // Reduced by 20% (from 0.625 to 0.5)
+          vertexColors={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </points>
+      <points ref={clickExplosionParticles} geometry={explosionGeometry.current}>
+        {explosionMaterial.current && (
+          <primitive object={explosionMaterial.current} attach="material" />
+        )}
+      </points>
+    </>
   );
 };
 
