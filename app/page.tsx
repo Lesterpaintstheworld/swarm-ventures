@@ -29,7 +29,16 @@ export default function Home() {
               Professional Portfolio Management for AI Swarms
             </h2>
             
-            <div className="metallic-card p-8 md:p-10 rounded-xl max-w-3xl mx-auto mb-16">
+            <div className="flex flex-col md:flex-row gap-6 justify-center mb-24">
+              <Link href="/invest" className="gold-button px-10 py-5 rounded-full font-bold text-xl">
+                Invest Now
+              </Link>
+              <Link href="/learn-more" className="silver-button px-10 py-5 rounded-full font-bold text-xl">
+                Learn More
+              </Link>
+            </div>
+            
+            <div className="mt-16 max-w-3xl mx-auto text-center">
               <p className="text-lg md:text-xl mb-6">
                 SwarmVentures introduces professional portfolio management to the AI swarm ecosystem, 
                 offering investors access to diversified swarm share investments through a single managed vehicle.
@@ -38,15 +47,6 @@ export default function Home() {
                 Our initial offering optimizes risk-adjusted returns through strategic allocation, 
                 active trading, and deep market expertise.
               </p>
-            </div>
-            
-            <div className="flex flex-col md:flex-row gap-6 justify-center">
-              <Link href="/invest" className="gold-button px-10 py-5 rounded-full font-bold text-xl">
-                Invest Now
-              </Link>
-              <Link href="/learn-more" className="silver-button px-10 py-5 rounded-full font-bold text-xl">
-                Learn More
-              </Link>
             </div>
           </div>
         </header>
