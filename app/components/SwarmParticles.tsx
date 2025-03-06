@@ -59,9 +59,9 @@ const Boids = ({ count = 200 }) => {
       positions[i3 + 1] = (Math.random() - 0.5) * 30; // Decreased from 40
       positions[i3 + 2] = (Math.random() - 0.5) * 30; // Decreased from 40
     
-      velocities[i3] = (Math.random() - 0.5) * 0.25;    // Increased by 25% from 0.2
-      velocities[i3 + 1] = (Math.random() - 0.5) * 0.25; // Increased by 25% from 0.2
-      velocities[i3 + 2] = (Math.random() - 0.5) * 0.25; // Increased by 25% from 0.2
+      velocities[i3] = (Math.random() - 0.5) * 0.375;    // Increased by 50% from 0.25
+      velocities[i3 + 1] = (Math.random() - 0.5) * 0.375; // Increased by 50% from 0.25
+      velocities[i3 + 2] = (Math.random() - 0.5) * 0.375; // Increased by 50% from 0.25
       
       // Randomly select approximately 10% of particles to be attracted to center
       if (Math.random() < 0.1) {
@@ -147,7 +147,7 @@ const Boids = ({ count = 200 }) => {
       // Random velocities in all directions
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
-      const speed = 2.5 + Math.random() * 3.75; // Increased by 25% from 2 + Math.random() * 3
+      const speed = 3.75 + Math.random() * 5.625; // Increased by 50% from 2.5 + Math.random() * 3.75
       
       velocities[i3] = Math.sin(phi) * Math.cos(theta) * speed;
       velocities[i3 + 1] = Math.sin(phi) * Math.sin(theta) * speed;
@@ -236,13 +236,13 @@ const Boids = ({ count = 200 }) => {
 
   // Flocking parameters
   const params = {
-    separation: 20,         // Decreased from 25
+    separation: 30,         // Increased from 20 to create more space between particles
     alignment: 40,          // Increased from 35
     cohesion: 40,           // Increased from 30
-    separationForce: 0.08,  // Decreased from 0.12
+    separationForce: 0.12,  // Increased from 0.08 to make separation more powerful
     alignmentForce: 0.08,   // Increased from 0.06
     cohesionForce: 0.08,    // Increased from 0.05
-    maxSpeed: 0.1875,       // Increased by 25% from 0.15
+    maxSpeed: 0.28125,      // Increased by 50% from 0.1875
     maxForce: 0.03,         // Decreased from 0.04
     bounds: 50              // Decreased from 60
   };
