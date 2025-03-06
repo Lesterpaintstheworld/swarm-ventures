@@ -655,7 +655,7 @@ const SwarmParticles = () => {
   return (
     <div className="swarm-particles" style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: -1 }}>
       <Canvas 
-        camera={{ position: [0, 0, 60], fov: 70 }}  // Moved camera from 80 to 60 units away
+        camera={{ position: [0, 0, 45], fov: 70 }}  // Moved camera from 60 to 45 units away
         style={{ background: '#000000' }}
         dpr={[1, 2]} // Improve rendering on high-DPI displays
       >
