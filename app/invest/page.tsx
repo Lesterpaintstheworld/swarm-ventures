@@ -6,9 +6,28 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import dynamic from 'next/dynamic';
 
+// Define global window interface extension for Phantom wallet
+declare global {
+  interface Window {
+    phantom?: {
+      solana?: any;
+    }
+  }
+}
+
+// Define Investment interface
+interface Investment {
+  id: string;
+  wallet: string;
+  token: string;
+  amount: string | number;
+  signature: string;
+  createdAt: string;
+}
+
 // Investments Table Component
 const InvestmentsTable = () => {
-  const [investments, setInvestments] = useState([]);
+  const [investments, setInvestments] = useState<Investment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -36,13 +55,13 @@ const InvestmentsTable = () => {
   }, []);
 
   // Format wallet address for display
-  const formatWallet = (wallet) => {
+  const formatWallet = (wallet: string): string => {
     if (!wallet) return '';
     return `${wallet.substring(0, 4)}...${wallet.substring(wallet.length - 4)}`;
   };
 
   // Format date for display
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string): string => {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
@@ -140,7 +159,7 @@ const SwarmParticles = dynamic(
 const TREASURY_WALLET = "A8Sn2X28ev9w1s58VUgNQaEHoqE2msjM9bEonq8tdSAk";
 
 // Token addresses
-const TOKEN_ADDRESSES = {
+const TOKEN_ADDRESSES: Record<string, string> = {
   UBC: "9psiRdn9cXYVps4F1kFuoNjd2EtmqNJXrCPmRppJpump",
   COMPUTE: "B1N1HcMm4RysYz4smsXwmk2UnS8NziqKCM6Ho8i62vXo"
 };
@@ -158,9 +177,9 @@ export default function Invest() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [solanaProvider, setSolanaProvider] = useState(null);
+  const [solanaProvider, setSolanaProvider] = useState<any>(null);
 
-  const minAmount = {
+  const minAmount: Record<string, number> = {
     UBC: 100000,
     COMPUTE: 1000000
   };
@@ -189,13 +208,13 @@ export default function Invest() {
       setSolanaProvider(provider);
     } catch (error) {
       console.error("Error connecting to wallet:", error);
-      setError(error.message || "Failed to connect to wallet");
+      setError(error instanceof Error ? error.message : "Failed to connect to wallet");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleInvest = async (e) => {
+  const handleInvest = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -307,11 +326,11 @@ export default function Invest() {
         setSuccess(true);
       } catch (transferError) {
         console.error('Transfer error:', transferError);
-        setError(`Failed to create transfer: ${transferError.message || "Unknown error"}`);
+        setError(`Failed to create transfer: ${transferError instanceof Error ? transferError.message : "Unknown error"}`);
       }
     } catch (error) {
       console.error("Error processing investment:", error);
-      setError(error.message || "Failed to process investment");
+      setError(error instanceof Error ? error.message : "Failed to process investment");
     } finally {
       setIsLoading(false);
     }
