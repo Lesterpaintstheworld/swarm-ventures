@@ -20,16 +20,16 @@ export default function Home() {
       
       <div className="container mx-auto px-4 py-12">
         {/* Hero Section */}
-        <header className="hero-header flex flex-col items-center justify-center min-h-[95vh] pt-32 pb-10 text-center relative z-10">
-          <div className="my-auto py-16 flex flex-col items-center max-w-5xl mx-auto">
-            <h1 className="text-6xl md:text-8xl font-bold mb-10">
+        <header className="hero-header flex flex-col items-center justify-center min-h-[100vh] pt-40 pb-20 text-center relative z-10">
+          <div className="my-auto py-24 flex flex-col items-center max-w-5xl mx-auto">
+            <h1 className="text-6xl md:text-8xl font-bold mb-16">
               <span className="gold-gradient">SwarmVentures</span>
             </h1>
-            <h2 className="text-xl md:text-3xl mb-16 silver-text max-w-3xl mx-auto">
+            <h2 className="text-xl md:text-3xl mb-24 silver-text max-w-3xl mx-auto">
               Professional Portfolio Management for AI Swarms
             </h2>
             
-            <div className="flex flex-col md:flex-row gap-6 justify-center mb-24">
+            <div className="flex flex-col md:flex-row gap-6 justify-center mb-32">
               <Link href="/invest" className="gold-button px-10 py-5 rounded-full font-bold text-xl">
                 Invest Now
               </Link>
@@ -38,7 +38,7 @@ export default function Home() {
               </Link>
             </div>
             
-            <div className="mt-32 max-w-3xl mx-auto">
+            <div className="mt-40 max-w-3xl mx-auto">
               <div className="metallic-card p-8 rounded-xl text-center">
                 <p className="text-lg md:text-xl mb-6">
                   SwarmVentures introduces professional portfolio management to the AI swarm ecosystem, 
