@@ -41,6 +41,10 @@ const Boids = ({ count = 200 }) => {
     velocities: new Float32Array(count * 3),
     accelerations: new Float32Array(count * 3)
   });
+  
+  // Track which particles are attracted to the center
+  const centerAttractedParticles = useRef<Set<number>>(new Set());
+  const centerAttractionStrength = 0.01; // How strongly the selected particles are attracted to center
 
   // Initialize the data once
   useEffect(() => {
@@ -56,6 +60,11 @@ const Boids = ({ count = 200 }) => {
       velocities[i3] = (Math.random() - 0.5) * 0.2;
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.2;
       velocities[i3 + 2] = (Math.random() - 0.5) * 0.2;
+      
+      // Randomly select approximately 10% of particles to be attracted to center
+      if (Math.random() < 0.1) {
+        centerAttractedParticles.current.add(i);
+      }
     }
   }, [count]);
 
@@ -240,6 +249,16 @@ const Boids = ({ count = 200 }) => {
         accelerations[i3] += mouseRepel.x;
         accelerations[i3 + 1] += mouseRepel.y;
         accelerations[i3 + 2] += mouseRepel.z;
+      }
+      
+      // Apply center attraction for selected particles
+      if (centerAttractedParticles.current.has(i)) {
+        const centerAttraction = new THREE.Vector3(-position.x, -position.y, -position.z);
+        centerAttraction.normalize();
+        centerAttraction.multiplyScalar(centerAttractionStrength);
+        accelerations[i3] += centerAttraction.x;
+        accelerations[i3 + 1] += centerAttraction.y;
+        accelerations[i3 + 2] += centerAttraction.z;
       }
       
       // Apply click force if active
