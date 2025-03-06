@@ -42,8 +42,7 @@ const Boids = ({ count = 200 }) => {
     accelerations: new Float32Array(count * 3)
   });
   
-  // Track which particles are attracted to the center
-  const centerAttractedParticles = useRef<Set<number>>(new Set());
+  // Attraction point for all particles
   const centerAttractionStrength = 0.03; // Increased from 0.01 to make attraction stronger
   const attractionPoint = useRef(new THREE.Vector3(0, 0, 0));
   const nextAttractionChangeTime = useRef(0);
@@ -62,11 +61,6 @@ const Boids = ({ count = 200 }) => {
       velocities[i3] = (Math.random() - 0.5) * 0.375;    // Increased by 50% from 0.25
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.375; // Increased by 50% from 0.25
       velocities[i3 + 2] = (Math.random() - 0.5) * 0.375; // Increased by 50% from 0.25
-      
-      // Randomly select approximately 10% of particles to be attracted to center
-      if (Math.random() < 0.1) {
-        centerAttractedParticles.current.add(i);
-      }
     }
   }, [count]);
   
@@ -282,24 +276,22 @@ const Boids = ({ count = 200 }) => {
         accelerations[i3 + 2] += mouseRepel.z;
       }
       
-      // Apply attraction to the random point for selected particles
-      if (centerAttractedParticles.current.has(i)) {
-        // Create a vector pointing from the particle to the attraction point
-        const attractionVector = new THREE.Vector3(
-          attractionPoint.current.x - position.x,
-          attractionPoint.current.y - position.y,
-          attractionPoint.current.z - position.z
-        );
-        
-        // Normalize and apply the attraction strength
-        attractionVector.normalize();
-        attractionVector.multiplyScalar(centerAttractionStrength);
-        
-        // Apply the attraction force
-        accelerations[i3] += attractionVector.x;
-        accelerations[i3 + 1] += attractionVector.y;
-        accelerations[i3 + 2] += attractionVector.z;
-      }
+      // Apply attraction to the random point for all particles
+      // Create a vector pointing from the particle to the attraction point
+      const attractionVector = new THREE.Vector3(
+        attractionPoint.current.x - position.x,
+        attractionPoint.current.y - position.y,
+        attractionPoint.current.z - position.z
+      );
+      
+      // Normalize and apply the attraction strength
+      attractionVector.normalize();
+      attractionVector.multiplyScalar(centerAttractionStrength);
+      
+      // Apply the attraction force
+      accelerations[i3] += attractionVector.x;
+      accelerations[i3 + 1] += attractionVector.y;
+      accelerations[i3 + 2] += attractionVector.z;
       
       // Apply click force if active
       if (clickActive.current) {
