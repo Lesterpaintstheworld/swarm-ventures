@@ -230,10 +230,10 @@ const Boids = ({ count = 200 }) => {
 
   // Flocking parameters
   const params = {
-    separation: 80,         // Increased from 60 to 80 for much more space between particles
+    separation: 120,        // Increased from 80 to 120 for much more space between particles
     alignment: 40,          // Increased from 35
     cohesion: 40,           // Increased from 30
-    separationForce: 0.35,  // Increased from 0.25 to 0.35 for much stronger separation
+    separationForce: 0.5,   // Increased from 0.35 to 0.5 for much stronger separation
     alignmentForce: 0.08,   // Increased from 0.06
     cohesionForce: 0.08,    // Increased from 0.05
     maxSpeed: 0.28125,      // Increased by 50% from 0.1875
@@ -353,7 +353,7 @@ const Boids = ({ count = 200 }) => {
           const diff = new THREE.Vector3().subVectors(position, otherPosition);
           diff.normalize();
           // Use an even stronger inverse power law for much stronger repulsion at close distances
-          const repulsionStrength = Math.pow(params.separation / Math.max(distance, 0.1), 4); // Changed from cube to fourth power
+          const repulsionStrength = Math.pow(params.separation / Math.max(distance, 0.1), 5); // Changed from fourth power to fifth power
           diff.multiplyScalar(repulsionStrength); // This will be much stronger when boids are very close
           separation.add(diff);
           separationCount++;
