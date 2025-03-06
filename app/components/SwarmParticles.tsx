@@ -489,29 +489,38 @@ const Boids = ({ count = 250 }) => {
     if (mesh.current && mesh.current.material) {
       // Cast to PointsMaterial to access size property
       const material = mesh.current.material as THREE.PointsMaterial;
-    
+      
       // Create a more varied size pulsing effect with stronger glow
       const time = state.clock.getElapsedTime();
-      const shimmerFactor = 0.4; // Increased from 0.25 to make shimmer more noticeable
-    
+      const shimmerFactor = 0.4; // Keep the same shimmer factor
+        
       // Make each particle shimmer at a different rate with more dramatic effect
       for (let i = 0; i < count; i++) {
         const i3 = i * 3;
-        // Create more unique offsets for each particle
-        const uniqueOffset = (i % 23) * 0.31; // Changed for even more variation
-        const shimmerValue = Math.sin(time * (1.8 + Math.sin(i * 0.15)) + uniqueOffset * 12) * shimmerFactor + 1;
-      
+          
+        // Create much more unique offsets for each particle based on its position
+        // This ensures particles don't twinkle in sync
+        const uniqueOffset = (i % 31) * 0.37 + Math.sin(boidDataRef.current.positions[i3] * 0.1) * 5;
+          
+        // Use different frequency multipliers for each particle based on its index
+        const freqMultiplier = 1.5 + (i % 7) * 0.2;
+          
+        // Create a more complex shimmer pattern with multiple sine waves
+        const shimmerValue = 
+          Math.sin(time * freqMultiplier + uniqueOffset) * 0.3 + 
+          Math.sin(time * 0.7 + uniqueOffset * 2.3) * 0.1;
+          
         // Apply a more varied color shift between gold and bright yellow
-        // Use the particle's index to create variation in timing
-        if ((time + uniqueOffset) % 0.9 < 0.45 * Math.sin(i * 0.08 + time * 0.3)) {
+        // Use the particle's position and a different time scale for color shifts
+        if (Math.sin(time * 0.5 + boidDataRef.current.positions[i3 + 1] * 0.2 + i * 0.05) > 0.3) {
           material.color.setHex(0xffd700); // Gold
         } else {
           material.color.setHex(0xffec8b); // Light golden rod
         }
-      
+          
         // Vary the size more dramatically based on position and time
-        // This creates a more random twinkling effect with light glow appearance
-        const pulseSize = 1.5 * (1 + Math.sin(time * (2.5 + i % 7 * 0.3) + boidDataRef.current.positions[i3] * 0.25) * 0.45);
+        // This creates a more random twinkling effect that's not synchronized
+        const pulseSize = 3.0 * (1 + shimmerValue * 0.45);
         material.size = pulseSize;
       }
     }
