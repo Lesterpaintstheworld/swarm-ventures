@@ -44,7 +44,9 @@ const Boids = ({ count = 200 }) => {
   
   // Track which particles are attracted to the center
   const centerAttractedParticles = useRef<Set<number>>(new Set());
-  const centerAttractionStrength = 0.01; // How strongly the selected particles are attracted to center
+  const centerAttractionStrength = 0.03; // Increased from 0.01 to make attraction stronger
+  const attractionPoint = useRef(new THREE.Vector3(0, 0, 0));
+  const nextAttractionChangeTime = useRef(0);
 
   // Initialize the data once
   useEffect(() => {
@@ -67,6 +69,35 @@ const Boids = ({ count = 200 }) => {
       }
     }
   }, [count]);
+  
+  // Set up random attraction point changes
+  useEffect(() => {
+    // Set initial attraction point
+    setRandomAttractionPoint();
+    
+    // Function to set a new random attraction point
+    function setRandomAttractionPoint() {
+      // Generate a random point within the bounds
+      const bounds = params.bounds * 0.7; // Stay within 70% of the bounds to keep particles more visible
+      attractionPoint.current.set(
+        (Math.random() * 2 - 1) * bounds,
+        (Math.random() * 2 - 1) * bounds,
+        (Math.random() * 2 - 1) * bounds
+      );
+      
+      // Set next change time to be between 2 and 6 seconds from now
+      nextAttractionChangeTime.current = Date.now() + 2000 + Math.random() * 4000;
+    }
+    
+    // Set up interval to check if it's time to change the attraction point
+    const intervalId = setInterval(() => {
+      if (Date.now() > nextAttractionChangeTime.current) {
+        setRandomAttractionPoint();
+      }
+    }, 500); // Check every half second
+    
+    return () => clearInterval(intervalId);
+  }, []);
 
   // Initialize the geometry
   useEffect(() => {
@@ -251,14 +282,23 @@ const Boids = ({ count = 200 }) => {
         accelerations[i3 + 2] += mouseRepel.z;
       }
       
-      // Apply center attraction for selected particles
+      // Apply attraction to the random point for selected particles
       if (centerAttractedParticles.current.has(i)) {
-        const centerAttraction = new THREE.Vector3(-position.x, -position.y, -position.z);
-        centerAttraction.normalize();
-        centerAttraction.multiplyScalar(centerAttractionStrength);
-        accelerations[i3] += centerAttraction.x;
-        accelerations[i3 + 1] += centerAttraction.y;
-        accelerations[i3 + 2] += centerAttraction.z;
+        // Create a vector pointing from the particle to the attraction point
+        const attractionVector = new THREE.Vector3(
+          attractionPoint.current.x - position.x,
+          attractionPoint.current.y - position.y,
+          attractionPoint.current.z - position.z
+        );
+        
+        // Normalize and apply the attraction strength
+        attractionVector.normalize();
+        attractionVector.multiplyScalar(centerAttractionStrength);
+        
+        // Apply the attraction force
+        accelerations[i3] += attractionVector.x;
+        accelerations[i3 + 1] += attractionVector.y;
+        accelerations[i3 + 2] += attractionVector.z;
       }
       
       // Apply click force if active
