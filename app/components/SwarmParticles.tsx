@@ -16,6 +16,14 @@ const Boids = ({ count = 200 }) => {
   const mouse = useRef(new THREE.Vector3(0, 0, 0));
   const mouseInfluenceRadius = 20; // How far the mouse influence reaches
   const mouseRepelStrength = 0.05; // How strongly particles are repelled by mouse
+  
+  // Add click interaction state
+  const clickForce = useRef(new THREE.Vector3(0, 0, 0));
+  const clickActive = useRef(false);
+  const clickForceRadius = 40; // Larger radius than mouse influence
+  const clickForceStrength = 0.3; // Much stronger than mouse repel strength
+  const clickForceDuration = 1000; // Duration of the click force in milliseconds
+  const clickForceDecay = 0.95; // How quickly the force decays
 
   // Boid parameters - use refs instead of state to avoid re-renders
   const boidDataRef = useRef({
@@ -70,6 +78,29 @@ const Boids = ({ count = 200 }) => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
+  
+  // Add click event listener
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      // Convert click position to normalized device coordinates (-1 to +1)
+      clickForce.current.x = (event.clientX / window.innerWidth) * 2 - 1;
+      clickForce.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      clickForce.current.z = 0;
+      
+      // Activate the click force
+      clickActive.current = true;
+      
+      // Set a timeout to gradually decay the click force
+      setTimeout(() => {
+        clickActive.current = false;
+      }, clickForceDuration);
+    };
+
+    window.addEventListener('click', handleClick);
+    return () => {
+      window.removeEventListener('click', handleClick);
+    };
+  }, []);
 
   // Flocking parameters
   const params = {
@@ -117,6 +148,33 @@ const Boids = ({ count = 200 }) => {
         accelerations[i3] += mouseRepel.x;
         accelerations[i3 + 1] += mouseRepel.y;
         accelerations[i3 + 2] += mouseRepel.z;
+      }
+      
+      // Apply click force if active
+      if (clickActive.current) {
+        // Convert click force from normalized device coordinates to world space
+        const clickWorld = clickForce.current.clone();
+        clickWorld.x *= 50; // Scale to match the world size
+        clickWorld.y *= 50;
+        
+        // Calculate distance to click point
+        const distanceToClick = position.distanceTo(clickWorld);
+        
+        if (distanceToClick < clickForceRadius) {
+          // Create a repulsion vector away from the click point
+          const repelVector = new THREE.Vector3().subVectors(position, clickWorld);
+          repelVector.normalize();
+          
+          // The closer to the click point, the stronger the repulsion
+          // Use a non-linear falloff for more dramatic effect
+          const repelStrength = clickForceStrength * Math.pow(1 - distanceToClick / clickForceRadius, 2);
+          repelVector.multiplyScalar(repelStrength);
+          
+          // Apply the repulsion force
+          accelerations[i3] += repelVector.x;
+          accelerations[i3 + 1] += repelVector.y;
+          accelerations[i3 + 2] += repelVector.z;
+        }
       }
       
       // Separation - steer to avoid crowding local flockmates
