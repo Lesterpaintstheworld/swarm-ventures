@@ -270,11 +270,11 @@ const Boids = ({ count = 200 }) => {
     // Apply flocking rules
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      
+        
       // Temporary vectors for calculations
       const position = new THREE.Vector3(positions[i3], positions[i3 + 1], positions[i3 + 2]);
       const velocity = new THREE.Vector3(velocities[i3], velocities[i3 + 1], velocities[i3 + 2]);
-      
+        
       // Add mouse avoidance behavior
       const distanceToMouse = position.distanceTo(mouseWorld);
       if (distanceToMouse < mouseInfluenceRadius) {
