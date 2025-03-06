@@ -24,7 +24,7 @@ export async function GET() {
     }).all();
     
     // Transform the records to a simpler format
-    const investments = records.map(record => ({
+    const investments = records.map((record: any) => ({
       id: record.id,
       wallet: record.get('wallet'),
       token: record.get('token'),
