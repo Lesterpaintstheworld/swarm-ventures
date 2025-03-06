@@ -6,7 +6,7 @@ import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
 // Boid simulation for flocking behavior
-const Boids = ({ count = 200 }) => {
+const Boids = ({ count = 250 }) => {
   const mesh = useRef<THREE.Points>(null);
   const { size, viewport } = useThree();
   const aspect = size.width / viewport.width;
@@ -489,26 +489,29 @@ const Boids = ({ count = 200 }) => {
     if (mesh.current && mesh.current.material) {
       // Cast to PointsMaterial to access size property
       const material = mesh.current.material as THREE.PointsMaterial;
-      
-      // Create a subtle size pulsing effect
+    
+      // Create a more varied size pulsing effect
       const time = state.clock.getElapsedTime();
-      const shimmerFactor = 0.15; // Controls the intensity of the shimmer
-      
-      // Make each particle shimmer at a slightly different rate
+      const shimmerFactor = 0.25; // Increased from 0.15 to make shimmer more noticeable
+    
+      // Make each particle shimmer at a different rate
       for (let i = 0; i < count; i++) {
         const i3 = i * 3;
-        const uniqueOffset = (i % 10) * 0.1; // Creates variation between particles
-        const shimmerValue = Math.sin(time * 2 + uniqueOffset * 10) * shimmerFactor + 1;
-        
-        // Apply a subtle color shift between gold and bright yellow
-        if (time % 0.5 < 0.25) {
+        // Create more unique offsets for each particle
+        const uniqueOffset = (i % 17) * 0.23; // Changed from (i % 10) * 0.1 for more variation
+        const shimmerValue = Math.sin(time * (1.5 + Math.sin(i * 0.1)) + uniqueOffset * 10) * shimmerFactor + 1;
+      
+        // Apply a more varied color shift between gold and bright yellow
+        // Use the particle's index to create variation in timing
+        if ((time + uniqueOffset) % 0.7 < 0.35 * Math.sin(i * 0.05 + time * 0.2)) {
           material.color.setHex(0xffd700); // Gold
         } else {
           material.color.setHex(0xffec8b); // Light golden rod
         }
-        
-        // Vary the size slightly based on position to create twinkling effect
-        material.size = 1.2 * (1 + Math.sin(time * 3 + boidDataRef.current.positions[i3] * 0.1) * 0.2);
+      
+        // Vary the size more dramatically based on position and time
+        // This creates a more random twinkling effect that's not synchronized
+        material.size = 1.0 * (1 + Math.sin(time * (2 + i % 5 * 0.2) + boidDataRef.current.positions[i3] * 0.2) * 0.3);
       }
     }
     
@@ -551,11 +554,11 @@ const Boids = ({ count = 200 }) => {
     <>
       <points ref={mesh}>
         <pointsMaterial
-          size={2.0}  // Increased from 1.2 to make particles more visible
+          size={1.0}  // Reduced from 2.0 to 1.0 (50% smaller)
           sizeAttenuation={true}
           color={0xffd700}  // Keep the golden color
           transparent={true}
-          opacity={0.9}  // Increased from 0.7 for more visibility
+          opacity={0.9}  // Keep the same opacity
           vertexColors={false}
           blending={THREE.AdditiveBlending}
         />
@@ -650,8 +653,8 @@ const SwarmParticles = () => {
         <fog attach="fog" args={['#000000', 30, 100]} />
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
-        <Boids count={200} />
-        <Connections count={200} maxDistance={8} />  // Reduced from 12 to 8
+        <Boids count={250} />
+        <Connections count={250} maxDistance={8} />  // Updated from 200 to 250
         <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
       </Canvas>
     </div>
