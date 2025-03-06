@@ -26,7 +26,7 @@ const InvestmentsTable = () => {
         setInvestments(data.investments);
       } catch (error) {
         console.error('Error fetching investments:', error);
-        setError(error.message || 'Failed to load investments');
+        setError(error instanceof Error ? error.message : 'Failed to load investments');
       } finally {
         setIsLoading(false);
       }
