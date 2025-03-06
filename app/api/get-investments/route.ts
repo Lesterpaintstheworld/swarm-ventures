@@ -1,12 +1,24 @@
 import { NextResponse } from 'next/server';
-import Airtable from 'airtable';
 
-// Initialize Airtable
-const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY || '' }).base(process.env.AIRTABLE_BASE_ID || '');
+let Airtable: any;
+try {
+  Airtable = require('airtable');
+} catch (error) {
+  console.error('Failed to load Airtable:', error);
+}
+
+// Initialize Airtable only if the module is available
+const getAirtableBase = () => {
+  if (!Airtable) {
+    throw new Error('Airtable module not available');
+  }
+  return new Airtable({ apiKey: process.env.AIRTABLE_API_KEY || '' }).base(process.env.AIRTABLE_BASE_ID || '');
+};
 
 export async function GET() {
   try {
     // Fetch all records from the INVESTMENTS table
+    const base = getAirtableBase();
     const records = await base('INVESTMENTS').select({
       sort: [{ field: 'createdAt', direction: 'desc' }]
     }).all();
@@ -25,7 +37,10 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching investments:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch investments' },
+      { 
+        error: 'Failed to fetch investments', 
+        details: error instanceof Error ? error.message : String(error) 
+      },
       { status: 500 }
     );
   }
