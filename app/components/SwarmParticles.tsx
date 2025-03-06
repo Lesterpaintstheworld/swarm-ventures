@@ -12,6 +12,11 @@ const Boids = ({ count = 200 }) => {
   const aspect = size.width / viewport.width;
   const geometryRef = useRef(new THREE.BufferGeometry());
 
+  // Add mouse position state
+  const mouse = useRef(new THREE.Vector3(0, 0, 0));
+  const mouseInfluenceRadius = 20; // How far the mouse influence reaches
+  const mouseRepelStrength = 0.05; // How strongly particles are repelled by mouse
+
   // Boid parameters - use refs instead of state to avoid re-renders
   const boidDataRef = useRef({
     positions: new Float32Array(count * 3),
@@ -50,6 +55,22 @@ const Boids = ({ count = 200 }) => {
     }
   }, []);
 
+  // Add mouse move event listener
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      // Convert mouse position to normalized device coordinates (-1 to +1)
+      mouse.current.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      // Set a reasonable z-depth for the mouse in 3D space
+      mouse.current.z = 0;
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
   // Flocking parameters
   const params = {
     separation: 20,         // Decreased from 25
@@ -72,6 +93,11 @@ const Boids = ({ count = 200 }) => {
       accelerations[i] = 0;
     }
     
+    // Convert mouse from normalized device coordinates to world space
+    const mouseWorld = mouse.current.clone();
+    mouseWorld.x *= 50; // Scale to match the world size
+    mouseWorld.y *= 50;
+    
     // Apply flocking rules
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
@@ -79,6 +105,19 @@ const Boids = ({ count = 200 }) => {
       // Temporary vectors for calculations
       const position = new THREE.Vector3(positions[i3], positions[i3 + 1], positions[i3 + 2]);
       const velocity = new THREE.Vector3(velocities[i3], velocities[i3 + 1], velocities[i3 + 2]);
+      
+      // Add mouse avoidance behavior
+      const distanceToMouse = position.distanceTo(mouseWorld);
+      if (distanceToMouse < mouseInfluenceRadius) {
+        const mouseRepel = new THREE.Vector3().subVectors(position, mouseWorld);
+        mouseRepel.normalize();
+        // The closer to the mouse, the stronger the repulsion
+        const repelStrength = mouseRepelStrength * (1 - distanceToMouse / mouseInfluenceRadius);
+        mouseRepel.multiplyScalar(repelStrength);
+        accelerations[i3] += mouseRepel.x;
+        accelerations[i3 + 1] += mouseRepel.y;
+        accelerations[i3 + 2] += mouseRepel.z;
+      }
       
       // Separation - steer to avoid crowding local flockmates
       const separation = new THREE.Vector3();
