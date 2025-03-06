@@ -57,9 +57,9 @@ const Boids = ({ count = 200 }) => {
       positions[i3 + 1] = (Math.random() - 0.5) * 30; // Decreased from 40
       positions[i3 + 2] = (Math.random() - 0.5) * 30; // Decreased from 40
     
-      velocities[i3] = (Math.random() - 0.5) * 0.2;
-      velocities[i3 + 1] = (Math.random() - 0.5) * 0.2;
-      velocities[i3 + 2] = (Math.random() - 0.5) * 0.2;
+      velocities[i3] = (Math.random() - 0.5) * 0.25;    // Increased by 25% from 0.2
+      velocities[i3 + 1] = (Math.random() - 0.5) * 0.25; // Increased by 25% from 0.2
+      velocities[i3 + 2] = (Math.random() - 0.5) * 0.25; // Increased by 25% from 0.2
       
       // Randomly select approximately 10% of particles to be attracted to center
       if (Math.random() < 0.1) {
@@ -116,7 +116,7 @@ const Boids = ({ count = 200 }) => {
       // Random velocities in all directions
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
-      const speed = 2 + Math.random() * 3;
+      const speed = 2.5 + Math.random() * 3.75; // Increased by 25% from 2 + Math.random() * 3
       
       velocities[i3] = Math.sin(phi) * Math.cos(theta) * speed;
       velocities[i3 + 1] = Math.sin(phi) * Math.sin(theta) * speed;
@@ -211,7 +211,7 @@ const Boids = ({ count = 200 }) => {
     separationForce: 0.08,  // Decreased from 0.12
     alignmentForce: 0.08,   // Increased from 0.06
     cohesionForce: 0.08,    // Increased from 0.05
-    maxSpeed: 0.15,         // Decreased from 0.2
+    maxSpeed: 0.1875,       // Increased by 25% from 0.15
     maxForce: 0.03,         // Decreased from 0.04
     bounds: 50              // Decreased from 60
   };
