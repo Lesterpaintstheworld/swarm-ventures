@@ -176,11 +176,11 @@ const Boids = ({ count = 250 }) => {
     
     // Create material with custom shader for better looking particles
     explosionMaterial.current = new THREE.PointsMaterial({
-      size: 3,
+      size: 4, // Increased from 3 for bigger explosion particles
       sizeAttenuation: true,
       color: 0xffcc00,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.9, // Increased from 0.8 for more visibility
       vertexColors: true,
       blending: THREE.AdditiveBlending,
     });
