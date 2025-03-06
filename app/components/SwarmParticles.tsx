@@ -84,9 +84,9 @@ const Boids = ({ count = 200 }) => {
         (Math.random() * 2 - 1) * bounds
       );
       
-      // Set next change time to be between 2 and 6 seconds from now
+      // Set next change time to be between 4 and 12 seconds from now
       const nextChangeTime = pointNumber === 1 ? nextAttractionChangeTime1 : nextAttractionChangeTime2;
-      nextChangeTime.current = Date.now() + 2000 + Math.random() * 4000;
+      nextChangeTime.current = Date.now() + 4000 + Math.random() * 8000;
     }
     
     // Set up interval to check if it's time to change the attraction points
@@ -551,11 +551,11 @@ const Boids = ({ count = 200 }) => {
     <>
       <points ref={mesh}>
         <pointsMaterial
-          size={1.2}  // Reduced from 2.5 to make particles smaller
+          size={2.0}  // Increased from 1.2 to make particles more visible
           sizeAttenuation={true}
-          color={0xffd700}  // Changed to a more golden color (0xffd700)
+          color={0xffd700}  // Keep the golden color
           transparent={true}
-          opacity={0.7}  // Increased from 0.5 for more visibility
+          opacity={0.9}  // Increased from 0.7 for more visibility
           vertexColors={false}
           blending={THREE.AdditiveBlending}
         />
