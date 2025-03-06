@@ -43,7 +43,7 @@ const Boids = ({ count = 200 }) => {
   });
   
   // Attraction point for all particles
-  const centerAttractionStrength = 0.06; // Doubled from 0.03 to make attraction much stronger
+  const centerAttractionStrength = 0.02; // Reduced from 0.06 to 0.02 for more balanced behavior
   const attractionPoint = useRef(new THREE.Vector3(0, 0, 0));
   const nextAttractionChangeTime = useRef(0);
 
@@ -230,10 +230,10 @@ const Boids = ({ count = 200 }) => {
 
   // Flocking parameters
   const params = {
-    separation: 60,         // Increased from 35 to 60 for much more space between particles
+    separation: 80,         // Increased from 60 to 80 for much more space between particles
     alignment: 40,          // Increased from 35
     cohesion: 40,           // Increased from 30
-    separationForce: 0.25,  // Increased from 0.15 to 0.25 for much stronger separation
+    separationForce: 0.35,  // Increased from 0.25 to 0.35 for much stronger separation
     alignmentForce: 0.08,   // Increased from 0.06
     cohesionForce: 0.08,    // Increased from 0.05
     maxSpeed: 0.28125,      // Increased by 50% from 0.1875
@@ -284,9 +284,15 @@ const Boids = ({ count = 200 }) => {
         attractionPoint.current.z - position.z
       );
       
-      // Normalize and apply the attraction strength
+      // Calculate distance to attraction point
+      const distanceToAttraction = attractionVector.length();
+      
+      // Normalize and apply the attraction strength with distance-based scaling
+      // Attraction is weaker when already close to the target
       attractionVector.normalize();
-      attractionVector.multiplyScalar(centerAttractionStrength);
+      const scaledAttractionStrength = centerAttractionStrength * 
+        Math.min(1.0, distanceToAttraction / 30); // Reduces attraction when closer than 30 units
+      attractionVector.multiplyScalar(scaledAttractionStrength);
       
       // Apply the attraction force
       accelerations[i3] += attractionVector.x;
@@ -346,8 +352,8 @@ const Boids = ({ count = 200 }) => {
         if (distance < params.separation) {
           const diff = new THREE.Vector3().subVectors(position, otherPosition);
           diff.normalize();
-          // Use a stronger inverse cube law for much stronger repulsion at close distances
-          const repulsionStrength = Math.pow(params.separation / Math.max(distance, 0.1), 3); // Changed from square to cube
+          // Use an even stronger inverse power law for much stronger repulsion at close distances
+          const repulsionStrength = Math.pow(params.separation / Math.max(distance, 0.1), 4); // Changed from cube to fourth power
           diff.multiplyScalar(repulsionStrength); // This will be much stronger when boids are very close
           separation.add(diff);
           separationCount++;
