@@ -277,17 +277,13 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
     }
     
     // Update the buffer attribute with the new positions
-    if (lineIndex > 0) {
-      // Update the count of vertices
-      const positionAttribute = lineGeometryRef.current.getAttribute('position');
-      positionAttribute.count = lineIndex / 3;
-      positionAttribute.needsUpdate = true;
-    } else {
-      // If no connections, set count to 0
-      const positionAttribute = lineGeometryRef.current.getAttribute('position');
-      positionAttribute.count = 0;
-      positionAttribute.needsUpdate = true;
-    }
+    // Create a new buffer with just the data we need
+    const updatedPositions = new Float32Array(linePositionsRef.current.buffer, 0, lineIndex);
+    // Replace the entire attribute with a new one that has the correct count
+    lineGeometryRef.current.setAttribute(
+      'position',
+      new THREE.BufferAttribute(updatedPositions, 3)
+    );
   });
 
   return (
