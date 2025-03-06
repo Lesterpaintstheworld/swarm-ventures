@@ -520,7 +520,7 @@ const Boids = ({ count = 250 }) => {
           
         // Vary the size more dramatically based on position and time
         // This creates a more random twinkling effect that's not synchronized
-        const pulseSize = 3.0 * (1 + shimmerValue * 0.45);
+        const pulseSize = 0.75 * (1 + shimmerValue * 0.45);
         material.size = pulseSize;
       }
     }
@@ -564,7 +564,7 @@ const Boids = ({ count = 250 }) => {
     <>
       <points ref={mesh}>
         <pointsMaterial
-          size={1.5}  // Increased from 1.0 to 1.5 (50% bigger)
+          size={0.75}  // Reduced from 1.5 to 0.75 (twice as small)
           sizeAttenuation={true}
           color={0xffd700}  // Keep the golden color
           transparent={true}
@@ -645,7 +645,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 
   return (
     <lineSegments ref={lines}>
-      <lineBasicMaterial color={0xffd700} transparent opacity={0.2} />  // Changed color to gold and reduced opacity
+      <lineBasicMaterial color={0xffd700} transparent opacity={0.4} />  // Increased opacity from 0.2 to 0.4
     </lineSegments>
   );
 };
