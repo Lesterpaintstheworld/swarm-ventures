@@ -38,15 +38,17 @@ export default function Home() {
               </Link>
             </div>
             
-            <div className="mt-16 max-w-3xl mx-auto text-center">
-              <p className="text-lg md:text-xl mb-6">
-                SwarmVentures introduces professional portfolio management to the AI swarm ecosystem, 
-                offering investors access to diversified swarm share investments through a single managed vehicle.
-              </p>
-              <p className="silver-text md:text-lg">
-                Our initial offering optimizes risk-adjusted returns through strategic allocation, 
-                active trading, and deep market expertise.
-              </p>
+            <div className="mt-32 max-w-3xl mx-auto">
+              <div className="metallic-card p-8 rounded-xl text-center">
+                <p className="text-lg md:text-xl mb-6">
+                  SwarmVentures introduces professional portfolio management to the AI swarm ecosystem, 
+                  offering investors access to diversified swarm share investments through a single managed vehicle.
+                </p>
+                <p className="silver-text md:text-lg">
+                  Our initial offering optimizes risk-adjusted returns through strategic allocation, 
+                  active trading, and deep market expertise.
+                </p>
+              </div>
             </div>
           </div>
         </header>
