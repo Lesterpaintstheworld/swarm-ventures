@@ -9,16 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-three/drei": "^10.0.3",
+    "@react-three/fiber": "^9.0.4",
+    "@solana/spl-token": "^0.4.13",
+    "@solana/web3.js": "^1.98.0",
+    "airtable": "^0.12.2",
+    "next": "15.2.1",
+    "node-telegram-bot-api": "^0.66.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.2.1"
+    "three": "^0.174.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/node-telegram-bot-api": "^0.64.7",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
