@@ -485,6 +485,33 @@ const Boids = ({ count = 200 }) => {
     // Update geometry
     mesh.current.geometry.attributes.position.needsUpdate = true;
     
+    // Add shimmer effect to particles
+    if (mesh.current && mesh.current.material) {
+      // Cast to PointsMaterial to access size property
+      const material = mesh.current.material as THREE.PointsMaterial;
+      
+      // Create a subtle size pulsing effect
+      const time = state.clock.getElapsedTime();
+      const shimmerFactor = 0.15; // Controls the intensity of the shimmer
+      
+      // Make each particle shimmer at a slightly different rate
+      for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+        const uniqueOffset = (i % 10) * 0.1; // Creates variation between particles
+        const shimmerValue = Math.sin(time * 2 + uniqueOffset * 10) * shimmerFactor + 1;
+        
+        // Apply a subtle color shift between gold and bright yellow
+        if (time % 0.5 < 0.25) {
+          material.color.setHex(0xffd700); // Gold
+        } else {
+          material.color.setHex(0xffec8b); // Light golden rod
+        }
+        
+        // Vary the size slightly based on position to create twinkling effect
+        material.size = 1.2 * (1 + Math.sin(time * 3 + boidDataRef.current.positions[i3] * 0.1) * 0.2);
+      }
+    }
+    
     // Update explosion effect if active
     if (explosionActive.current && explosionGeometry.current && explosionGeometry.current.attributes.position) {
       explosionTime.current += delta;
@@ -524,11 +551,11 @@ const Boids = ({ count = 200 }) => {
     <>
       <points ref={mesh}>
         <pointsMaterial
-          size={2.5}  // Reduced from 4
+          size={1.2}  // Reduced from 2.5 to make particles smaller
           sizeAttenuation={true}
-          color={0xffcc00}
+          color={0xffd700}  // Changed to a more golden color (0xffd700)
           transparent={true}
-          opacity={0.5}  // Reduced by 20% (from 0.625 to 0.5)
+          opacity={0.7}  // Increased from 0.5 for more visibility
           vertexColors={false}
           blending={THREE.AdditiveBlending}
         />
@@ -605,7 +632,7 @@ const Connections = ({ count = 200, maxDistance = 10 }) => {
 
   return (
     <lineSegments ref={lines}>
-      <lineBasicMaterial color={0xffffff} transparent opacity={0.35} />  // Reduced by 20% (from 0.4375 to 0.35)
+      <lineBasicMaterial color={0xffd700} transparent opacity={0.2} />  // Changed color to gold and reduced opacity
     </lineSegments>
   );
 };
@@ -624,7 +651,7 @@ const SwarmParticles = () => {
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1} />
         <Boids count={200} />
-        <Connections count={200} maxDistance={12} />  // Reduced from 18
+        <Connections count={200} maxDistance={8} />  // Reduced from 12 to 8
         <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
       </Canvas>
     </div>
